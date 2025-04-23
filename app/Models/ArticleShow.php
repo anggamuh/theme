@@ -16,4 +16,8 @@ class ArticleShow extends Model
     {
         return $this->hasMany(ArticleShowGallery::class);
     }
+    public function template()
+    {
+        return $this->belongsTo(Template::class, 'template_id');
+    }
 }

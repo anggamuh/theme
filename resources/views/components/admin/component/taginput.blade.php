@@ -1,13 +1,17 @@
-@props(['title', 'name', 'value'])
+@props(['title', 'name', 'value', 'tag'])
 <div class="flex flex-col gap-2">
     <label class="font-medium text-sm sm:text-base">{{$title}} (Pisahkan menggunakan "," atau "enter")</label>
     <select class="js-example-basic-single" name="{{$name}}" multiple="multiple">
         @if(isset($value))
-            @foreach($value as $tag)
-                <option value="{{ $tag->tag }}" selected>{{ $tag->tag }}</option>
+            @foreach($value as $item)
+                <option value="{{ $item->tag }}" selected>{{ $item->tag }}</option>
             @endforeach
         @endif
-
+        @if (isset($tag))
+            @foreach ($tag as $item)
+                <option value="{{$item->tag}}">{{$item->tag}}</option>
+            @endforeach
+        @endif
     </select>
     <style>
         .select2 {

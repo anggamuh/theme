@@ -39,7 +39,7 @@
             </x-admin.navbutton>
         </div>
     </div>
-    <div class="flex flex-col w-full flex-grow overflow-hidden">
+    <div class="flex flex-col w-full flex-grow">
         <div class=" hidden sm:flex w-full bg-white py-6 pl-12 pr-12 lg:pr-32 duration-300 sticky top-0 z-30">
             <div class="w-full mx-auto flex justify-between">
                 <div class="flex gap-4 items-center">
@@ -74,7 +74,7 @@
                         x-transition:leave="transition ease-in duration-200"
                         x-transition:leave-start="transform opacity-100 scale-100"
                         x-transition:leave-end="transform opacity-0 scale-95"
-                        class="absolute top-full right-0 mt-2 py-2 w-48 bg-white border rounded shadow-lg text-sm z-50">
+                        class="absolute top-full right-0 mt-2 py-2 w-48 bg-white border rounded shadow-lg text-sm z-40">
                         <a href="{{route('profile.edit')}}" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Profile</a>
                         <form method="POST" class=" w-full" action="{{ route('logout') }}">
                             @csrf

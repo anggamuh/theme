@@ -15,6 +15,10 @@ class TemplateController extends Controller
     public function index()
     {
         $data = Template::all();
+        $data->transform(function ($data) {
+            $data->image = $data->image ? asset('storage/images/template/'.$data->image) : asset('assets/images/verplaceholder.webp');
+            return $data;
+        });
         return view('admin.template.index', compact('data'));
     }
 
@@ -33,6 +37,7 @@ class TemplateController extends Controller
     {
         $newdata = new Template;
 
+        $newdata->name = $request->name;
         $newdata->bg_type = $request->bg_type;
         $newdata->head_type = $request->header;
         $newdata->gallery_type = $request->gallery;
@@ -82,11 +87,38 @@ class TemplateController extends Controller
         //
     }
 
+    public function editimage($id, Request $request) {
+        $template = Template::find($id);
+        if ($request->hasFile('thumbnail')) {
+            if ($template->image) {
+                $path = public_path('storage/images/template/' . $template->image);
+
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
+            $imageFile = $request->file('thumbnail');
+            $imageName = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $imagePath = public_path('storage/images/template/');
+
+            $manager = new ImageManager(new Driver());
+            $image = $manager->read($imageFile->getPathname());
+            $imageFullPath = $imagePath . $imageName . '.webp';
+            $image->save($imageFullPath);
+
+            $template->image = $imageName . '.webp';
+        }
+        $template->save();
+
+        return redirect()->back();
+    }
+
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, template $template)
     {
+        $template->name = $request->name;
         $template->bg_type = $request->bg_type;
         $template->head_type = $request->header;
         $template->gallery_type = $request->gallery;

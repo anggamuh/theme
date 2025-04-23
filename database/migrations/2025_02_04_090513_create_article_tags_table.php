@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('article_tags', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('article_id');
-            $table->foreign('article_id')->references('id')->on('articles')->onUpdate('cascade')->onDelete('cascade');
             $table->string('tag');
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }

@@ -3,48 +3,52 @@
         <div x-data="auctionTable()"
             class="w-full p-4 sm:p-8 bg-white rounded-md shadow-md shadow-black/20 flex flex-col gap-6">
             <!-- Top Actions -->
-            <div class="w-full flex flex-col sm:flex-row gap-4 justify-between items-center">
-                <div class=" w-full sm:w-auto grid grid-cols-2 gap-4">
+            <div class="w-full flex flex-col md:flex-row gap-4 justify-between items-center">
+                <div class=" w-full md:w-auto grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
                     <a href="{{ route('article.create') }}"
-                        class=" w-full text-center text-sm sm:text-base sm:w-auto px-4 py-2 bg-byolink-1 text-white rounded-md font-semibold border border-byolink-1 hover:border-byolink-3 hover:bg-byolink-3 duration-300">
+                        class=" text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 bg-byolink-1 text-white rounded-md font-semibold border border-byolink-1 hover:border-byolink-3 hover:bg-byolink-3 duration-300">
                         +Artikel Spintax
                     </a>
                     <a href="{{ route('article-show.create') }}"
-                        class=" w-full text-center text-sm sm:text-base sm:w-auto px-4 py-2 bg-byolink-1 text-white rounded-md font-semibold border border-byolink-1 hover:border-byolink-3 hover:bg-byolink-3 duration-300">
+                        class=" text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 bg-byolink-1 text-white rounded-md font-semibold border border-byolink-1 hover:border-byolink-3 hover:bg-byolink-3 duration-300">
                         +Artikel Unik
+                    </a>
+                    <a href="{{ route('source-code.index') }}"
+                        class=" col-span-2 sm:col-span-1 text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 bg-byolink-1 text-white rounded-md font-semibold border border-byolink-1 hover:border-byolink-3 hover:bg-byolink-3 duration-300">
+                        Source Code
                     </a>
 
                 </div>
 
                 <!-- Search -->
-                <div class=" w-full sm:w-auto flex flex-row font-semibold duration-300">
+                <div class=" w-full md:w-auto flex flex-row font-semibold duration-300">
                     <input type="text" x-model="search" placeholder="Cari Judul..."
-                        class=" w-full text-sm sm:text-base sm:w-auto py-2 px-3 border border-byolink-1 rounded-md overflow-hidden focus-within:border-byolink-3 font-normal">
+                        class=" w-full text-sm sm:text-base md:w-auto py-2 px-3 border border-byolink-1 rounded-md overflow-hidden focus-within:border-byolink-3 font-normal">
                 </div>
             </div>
 
             <!-- Table -->
             <div class="w-full">
-                <table class="w-full text-sm sm:text-base rounded-md overflow-hidden">
+                <table class="w-full text-sm sm:text-base rounded-md ">
                     <thead>
                         <tr class="h-10 bg-byolink-1 text-white divide-x-2 divide-white">
-                            <th class=" px-2 py-1">No</th>
+                            <th class=" px-2 py-1 rounded-tl-md">No</th>
                             <th class=" px-1 sm:px-2 py-1">Judul</th>
-                            <th class=" px-1 sm:px-2 py-1 w-[90px] sm:w-[100px]">Opsi</th>
+                            <th class=" px-1 sm:px-2 py-1 w-[90px] sm:w-[100px] rounded-tr-md">Opsi</th>
                         </tr>
                     </thead>
                     <template x-for="(item, index) in paginatedData" :key="index">
-                        <tbody>
-                            <tr x-init="console.log(item.articleshow)" :class="index % 2 === 0 ? 'bg-neutral-100' : 'bg-neutral-200'"
+                        <tbody x-data="{ spin: false }">
+                            <tr :class="index % 2 === 0 ? 'bg-neutral-100' : 'bg-neutral-200'"
                                 class="h-10 text-neutral-600 divide-x-2 divide-white">
-                                <td class="px-2 py-2 text-center font-semibold" x-text="index + 1"></td>
-                                <td class="px-2 sm:px-4 py-2 font-semibold" x-text="item.judul"></td>
+                                <td class="px-3 py-1 text-center font-semibold" x-text="index + 1"></td>
+                                <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold line-clamp-2" x-text="item.judul"></td>
                                 <td class="px-1 sm:px-2">
                                     <div class="flex gap-1 sm:gap-2 justify-center">
                                         <!-- Detail -->
                                         <template x-if="item.article_type === 'spintax'">
-                                            <button class="w-5 h-5 hover:text-blue-500 duration-300">
-                                                <svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <button @click="spin = !spin" :class="spin ? 'rotate-180' : ''" class="w-5 h-5 hover:text-blue-500 duration-300 relative">
+                                                <svg fill="none" viewBox="0 0 24 24" class=" w-full h-full" xmlns="http://www.w3.org/2000/svg">
                                                     <path clip-rule="evenodd"
                                                         d="M20.05 17.65a3 3 0 0 0 1.2-2.4v-11a3 3 0 0 0-3-3h-12a3 3 0 0 0-3 3v11a3 3 0 0 0 1.2 2.4l6 4.5a3 3 0 0 0 3.6 0l6-4.5Z"
                                                         fill="currentColor" fill-rule="evenodd"></path>
@@ -66,38 +70,63 @@
                                         </template>
 
                                         <template x-if="item.article_type === 'spintax'">
-                                            <a :href="`{{ route('article.show', '') }}/${item.id}` "
-                                                class="w-5 h-5 hover:text-green-500 duration-300">
-                                                <svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M3 17.75A3.25 3.25 0 0 0 6.25 21h4.915l.356-1.423c.162-.648.497-1.24.97-1.712l5.902-5.903a3.279 3.279 0 0 1 2.607-.95V6.25A3.25 3.25 0 0 0 17.75 3H11v4.75A3.25 3.25 0 0 1 7.75 11H3v6.75ZM9.5 3.44 3.44 9.5h4.31A1.75 1.75 0 0 0 9.5 7.75V3.44Zm9.6 9.23-5.903 5.902a2.686 2.686 0 0 0-.706 1.247l-.458 1.831a1.087 1.087 0 0 0 1.319 1.318l1.83-.457a2.685 2.685 0 0 0 1.248-.707l5.902-5.902A2.286 2.286 0 0 0 19.1 12.67Z"
-                                                        fill="currentColor"></path>
-                                                </svg>
-                                            </a>
+                                            <div class="relative" x-data="{ open: false }">
+                                                <button @click="open = !open" class="w-5 h-5 hover:text-green-500 duration-300">
+                                                    <svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M3 17.75A3.25 3.25 0 0 0 6.25 21h4.915l.356-1.423c.162-.648.497-1.24.97-1.712l5.902-5.903a3.279 3.279 0 0 1 2.607-.95V6.25A3.25 3.25 0 0 0 17.75 3H11v4.75A3.25 3.25 0 0 1 7.75 11H3v6.75ZM9.5 3.44 3.44 9.5h4.31A1.75 1.75 0 0 0 9.5 7.75V3.44Zm9.6 9.23-5.903 5.902a2.686 2.686 0 0 0-.706 1.247l-.458 1.831a1.087 1.087 0 0 0 1.319 1.318l1.83-.457a2.685 2.685 0 0 0 1.248-.707l5.902-5.902A2.286 2.286 0 0 0 19.1 12.67Z"
+                                                            fill="currentColor"></path>
+                                                    </svg>
+                                                </button>
+                                                
+                                                <div x-show="open" @click.outside="open = false" class="absolute z-10 mt-1 bg-white border rounded shadow-lg w-32">
+                                                    <a :href="`{{ route('article.show', '') }}/${item.id}`" class="block px-4 py-2 text-sm hover:bg-gray-100">Edit</a>
+                                                    <button @click="generate(item)" class=" w-full text-left block px-4 py-2 text-sm hover:bg-gray-100">Generate</button>
+                                                </div>
+                                            </div>
                                         </template>
-                
+                                        
                                         <!-- Delete -->
-                                        <button @click="confirmDelete(item)"
-                                            class="w-5 h-5 hover:text-red-500 duration-300">
-                                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M19.5 8.99h-15a.5.5 0 0 0-.5.5v12.5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.49a.5.5 0 0 0-.5-.5Zm-9.25 11.5a.75.75 0 0 1-1.5 0v-8.625a.75.75 0 0 1 1.5 0Zm5 0a.75.75 0 0 1-1.5 0v-8.625a.75.75 0 0 1 1.5 0ZM20.922 4.851a11.806 11.806 0 0 0-4.12-1.07 4.945 4.945 0 0 0-9.607 0A12.157 12.157 0 0 0 3.18 4.805 1.943 1.943 0 0 0 2 6.476 1 1 0 0 0 3 7.49h18a1 1 0 0 0 1-.985 1.874 1.874 0 0 0-1.078-1.654ZM11.976 2.01A2.886 2.886 0 0 1 14.6 3.579a44.676 44.676 0 0 0-5.2 0 2.834 2.834 0 0 1 2.576-1.569Z"
-                                                fill="currentColor"></path>
-                                            </svg>
-                                        </button>
+                                        <template x-if="item.article_type === 'unique'">
+                                            <button @click="confirmDelete(item)"
+                                                class=" w-4 sm:w-5 aspect-square hover:text-red-500 duration-300">
+                                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M19.5 8.99h-15a.5.5 0 0 0-.5.5v12.5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.49a.5.5 0 0 0-.5-.5Zm-9.25 11.5a.75.75 0 0 1-1.5 0v-8.625a.75.75 0 0 1 1.5 0Zm5 0a.75.75 0 0 1-1.5 0v-8.625a.75.75 0 0 1 1.5 0ZM20.922 4.851a11.806 11.806 0 0 0-4.12-1.07 4.945 4.945 0 0 0-9.607 0A12.157 12.157 0 0 0 3.18 4.805 1.943 1.943 0 0 0 2 6.476 1 1 0 0 0 3 7.49h18a1 1 0 0 0 1-.985 1.874 1.874 0 0 0-1.078-1.654ZM11.976 2.01A2.886 2.886 0 0 1 14.6 3.579a44.676 44.676 0 0 0-5.2 0 2.834 2.834 0 0 1 2.576-1.569Z"
+                                                        fill="currentColor" class="fill-000000"></path>
+                                                </svg>
+                                            </button>
+                                        </template>
+                                        <template x-if="item.article_type === 'spintax'">
+                                            <div class=" relative" x-data="{ open: false }">
+                                                <button @click="open = !open"
+                                                    class="w-5 h-5 hover:text-red-500 duration-300">
+                                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M19.5 8.99h-15a.5.5 0 0 0-.5.5v12.5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.49a.5.5 0 0 0-.5-.5Zm-9.25 11.5a.75.75 0 0 1-1.5 0v-8.625a.75.75 0 0 1 1.5 0Zm5 0a.75.75 0 0 1-1.5 0v-8.625a.75.75 0 0 1 1.5 0ZM20.922 4.851a11.806 11.806 0 0 0-4.12-1.07 4.945 4.945 0 0 0-9.607 0A12.157 12.157 0 0 0 3.18 4.805 1.943 1.943 0 0 0 2 6.476 1 1 0 0 0 3 7.49h18a1 1 0 0 0 1-.985 1.874 1.874 0 0 0-1.078-1.654ZM11.976 2.01A2.886 2.886 0 0 1 14.6 3.579a44.676 44.676 0 0 0-5.2 0 2.834 2.834 0 0 1 2.576-1.569Z"
+                                                        fill="currentColor"></path>
+                                                    </svg>
+                                                </button>
+                                                <div x-show="open" @click.outside="open = false" class="absolute z-10 mt-1 right-0 bg-white border rounded shadow-lg w-52">
+                                                    <button @click="deleteGenerate(item)" class=" w-full text-left block px-4 py-2 text-sm hover:bg-gray-100">Delete Generate Artikel</button>
+                                                    <button @click="confirmDelete(item)" class="w-full text-left block px-4 py-2 text-sm hover:bg-gray-100">Delete Artikel</button>
+                                                </div>
+                                            </div>
+                                        </template>
                                     </div>
                                 </td>
                             </tr>
-                            <template x-if="item.article_type === 'spintax'">
+                            <template x-if="item.article_type === 'spintax' && spin">
                                 <template x-for="(itemshow, idx) in item.articleshow" :key="idx">
                                     <tr :class="[
                                             index % 2 === 0 ? 'bg-neutral-100' : 'bg-neutral-200',
                                             idx === 0 ? 'border-t-2 border-white' : ''
                                         ]"
                                         class="h-10 text-neutral-600 divide-x-2 divide-white">
-                                        <td class="px-2 sm:px-4 py-2">- <span x-text="itemshow.judul"></span></td>
+                                        <td class=" py-1 text-center"><span x-text="index + 1"></span>.<span x-text="idx + 1"></span></td>
+                                        <td class="px-2 sm:px-4 py-1"><span x-text="itemshow.judul"></span></td>
                                         <td class="px-1 sm:px-2">
                                             <div class="flex gap-2 justify-center">
                                                 <!-- Edit -->
-                                                <a :href="`{{ route('article-show.show', '') }}/${itemshow.id}`"
+                                                <a :href="`{{ route('article-generated.show', '') }}/${itemshow.id}`"
                                                     class="w-5 h-5 hover:text-green-500 duration-300">
                                                     <svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M3 17.75A3.25 3.25 0 0 0 6.25 21h4.915l.356-1.423c.162-.648.497-1.24.97-1.712l5.902-5.903a3.279 3.279 0 0 1 2.607-.95V6.25A3.25 3.25 0 0 0 17.75 3H11v4.75A3.25 3.25 0 0 1 7.75 11H3v6.75ZM9.5 3.44 3.44 9.5h4.31A1.75 1.75 0 0 0 9.5 7.75V3.44Zm9.6 9.23-5.903 5.902a2.686 2.686 0 0 0-.706 1.247l-.458 1.831a1.087 1.087 0 0 0 1.319 1.318l1.83-.457a2.685 2.685 0 0 0 1.248-.707l5.902-5.902A2.286 2.286 0 0 0 19.1 12.67Z"
@@ -106,7 +135,7 @@
                                                 </a>
                         
                                                 <!-- Delete -->
-                                                <button @click="confirmDelete(item)"
+                                                <button @click="showDelete(itemshow)"
                                                     class="w-5 h-5 hover:text-red-500 duration-300">
                                                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M19.5 8.99h-15a.5.5 0 0 0-.5.5v12.5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.49a.5.5 0 0 0-.5-.5Zm-9.25 11.5a.75.75 0 0 1-1.5 0v-8.625a.75.75 0 0 1 1.5 0Zm5 0a.75.75 0 0 1-1.5 0v-8.625a.75.75 0 0 1 1.5 0ZM20.922 4.851a11.806 11.806 0 0 0-4.12-1.07 4.945 4.945 0 0 0-9.607 0A12.157 12.157 0 0 0 3.18 4.805 1.943 1.943 0 0 0 2 6.476 1 1 0 0 0 3 7.49h18a1 1 0 0 0 1-.985 1.874 1.874 0 0 0-1.078-1.654ZM11.976 2.01A2.886 2.886 0 0 1 14.6 3.579a44.676 44.676 0 0 0-5.2 0 2.834 2.834 0 0 1 2.576-1.569Z"
@@ -189,8 +218,103 @@
                     </div>
                 </div>
             </div>
+            
+            <!-- Generate Modal -->
+            <div x-show="generateModal"
+                class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-40">
+                <div class="w-full max-w-[720px] bg-white pb-6 rounded-md flex flex-col gap-4 relative overflow-hidden border-2 border-byolink-1">
+                    <button @click="generateModal = false"
+                        class=" absolute top-6 right-6 w-6 h-6 text-white hover:text-red-500 duration-300">
+                        <svg viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                            enable-background="new 0 0 512 512">
+                            <path
+                                d="M437.5 386.6 306.9 256l130.6-130.6c14.1-14.1 14.1-36.8 0-50.9-14.1-14.1-36.8-14.1-50.9 0L256 205.1 125.4 74.5c-14.1-14.1-36.8-14.1-50.9 0-14.1 14.1-14.1 36.8 0 50.9L205.1 256 74.5 386.6c-14.1 14.1-14.1 36.8 0 50.9 14.1 14.1 36.8 14.1 50.9 0L256 306.9l130.6 130.6c14.1 14.1 36.8 14.1 50.9 0 14-14.1 14-36.9 0-50.9z"
+                                fill="currentColor" class="fill-000000"></path>
+                        </svg>
+                    </button>
+                    <div class=" pt-6 pb-3 bg-byolink-1 text-white">
+                        <h2 class=" px-6 text-2xl font-bold">Generate Artikel</h2>
+                    </div>
+                    <form :action="`{{ route('article.generate', '') }}/${modalData.id}`" method="POST"
+                        class="inline">
+                        @csrf
+                        <div class=" px-6 pb-4">
+                            <x-admin.component.numberinput title="Jumlah generate artikel" placeholder="Masukkan jumlah generate" :value="''" name="total" />
+                        </div>
+                        <div class="flex justify-end space-x-4 px-6">
+                            <button @click="generateModal = false" type="button"
+                                class="px-4 py-2 text-sm sm:text-base bg-neutral-600 duration-300 hover:bg-byolink-1 text-white rounded-md">Cancel</button>
+                            <button class=" py-2 px-4 text-sm sm:text-base rounded-md bg-byolink-1 text-white hover:bg-byolink-3 duration-300">Generate</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-            <!-- Delete Confirmation Modal -->
+            <!-- Delete Confirmation Article Show Modal -->
+            <div x-show="showDeleteModal"
+                class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-40">
+                <div class="w-full max-w-[720px] bg-white pb-6 rounded-md flex flex-col gap-4 relative overflow-hidden border-2 border-byolink-1">
+                    <button @click="showDeleteModal = false"
+                        class=" absolute top-6 right-6 w-6 h-6 text-white hover:text-red-500 duration-300">
+                        <svg viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                            enable-background="new 0 0 512 512">
+                            <path
+                                d="M437.5 386.6 306.9 256l130.6-130.6c14.1-14.1 14.1-36.8 0-50.9-14.1-14.1-36.8-14.1-50.9 0L256 205.1 125.4 74.5c-14.1-14.1-36.8-14.1-50.9 0-14.1 14.1-14.1 36.8 0 50.9L205.1 256 74.5 386.6c-14.1 14.1-14.1 36.8 0 50.9 14.1 14.1 36.8 14.1 50.9 0L256 306.9l130.6 130.6c14.1 14.1 36.8 14.1 50.9 0 14-14.1 14-36.9 0-50.9z"
+                                fill="currentColor" class="fill-000000"></path>
+                        </svg>
+                    </button>
+                    <div class=" pt-6 pb-3 bg-byolink-1 text-white">
+                        <h2 class=" px-6 text-2xl font-bold">Apa anda yakin menghapus data ini?</h2>
+                    </div>
+                    <p class="px-6 text-base">Anda akan menghapus data : <span x-text="modalData.judul"></span></p>
+                    <div class="flex justify-end space-x-4 px-6">
+                        {{-- <button @click="confirmDeleteModal = false"
+                            class="px-4 py-2 bg-neutral-600 duration-300 hover:bg-byolink-1 text-white rounded">Cancel</button> --}}
+                        <form :action="`{{ route('article-show.destroy', '') }}/${modalData.id}`" method="POST"
+                            class="inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                class="px-4 py-2 bg-red-500 duration-300 hover:bg-red-900 text-white rounded">Hapus</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Delete Confirmation Article Generated Modal -->
+            <div x-show="deleteGenerateModal"
+                class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-40">
+                <div class="w-full max-w-[720px] bg-white pb-6 rounded-md flex flex-col gap-4 relative overflow-hidden border-2 border-byolink-1">
+                    <button @click="deleteGenerateModal = false"
+                        class=" absolute top-6 right-6 w-6 h-6 text-white hover:text-red-500 duration-300">
+                        <svg viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                            enable-background="new 0 0 512 512">
+                            <path
+                                d="M437.5 386.6 306.9 256l130.6-130.6c14.1-14.1 14.1-36.8 0-50.9-14.1-14.1-36.8-14.1-50.9 0L256 205.1 125.4 74.5c-14.1-14.1-36.8-14.1-50.9 0-14.1 14.1-14.1 36.8 0 50.9L205.1 256 74.5 386.6c-14.1 14.1-14.1 36.8 0 50.9 14.1 14.1 36.8 14.1 50.9 0L256 306.9l130.6 130.6c14.1 14.1 36.8 14.1 50.9 0 14-14.1 14-36.9 0-50.9z"
+                                fill="currentColor" class="fill-000000"></path>
+                        </svg>
+                    </button>
+                    <div class=" pt-6 pb-3 bg-byolink-1 text-white">
+                        <h2 class=" px-6 text-2xl font-bold">Tentunkan jumlah artikel yang akan di hapus</h2>
+                    </div>
+                    <form :action="`{{ route('article.generate.destroy', '') }}/${modalData.id}`" method="POST"
+                        class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <div class=" px-6 pb-4">
+                            <x-admin.component.numberinput title="Artikel yang di hapus akan di ambil dari artikel terlama yang disimpan" placeholder="Masukkan jumlah artikel yang akan di hapus" :value="''" name="total" />
+                        </div>
+                        <div class="flex justify-end space-x-4 px-6">
+                            <button @click="deleteGenerateModal = false" type="button"
+                                class="px-4 py-2 text-sm sm:text-base bg-neutral-600 duration-300 hover:bg-byolink-1 text-white rounded-md">Cancel</button>
+                            <button type="submit"
+                                class="px-4 py-2 bg-red-500 duration-300 hover:bg-red-900 text-white rounded">Hapus</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Delete Confirmation Article Modal -->
             <div x-show="confirmDeleteModal"
                 class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-40">
                 <div class="w-full max-w-[720px] bg-white pb-6 rounded-md flex flex-col gap-4 relative overflow-hidden border-2 border-byolink-1">
@@ -206,7 +330,7 @@
                     <div class=" pt-6 pb-3 bg-byolink-1 text-white">
                         <h2 class=" px-6 text-2xl font-bold">Apa anda yakin menghapus data ini?</h2>
                     </div>
-                    <p class="px-6 text-base">Anda akan menghapus data : <span x-text="modalData.title"></span></p>
+                    <p class="px-6 text-base">Anda akan menghapus data : <span x-text="modalData.judul"></span></p>
                     <div class="flex justify-end space-x-4 px-6">
                         {{-- <button @click="confirmDeleteModal = false"
                             class="px-4 py-2 bg-neutral-600 duration-300 hover:bg-byolink-1 text-white rounded">Cancel</button> --}}
@@ -230,7 +354,10 @@
                     currentPage: 1,
                     perPage: 15,
                     showModal: false,
+                    generateModal: false,
+                    deleteGenerateModal : false,
                     confirmDeleteModal: false,
+                    showDeleteModal: false,
                     modalData: {},
 
                     get paginatedData() {
@@ -275,6 +402,21 @@
                     showDetail(item) {
                         this.modalData = item;
                         this.showModal = true;
+                    },
+                    
+                    generate(item) {
+                        this.modalData = item;
+                        this.generateModal = true;
+                    },
+
+                    deleteGenerate(item) {
+                        this.modalData = item;
+                        this.deleteGenerateModal = true;
+                    },
+
+                    showDelete(item) {
+                        this.modalData = item;
+                        this.showDeleteModal = true;
                     },
 
                     confirmDelete(item) {

@@ -3,10 +3,100 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\ArticleBanner;
+use App\Models\ArticleGallery;
+use App\Models\ArticleShow;
+use App\Models\ArticleShowGallery;
+use App\Models\ArticleTag;
+use App\Models\SourceCode;
+use App\Models\Template;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class ArticleController extends Controller
 {
+    public function generatearticle($id, Request $request)
+    {
+        $article = Article::findOrFail($id);
+        $total = (int) $request->total;
+
+        $maxAttempts = 10000; // Lebih fleksibel
+        $attempts = 0;
+        $savedCount = 0;
+
+        while ($savedCount < $total && $attempts < $maxAttempts) {
+            $spinnedTitle = $this->spinText($article->judul);
+            $spinnedBody = $this->spinText($article->article);
+
+            // Gabungkan keduanya untuk ambil semua tag
+            $combinedText = $spinnedTitle . ' ' . $spinnedBody;
+
+            // Ambil semua [tag]
+            preg_match_all('/\[[^\]]+\]/', $combinedText, $matches);
+
+            // Ambil tag unik saja
+            $tags = array_unique($matches[0] ?? []);
+
+            foreach ($tags as $tag) {
+                $source = SourceCode::where('title', $tag)->first();
+                if ($source) {
+                    // Pecah berdasarkan koma, dan ambil 1 secara random
+                    $options = array_map('trim', explode(',', $source->content));
+                    $replacement = $options[array_rand($options)];
+
+                    // Ganti di kedua teks
+                    $spinnedTitle = str_replace($tag, $replacement, $spinnedTitle);
+                    $spinnedBody = str_replace($tag, $replacement, $spinnedBody);
+                }
+            }
+
+            $isDuplicate = ArticleShow::where('judul', $spinnedTitle)
+                ->orWhere('article', $spinnedBody)
+                ->exists();
+
+            if (!$isDuplicate) {
+                $newArticleShow = new ArticleShow;
+
+                $newArticleShow->article_id = $article->id;
+                $newArticleShow->judul = $spinnedTitle;
+                $newArticleShow->slug = Str::slug($newArticleShow->judul);
+                $newArticleShow->article = $spinnedBody;
+                $newArticleShow->template_id = optional($article->template->random())->id;
+                $newArticleShow->banner = optional($article->articlebanner->random())->image;
+
+                $newArticleShow->save();
+                
+                $galleries = $article->articlegallery->shuffle()->take(6);
+                foreach ($galleries as $gallery) {
+                    $showGallery = new ArticleShowGallery;
+                    $showGallery->article_show_id = $newArticleShow->id;
+                    $showGallery->article_gallery_id = $gallery->id;
+                    $showGallery->image = $gallery->image;
+                    $showGallery->image_alt = $gallery->image_alt;
+                    $showGallery->save();
+                }
+                $savedCount++;
+            }
+
+            $attempts++;
+        }
+
+        return redirect()->back()->with('status', "$savedCount artikel berhasil dibuat.");
+    }
+
+
+    private function spinText($text)
+    {
+        return preg_replace_callback('/\{([^{}]+)\}/', function ($matches) {
+            $options = explode('|', $matches[1]);
+            return $options[array_rand($options)];
+        }, $text);
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -21,7 +111,9 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        return view('admin.article.create');
+        $tag = ArticleTag::all();
+        $template = Template::all();
+        return view('admin.article.create-spintax', compact('tag', 'template'));
     }
 
     /**
@@ -29,7 +121,133 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // dd($request);
+        $newarticle = new Article;
+
+        $newarticle->user_id = Auth::id();
+        $newarticle->judul = $request->judul;
+        $newarticle->article = $request->article;
+        $newarticle->article_type = 'spintax';
+
+        // Cek apakah link adalah YouTube
+        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $request->link, $matches)) {
+            $videoId = $matches[1];
+            $newarticle->video_type = "youtube";
+            $newarticle->youtube = "https://www.youtube.com/embed/{$videoId}";
+            $newarticle->tiktok = null;
+        } elseif (preg_match('/(?:www\.)?tiktok\.com\/(@[\w.-]+)\/video\/(\d+)/', $request->link, $matches)) {
+            $newarticle->video_type = "tiktok";
+            $newarticle->youtube = null;
+            $newarticle->tiktok = "https://www.tiktok.com/{$matches[0]}";
+        } else {
+            $newarticle->video_type = "none";
+            $newarticle->youtube = null;
+            $newarticle->tiktok = null;
+        }
+
+        $newarticle->save();
+
+        $newarticle->template()->sync($request->template_id);
+        
+        $newbanner = new ArticleBanner;
+
+        $newbanner->article_id = $newarticle->id;
+
+        // Banner
+        if ($request->has('image_banner') && !empty($request->image_banner)) {
+            foreach ($request->image_banner as $image) {
+                $newgallery = new ArticleBanner;
+                $newgallery->article_id = $newarticle->id;
+        
+                // Pastikan image adalah instance dari UploadedFile
+                if ($image instanceof \Illuminate\Http\UploadedFile && $image->isValid()) {
+                    // Ambil nama file tanpa ekstensi
+                    $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    
+                    // Tambahkan tanggal saat ini
+                    $currentDate = now()->format('YmdHis');
+                    
+                    // Gabungkan nama file dan tanggal input
+                    $imageName = $originalName . '_' . $currentDate;
+        
+                    $imagePath = public_path('storage/images/article/banner/');
+
+                    if (!File::exists($imagePath)) {
+                        File::makeDirectory($imagePath, 0755, true);
+                    }
+        
+                    $manager = new ImageManager(new Driver());
+                    $imageOptimized = $manager->read($image->getPathname());
+                    $imageFullPath = $imagePath . $imageName . '.webp';
+                    $imageOptimized->save($imageFullPath);
+        
+                    // Simpan nama file dengan ekstensi .webp
+                    $newgallery->image = $imageName . '.webp';
+                    $newgallery->image_alt = $imageName;
+                }
+        
+                $newgallery->save();
+            }
+        }
+
+        // Tag
+        if ($request->tag) {
+            $tags = array_map(fn($item) => ucfirst($item), $request->tag);
+        
+            $tagIds = [];
+            foreach ($tags as $tagName) {
+                $formattedTagName = Str::title($tagName);
+                $slug = Str::slug($tagName);
+
+                $tag = ArticleTag::firstOrCreate(
+                    ['slug' => $slug],
+                    ['tag' => $formattedTagName]
+                );
+
+                $tagIds[] = $tag->id;
+            }
+
+            $newarticle->articletag()->attach($tagIds);
+        }
+
+        // Gallery
+        if ($request->has('image_gallery') && !empty($request->image_gallery)) {
+            foreach ($request->image_gallery as $image) {
+                $newgallery = new ArticleGallery;
+                $newgallery->article_id = $newarticle->id;
+        
+                // Pastikan image adalah instance dari UploadedFile
+                if ($image instanceof \Illuminate\Http\UploadedFile && $image->isValid()) {
+                    // Ambil nama file tanpa ekstensi
+                    $originalName = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
+                    
+                    // Tambahkan tanggal saat ini
+                    $currentDate = now()->format('YmdHis');
+                    
+                    // Gabungkan nama file dan tanggal input
+                    $imageName = $originalName . '_' . $currentDate;
+        
+                    $imagePath = public_path('storage/images/article/gallery/');
+
+                    if (!File::exists($imagePath)) {
+                        File::makeDirectory($imagePath, 0755, true);
+                    }
+        
+                    $manager = new ImageManager(new Driver());
+                    $imageOptimized = $manager->read($image->getPathname());
+                    $imageFullPath = $imagePath . $imageName . '.webp';
+                    $imageOptimized->save($imageFullPath);
+        
+                    // Simpan nama file dengan ekstensi .webp
+                    $newgallery->image = $imageName . '.webp';
+                    $newgallery->image_alt = $imageName;
+                }
+        
+                $newgallery->save();
+            }
+        }
+
+        return redirect()->route('article.index');
     }
 
     /**
@@ -37,7 +255,10 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        //
+        $tagid = $article->articletag->pluck('id')->toArray();
+        $tag = ArticleTag::whereNotIn('id', $tagid)->get();
+        $template = Template::all();
+        return view('admin.article.edit-spintax', compact('article', 'tag', 'template'));
     }
 
     /**
@@ -53,14 +274,92 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        //
+        $article->judul = $request->judul;
+        $article->article = $request->article;
+
+        if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $request->link, $matches)) {
+            $videoId = $matches[1];
+            $article->video_type = "youtube";
+            $article->youtube = "https://www.youtube.com/embed/{$videoId}";
+            $article->tiktok = null;
+        } elseif (preg_match('/(?:www\.)?tiktok\.com\/(@[\w.-]+)\/video\/(\d+)/', $request->link, $matches)) {
+            $article->video_type = "tiktok";
+            $article->youtube = null;
+            $article->tiktok = "https://www.tiktok.com/{$matches[0]}";
+        } else {
+            $article->video_type = "none";
+            $article->youtube = null;
+            $article->tiktok = null;
+        }
+
+        $article->save();
+
+        $article->template()->sync($request->template_id);
+
+        if ($request->tag) {
+            // Ubah tag menjadi huruf besar di awal
+            $tags = array_map(fn($item) => ucfirst($item), $request->tag);
+        
+            // Pastikan setiap tag ada di database
+            $tagIds = [];
+            foreach ($tags as $tagName) {
+                $formattedTagName = Str::title($tagName);
+                $slug = Str::slug($tagName);
+
+                $tag = ArticleTag::firstOrCreate(
+                    ['slug' => $slug],
+                    ['tag' => $formattedTagName]
+                );
+
+                $tagIds[] = $tag->id;
+            }
+        
+            // Sinkronkan tag ke dalam pivot table
+            $article->articletag()->sync($tagIds);
+        }
+
+        return redirect()->route('article.index');
     }
 
     /**
      * Remove the specified resource from storage.
      */
+
+    public function generatearticledestroy($id, Request $request)
+    {
+        $ids = ArticleShow::where('article_id', $id)
+            ->orderBy('created_at', 'asc')
+            ->limit($request->total)
+            ->pluck('id');
+
+        ArticleShow::whereIn('id', $ids)->delete();
+
+        return redirect()->back();
+    }
+
     public function destroy(Article $article)
     {
-        //
+        if ($article->articlebanner) {
+            foreach ($article->articlebanner as $item) {
+                $path = public_path('storage/images/article/banner/' . $item->image);
+            
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
+        }
+        if ($article->articlegallery) {
+            foreach ($article->articlegallery as $item) {
+                $path = public_path('storage/images/article/gallery/' . $item->image);
+            
+                if (file_exists($path)) {
+                    unlink($path);
+                }
+            }
+        }
+        
+        $article->delete();
+
+        return redirect()->back();
     }
 }

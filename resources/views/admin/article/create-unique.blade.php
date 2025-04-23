@@ -1,10 +1,7 @@
-<x-admin.article.create >
+<x-admin.article.form head="Create Article Unique" title="Admin - Create Article Unique" :form="route('article-show.store')" >
     <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="''" name="judul" />
-    <x-admin.component.taginput title="Tag" :value="null" name="tag[]" />
+    <x-admin.component.taginput title="Tag" :tag="$tag" :value="null" name="tag[]" />
     <x-admin.component.summernoteinput title="Artikel" value="" name="article" />
-    <div class=" w-full">
-        <button @click="tab ='image'" type="button" class="w-full py-3 text-sm sm:text-base rounded-md bg-byolink-1 text-white font-semibold hover:bg-byolink-3 duration-300">Next</button>
-    </div>
     <x-slot:additional>
         <div class=" w-full">
             <div class=" w-full flex flex-col max-w-full gap-2 text-sm sm:text-base font-medium">
@@ -65,4 +62,19 @@
         </script>
         <x-admin.component.linkinput title="Video (Link Youtube/Tiktok)" placeholder="Masukkan link..." value="" name="link" link="Url" />
     </x-slot:additional>
-</x-admin.article.edit>
+    <x-slot:template>
+        <div class=" space-y-2">
+            <label for="template" class=" text-sm sm:text-base font-semibold">Template</label>
+            <div class=" w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                @foreach ($template as $item)
+                    <label class="w-full rounded-md bg-white aspect-[2/3] overflow-hidden relative">
+                        <input type="radio" name="template_id" value="{{$item->id}}" class="hidden peer" {{ $loop->first ? 'checked' : '' }}>
+                        <img src="{{asset('/storage/images/template/'.$item->image)}}" class=" w-full h-full object-cover object-top" alt="">
+                        <div class=" absolute inset-0 peer-checked:bg-black/50 duration-300">
+                        </div>
+                    </label>
+                @endforeach
+            </div>
+        </div>
+    </x-slot:template>
+</x-admin.article.form>

@@ -12,8 +12,23 @@ class Article extends Model
     {
         return $this->hasMany(ArticleShow::class);
     }
+    public function articlebanner()
+    {
+        return $this->hasMany(ArticleBanner::class);
+    }
+    public function articlegallery()
+    {
+        return $this->hasMany(articlegallery::class);
+    }
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
     public function articletag()
     {
-        return $this->hasMany(ArticleTag::class);
+        return $this->belongsToMany(ArticleTag::class, 'pivot_articles_tags', 'article_id', 'tag_id');
+    } 
+    public function template()
+    {
+        return $this->belongsToMany(Template::class, 'pivot_templates_articles', 'article_id', 'template_id');
     }
 }

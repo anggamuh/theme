@@ -8,7 +8,9 @@ use App\Models\ArticleGallery;
 use App\Models\ArticleShow;
 use App\Models\ArticleShowGallery;
 use App\Models\ArticleTag;
+use App\Models\Template;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\Drivers\Gd\Driver;
@@ -29,7 +31,9 @@ class ArticleShowController extends Controller
      */
     public function create()
     {
-        return view('admin.article.create-unique');
+        $tag = ArticleTag::all();
+        $template = Template::all();
+        return view('admin.article.create-unique', compact('template', 'tag'));
     }
 
     /**
@@ -41,6 +45,7 @@ class ArticleShowController extends Controller
         // Article
         $newarticle = new Article;
 
+        $newarticle->user_id = Auth::id();
         $newarticle->judul = $request->judul;
         $newarticle->article = $request->article;
 
@@ -61,6 +66,8 @@ class ArticleShowController extends Controller
         }
 
         $newarticle->save();
+
+        $newarticle->template()->sync([$request->template_id]);
         
         $newbanner = new ArticleBanner;
 
@@ -91,14 +98,22 @@ class ArticleShowController extends Controller
 
         // Tag
         if ($request->tag) {
-            foreach ($request->tag as $item) {
-                $newarticletag = new ArticleTag;
-                
-                $newarticletag->article_id = $newarticle->id;
-                $newarticletag->tag = ucfirst($item);
+            $tags = array_map(fn($item) => ucfirst($item), $request->tag);
+        
+            $tagIds = [];
+            foreach ($tags as $tagName) {
+                $formattedTagName = Str::title($tagName);
+                $slug = Str::slug($tagName);
 
-                $newarticletag->save();
+                $tag = ArticleTag::firstOrCreate(
+                    ['slug' => $slug],
+                    ['tag' => $formattedTagName]
+                );
+
+                $tagIds[] = $tag->id;
             }
+
+            $newarticle->articletag()->attach($tagIds);
         }
 
         // Gallery
@@ -144,7 +159,9 @@ class ArticleShowController extends Controller
         $newarticleshow->article_id = $newarticle->id;
         $newarticleshow->banner = $newbanner->image;
         $newarticleshow->judul = $newarticle->judul;
+        $newarticleshow->slug = Str::slug($newarticleshow->judul);
         $newarticleshow->article = $newarticle->article;
+        $newarticleshow->template_id = $request->template_id;
 
         $newarticleshow->save();
 
@@ -155,6 +172,7 @@ class ArticleShowController extends Controller
             $newgalleryshow = new ArticleShowGallery;
             
             $newgalleryshow->article_show_id = $newarticleshow->id;
+            $newgalleryshow->article_gallery_id = $item->id;
             $newgalleryshow->image = $item->image;
             $newgalleryshow->image_alt = $item->image_alt;
 
@@ -167,16 +185,18 @@ class ArticleShowController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ArticleShow $newarticleShow)
+    public function show(ArticleShow $articleShow)
     {
-        // dd($newarticleShow);
-        return view('admin.article.edit-unique', compact('articleShow'));
+        $tagid = $articleShow->articles->articletag->pluck('id')->toArray();
+        $tag = ArticleTag::whereNotIn('id', $tagid)->get();
+        $template = Template::all();
+        return view('admin.article.edit-unique', compact('articleShow', 'tag', 'template'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(ArticleShow $newarticleShow)
+    public function edit(ArticleShow $articleShow)
     {
         //
     }
@@ -184,10 +204,10 @@ class ArticleShowController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ArticleShow $newarticleShow)
+    public function update(Request $request, ArticleShow $articleShow)
     {
         // dd($request);
-        $newarticle = Article::find($newarticleShow->article_id);
+        $newarticle = Article::find($articleShow->article_id);
 
         $newarticle->judul = $request->judul;
         $newarticle->article = $request->article;
@@ -209,11 +229,13 @@ class ArticleShowController extends Controller
         }
 
         $newarticle->save();
+
+        $newarticle->template()->sync([$request->template_id]);
         
         $banner = null;
 
         if ($request->hasFile('image')) {
-            $banner = ArticleBanner::where('article_id', $newarticleShow->article_id)->first();
+            $banner = ArticleBanner::where('article_id', $articleShow->article_id)->first();
 
             $path = public_path('storage/images/article/banner/' . $banner->image);
 
@@ -244,29 +266,36 @@ class ArticleShowController extends Controller
 
         // Tag
         if ($request->tag) {
-            foreach ($request->tag as $item) {
-                $tag = ArticleTag::where('article_id', $newarticleShow->article_id)->where('tag', $item)->first();
+            // Ubah tag menjadi huruf besar di awal
+            $tags = array_map(fn($item) => ucfirst($item), $request->tag);
         
-                if (!$tag) {
-                    $newarticletag = new ArticleTag;
-                    $newarticletag->article_id = $newarticleShow->article_id;
-                    $newarticletag->tag = ucfirst($item);
-                    $newarticletag->save();
-                }
+            // Pastikan setiap tag ada di database
+            $tagIds = [];
+            foreach ($tags as $tagName) {
+                $formattedTagName = Str::title($tagName);
+                $slug = Str::slug($tagName);
+
+                $tag = ArticleTag::firstOrCreate(
+                    ['slug' => $slug],
+                    ['tag' => $formattedTagName]
+                );
+
+                $tagIds[] = $tag->id;
             }
         
-            // Hapus tag yang tidak ada dalam request
-            ArticleTag::where('article_id', $newarticleShow->article_id)->whereNotIn('tag', $request->tag)->delete();
+            // Sinkronkan tag ke dalam pivot table
+            $newarticle->articletag()->sync($tagIds);
         }
-
+        
         if ($banner) {
-            $newarticleShow->banner = $banner->image;
+            $articleShow->banner = $banner->image;
         }
-        $newarticleShow->judul = $newarticle->judul;
-        $newarticleShow->slug = Str::slug($newarticleShow->judul);
-        $newarticleShow->article = $newarticle->article;
+        $articleShow->judul = $newarticle->judul;
+        $articleShow->slug = Str::slug($articleShow->judul);
+        $articleShow->article = $newarticle->article;
+        $articleShow->template_id = $request->template_id;
 
-        $newarticleShow->save();
+        $articleShow->save();
 
         return redirect()->route('article.index');
     }
@@ -274,8 +303,10 @@ class ArticleShowController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ArticleShow $newarticleShow)
+    public function destroy(ArticleShow $articleShow)
     {
-        //
+        $articleShow->delete();
+
+        return redirect()->back();
     }
 }

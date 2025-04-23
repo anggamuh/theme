@@ -1,9 +1,9 @@
-@props(['name', 'value', 'status', 'xModel' => null])
+@props(['name', 'value'=> null, 'status', 'xModel' => null])
 <div class="w-full h-full flex flex-col text-sm font-medium gap-2 justify-center items-center">
     <div class="w-full h-full relative flex justify-center overflow-hidden">
         <img id="{{$name}}-preview" class="object-cover w-full" 
             {{ $xModel ? 'x-bind:src='.$xModel : '' }} 
-            src="{{$value == '' ? asset('assets/images/placeholder.jpg') : $value  }}" 
+            src="{{$value == '' ? asset('assets/images/placeholder.webp') : $value  }}" 
             alt="Logo">
         <div class="w-full h-full absolute z-10 top-0 opacity-0 hover:opacity-100 duration-300">
             <label for="{{$name}}-input" class="relative">

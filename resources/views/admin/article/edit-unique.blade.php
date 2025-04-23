@@ -1,6 +1,7 @@
-<x-admin.article.edit :articleshow="$articleShow">
+<x-admin.article.form head="Edit Article Unique" title="Admin - Edit Article Unique" :form="route('article-show.update', ['article_show' => $articleShow->id])">
+    @method('PUT')
     <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="$articleShow->judul" name="judul" />
-    <x-admin.component.taginput title="Tag" :value="$articleShow->articles->articletag" name="tag[]" />
+    <x-admin.component.taginput title="Tag" :tag="$tag" :value="$articleShow->articles->articletag" name="tag[]" />
     <x-admin.component.summernoteinput title="Artikel" :value="$articleShow->article" name="article" />
     <x-slot:additional>
         <div class=" w-full">
@@ -13,7 +14,7 @@
                 </div>
             </div>
         </div>
-        <div x-data="galleryComponent({{ $articleShow->articleshowgallery }}, {{ $articleShow->id }})" class="flex flex-col gap-2">
+        <div x-data="galleryComponent({{ $articleShow->articleshowgallery }}, {{ $articleShow->id }}, {{ $articleShow->article_id }})" class="flex flex-col gap-2">
             <label class="text-sm sm:text-base font-semibold" for="image_gallery">Galeri (Max 6)</label>
             <input type="file" class="hidden" id="image_gallery" name="image_gallery[]" multiple accept="image/*" @change="addImages($event)">
             <div class="w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-4">
@@ -40,10 +41,11 @@
             <p x-show="errorMessage" class="text-red-500" x-text="errorMessage"></p>
         </div>
         <script>
-            function galleryComponent(initialImages = [], productId) {
+            function galleryComponent(initialImages = [], articleshowid, articleid) {
                 return {
                     images: initialImages.map(item => ({
                         id: item.id, // Include image ID from the server for delete functionality
+                        article_gallery_id: item.article_gallery_id,
                         url: item.image ? `{{ asset('storage/images/article/gallery/') }}/${item.image}` : `{{ asset('assets/images/placeholder.png') }}`
                     })),
                     errorMessage: '',
@@ -62,10 +64,11 @@
                         files.forEach(file => {
                             const formData = new FormData();
                             formData.append('image_gallery', file);
-                            formData.append('product_id', productId); // Add product ID to the form data
+                            formData.append('article_id', articleid);
+                            formData.append('article_show_id', articleshowid);
         
                             // Send the image data to the server using Axios
-                            axios.post('/admin/product-gallery', formData)
+                            axios.post('/admin/article-show-gallery', formData)
                                 .then(response => {
                                     const newImage = response.data; // Expect the server to return the new image details
                                     const reader = new FileReader();
@@ -87,7 +90,7 @@
                         const image = this.images[index];
                         
                         // Send delete request to the server using Axios
-                        axios.delete(`/admin/product-gallery/${image.id}`)
+                        axios.delete(`/admin/article-show-gallery/${image.article_gallery_id}`)
                             .then(() => {
                                 // If successful, remove the image from the local array
                                 this.images.splice(index, 1);
@@ -102,4 +105,19 @@
         </script>
         <x-admin.component.linkinput title="Video (Link Youtube/Tiktok) (Optional)" placeholder="Masukkan link..." value="{{ ($articleShow->articles->video_type === 'youtube') ? $articleShow->articles->youtube : (($articleShow->articles->video_type === 'tiktok') ? $articleShow->articles->tiktok : '') }}" name="link" link="Url" />
     </x-slot:additional>
-</x-admin.article.edit>
+    <x-slot:template>
+        <div class=" space-y-2">
+            <label for="template" class=" text-sm sm:text-base font-semibold">Template</label>
+            <div class=" w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+                @foreach ($template as $item)
+                    <label class="w-full rounded-md bg-white aspect-[2/3] overflow-hidden relative">
+                        <input type="radio" name="template_id" value="{{$item->id}}" class="hidden peer" {{ $articleShow->template_id === $item->id ? 'checked' : '' }}>
+                        <img src="{{asset('/storage/images/template/'.$item->image)}}" class=" w-full h-full object-cover object-top" alt="">
+                        <div class=" absolute inset-0 peer-checked:bg-black/50 duration-300">
+                        </div>
+                    </label>
+                @endforeach
+            </div>
+        </div>
+    </x-slot:template>
+</x-admin.article.form>

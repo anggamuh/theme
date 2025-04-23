@@ -1,10 +1,17 @@
 <?php
 
+use App\Http\Controllers\ArticleBannerController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ArticleGalleryController;
+use App\Http\Controllers\ArticleGeneratedController;
 use App\Http\Controllers\ArticleShowController;
+use App\Http\Controllers\ArticleShowGalleryController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\SourceCodeController;
 use App\Http\Controllers\TemplateController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,21 +26,47 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/page/{page?}', [PageController::class, 'home'])->name('pagearticle');
 
-Route::get('/penulis/{username}', [PageController::class, 'author'])->name('author');
+Route::get('/artikel', function(Request $request) {
+    return app(PageController::class)->article($request, null, null);
+})->name('allarticle');
+Route::get('/artikel/page/{page?}', function(Request $request) {
+    return app(PageController::class)->article($request, null, null);
+})->name('pageallarticle');
 
-Route::get('/kategori/{category}', [PageController::class, 'category'])->name('category');
+Route::get('/penulis/{username}', [PageController::class, 'article'])->name('author');
+Route::get('/penulis/{username}/page/{page?}', [PageController::class, 'article'])->name('pageauthor');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/kategori/{category}', function(Request $request, $category) {
+    return app(PageController::class)->article($request, null, $category);
+})->name('category');
+
+Route::get('/kategori/{category}/page/{page?}', function(Request $request, $category) {
+    return app(PageController::class)->article($request, null, $category);
+})->name('pagecategory');
+
+Route::get('/sitemap', [SitemapController::class, 'index']);
 
 Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->middleware(['auth', 'verified'])->name('dashboard');
+
     Route::resource('/admin/template', TemplateController::class);
+    Route::put('/admin/template/edit-image/{id}', [TemplateController::class, 'editimage'])->name('template.editimage');
 
     Route::resource('/admin/article', ArticleController::class);
+    Route::resource('/admin/article-banner', ArticleBannerController::class);
+    Route::resource('/admin/article-gallery', ArticleGalleryController::class);
+    Route::resource('/admin/source-code', SourceCodeController::class);
+    Route::post('/admin/article/generate/{id}', [ArticleController::class, 'generatearticle'])->name('article.generate');
+    Route::delete('/admin/article/generate/{id}', [ArticleController::class, 'generatearticledestroy'])->name('article.generate.destroy');
 
     Route::resource('/admin/article-show', ArticleShowController::class);
+    Route::resource('/admin/article-show-gallery', ArticleShowGalleryController::class);
+
+    Route::resource('/admin/article-generated', ArticleGeneratedController::class);
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

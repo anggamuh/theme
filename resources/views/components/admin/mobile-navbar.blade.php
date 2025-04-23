@@ -34,7 +34,7 @@
                 </x-slot:svg>
                 Dashboard
             </x-admin.mobile-navbutton>
-            <x-admin.mobile-navbutton route="template.index" :active="['template.index', 'template.create', 'template.edit']">
+            <x-admin.mobile-navbutton route="template.index" :active="['template.index', 'template.create', 'template.show']">
                 <x-slot:svg>
                     <svg viewBox="-265 388.9 64 64" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
                         enable-background="new -265 388.9 64 64">
@@ -44,6 +44,12 @@
                     </svg>
                 </x-slot:svg>
                 Template
+            </x-admin.mobile-navbutton>
+            <x-admin.mobile-navbutton route="article.index" :active="['article.index', 'article.create', 'article.show', 'article-show.index', 'article-show.create', 'article-show.show']">
+                <x-slot:svg>
+                    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M8 28h8v-8H8v8zm0 10h8v-8H8v8zm0-20h8v-8H8v8zm10 10h24v-8H18v8zm0 10h24v-8H18v8zm0-28v8h24v-8H18z" fill="currentColor" class="fill-000000"></path><path d="M0 0h48v48H0z" fill="none"></path></svg>
+                </x-slot:svg>
+                Article
             </x-admin.mobile-navbutton>
         </div>
     </div>

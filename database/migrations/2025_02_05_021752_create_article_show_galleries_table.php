@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('article_show_id');
             $table->foreign('article_show_id')->references('id')->on('article_shows')->onUpdate('cascade')->onDelete('cascade');
+            $table->unsignedBigInteger('article_gallery_id');
+            $table->foreign('article_gallery_id')->references('id')->on('article_galleries')->onUpdate('cascade')->onDelete('cascade');
             $table->string('image');
             $table->string('image_alt');
             $table->timestamps();

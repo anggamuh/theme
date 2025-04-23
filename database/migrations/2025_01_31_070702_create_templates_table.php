@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('templates', function (Blueprint $table) {
             $table->id();
+            $table->string('image')->nullable();
+            $table->string('name');
             // Background
             $table->string('bg_type');
             $table->string('bg_image')->nullable();
