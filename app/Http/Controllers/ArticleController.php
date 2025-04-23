@@ -91,10 +91,14 @@ class ArticleController extends Controller
 
     private function spinText($text)
     {
-        return preg_replace_callback('/\{([^{}]+)\}/', function ($matches) {
-            $options = explode('|', $matches[1]);
-            return $options[array_rand($options)];
-        }, $text);
+        while (preg_match('/\{([^{}]*)\}/', $text)) {
+            $text = preg_replace_callback('/\{([^{}]*)\}/', function ($matches) {
+                $options = explode('|', $matches[1]);
+                return $options[array_rand($options)];
+            }, $text);
+        }
+    
+        return $text;
     }
 
     /**
