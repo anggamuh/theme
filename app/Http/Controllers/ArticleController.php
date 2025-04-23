@@ -54,6 +54,8 @@ class ArticleController extends Controller
                 }
             }
 
+            $spinnedBody = str_replace('[pa_judul]', $spinnedTitle, $spinnedBody);
+
             $isDuplicate = ArticleShow::where('judul', $spinnedTitle)
                 ->orWhere('article', $spinnedBody)
                 ->exists();

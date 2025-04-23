@@ -21,16 +21,18 @@
                 <table class="w-full text-sm sm:text-base rounded-md overflow-hidden">
                     <thead>
                         <tr class="h-10 bg-byolink-1 text-white divide-x-2 divide-white">
-                            <th class=" px-1 sm:px-2 py-1 w-10">No</th>
                             <th class=" px-1 sm:px-2 py-1">Name</th>
                             <th class=" px-1 sm:px-2 py-1 w-20">Opsi</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <tr class="h-10 text-neutral-600 bg-neutral-200 divide-x-2 divide-white">
+                            <td class="px-2 sm:px-4 py-2 font-semibold">[pa_judul]</td>
+                            <td></td>
+                        </tr>
                         <template x-for="(item, index) in paginatedData" :key="index">
                             <tr :class="index % 2 === 0 ? 'bg-neutral-100' : 'bg-neutral-200'"
                                 class="h-10 text-neutral-600 divide-x-2 divide-white">
-                                <td class=" px-2 sm:px-4 py-2 text-center font-semibold" x-text="index + 1"></td>
                                 <td class=" px-2 sm:px-4 py-2 font-semibold" x-text="item.title"></td>
                                 <td class=" px-1 sm:px-2">
                                     <div class="flex gap-2 justify-center">
