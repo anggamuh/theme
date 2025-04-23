@@ -18,7 +18,7 @@ class Article extends Model
     }
     public function articlegallery()
     {
-        return $this->hasMany(articlegallery::class);
+        return $this->hasMany(ArticleGallery::class);
     }
     public function user() {
         return $this->belongsTo(User::class);

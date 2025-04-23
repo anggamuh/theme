@@ -81,7 +81,7 @@
                     images: [],
                     
                     previewImages(event) {
-                        const files = Array.from(event.target.files).slice(0, 6 - this.images.length);
+                        const files = Array.from(event.target.files).slice(0, 12 - this.images.length);
                         files.forEach(file => {
                             const url = URL.createObjectURL(file);
                             this.images.push(url);
