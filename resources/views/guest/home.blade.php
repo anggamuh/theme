@@ -10,7 +10,7 @@
                                 <div class=" w-1 sm:w-1.5 h-7 sm:h-10 bg-byolink-2 rounded-full"></div>
                                 <p class=" text-xl sm:text-3xl font-bold text-center">Artikel Terbaru</p>
                             </div>
-                            <a href="">
+                            <a href="{{route('allarticle')}}">
                                 <button class=" px-4 py-2 flex items-center gap-1 border rounded-full text-nowrap text-xs text-neutral-600 border-neutral-600 hover:text-byolink-1 hover:border-byolink-1 duration-300">
                                     <p>Lihat Lainnya</p>
                                     <div class=" w-3 aspect-square">

@@ -7,6 +7,7 @@ use App\Http\Controllers\ArticleGeneratedController;
 use App\Http\Controllers\ArticleShowController;
 use App\Http\Controllers\ArticleShowGalleryController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PhoneNumberController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SourceCodeController;
@@ -55,6 +56,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/admin/template', TemplateController::class);
     Route::put('/admin/template/edit-image/{id}', [TemplateController::class, 'editimage'])->name('template.editimage');
+
+    Route::resource('/admin/phone-number', PhoneNumberController::class);
 
     Route::resource('/admin/article', ArticleController::class);
     Route::resource('/admin/article-banner', ArticleBannerController::class);

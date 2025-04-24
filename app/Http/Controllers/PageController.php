@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ArticleShow;
 use App\Models\ArticleTag;
+use App\Models\PhoneNumber;
 use App\Models\Template;
 use App\Models\User;
 use Carbon\Carbon;
@@ -77,6 +78,15 @@ class PageController extends Controller
         $data = ArticleShow::where('slug', $slug)->first();
         
         $template = $data->template;
+
+        // dd($data->articles->phoneNumber);
+        if ($data->articles->phoneNumber) {
+            $data->no_tlp = $data->articles->phoneNumber->no_tlp;
+        } elseif ($data->articles->articletag->first()?->phonenumber) {
+            $data->no_tlp = $data->articles->articletag->first()->phoneNumber->no_tlp;
+        } else {
+            $data->no_tlp = optional(PhoneNumber::first())->no_tlp;
+        }
 
         $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
         // dd($data->articles);

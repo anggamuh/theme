@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('article_tags', function (Blueprint $table) {
+        Schema::create('phone_numbers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('phone_number_id');
-            $table->foreign('phone_number_id')->references('id')->on('phone_numbers')->onUpdate('cascade')->onDelete('cascade');
-            $table->string('tag');
-            $table->string('slug')->unique();
+            $table->string('no_tlp');
+            $table->string('type');
+            $table->longText('chat')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('article_tags');
+        Schema::dropIfExists('phone_numbers');
     }
 };
