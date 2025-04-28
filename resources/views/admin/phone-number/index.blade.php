@@ -1,4 +1,4 @@
-<x-app-layout head="Template" title="Admin - Template">
+<x-app-layout head="Phone Number" title="Admin - Phone Number">
     <div class="sm:pl-12 sm:pr-12 lg:pr-32 duration-300 pt-8 pb-20 sm:pb-8 px-4 space-y-4">
         <div x-data="auctionTable()"
             class="w-full p-4 sm:p-8 bg-white rounded-md shadow-md shadow-black/20 flex flex-col gap-6">
@@ -149,11 +149,11 @@
                     <div class=" pt-6 pb-3 bg-byolink-1 text-white">
                         <h2 class=" px-6 text-2xl font-bold">Apa anda yakin menghapus data ini?</h2>
                     </div>
-                    <p class="px-6 text-base">Anda akan menghapus data : <span x-text="modalData.title"></span></p>
+                    <p class="px-6 text-base">Anda akan menghapus data : <span x-text="modalData.no_tlp"></span></p>
                     <div class="flex justify-end space-x-4 px-6">
                         {{-- <button @click="confirmDeleteModal = false"
                             class="px-4 py-2 bg-neutral-600 duration-300 hover:bg-byolink-1 text-white rounded">Cancel</button> --}}
-                        <form :action="`{{ route('template.destroy', '') }}/${modalData.id}`" method="POST"
+                        <form :action="`{{ route('phone-number.destroy', '') }}/${modalData.id}`" method="POST"
                             class="inline">
                             @csrf
                             @method('DELETE')

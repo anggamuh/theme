@@ -3,6 +3,33 @@
     <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="$articleShow->judul" name="judul" />
     <x-admin.component.taginput title="Tag" :tag="$tag" :value="$articleShow->articles->articletag" name="tag[]" />
     <x-admin.component.summernoteinput title="Artikel" :value="$articleShow->article" name="article" />
+    <div class=" w-full relative pt-10 sm:pt-11">
+        <div class=" w-full">
+            <input type="radio" name="status" value="publish" id="publish" class="hidden peer" checked>
+            <label for="publish" class=" absolute {{$articleShow->status === 'schedule' ? 'w-[calc(33%-8px)]' : 'w-1/2'}} cursor-pointer left-0 top-0 flex justify-center p-2 text-sm sm:text-base text-center font-medium rounded-md duration-300 peer-checked:bg-byolink-1 peer-checked:text-white">Publish</label>
+            {{-- <div class="peer-checked:block hidden mt-4">
+                <p class=" text-sm sm:text-base text-neutral-600">*Artikel akan langsung diterbitkan dan ditampilkan</p>
+            </div> --}}
+        </div>
+
+        @if ($articleShow->status === 'schedule')
+            <div class=" w-full">
+                <input type="radio" name="status" value="schedule" id="schedule" class="hidden peer" checked>
+                <label for="schedule" class=" absolute w-[calc(33%-8px)] cursor-pointer left-1/2 -translate-x-1/2 top-0 flex justify-center p-2 text-sm sm:text-base text-center font-medium rounded-md duration-300 peer-checked:bg-byolink-1 peer-checked:text-white">Schedule</label>
+                <div class="peer-checked:block hidden mt-4">
+                    <input type="date" class=" w-full text-sm sm:text-base font-normal rounded-md border border-byolink-1 focus:ring-byolink-3 focus:border-byolink-3 bg-neutral-100" name="release" min="{{ date('Y-m-d') }}" value="{{ $articleShow->created_at->format('Y-m-d') }}" id="">
+                </div>
+            </div>
+        @endif
+        
+        <div class=" w-full">
+            <input type="radio" name="status" value="private" id="private" class="hidden peer" {{$articleShow->status === 'private' ? 'checked' : ''}}>
+            <label for="private" class=" absolute {{$articleShow->status === 'schedule' ? 'w-[calc(33%-8px)]' : 'w-1/2'}} cursor-pointer right-0 top-0 flex justify-center p-2 text-sm sm:text-base text-center font-medium rounded-md duration-300 peer-checked:bg-byolink-1 peer-checked:text-white">Private</label>
+            {{-- <div class="peer-checked:block hidden mt-4">
+                <p class=" text-sm sm:text-base text-neutral-600">*Artikel akan langsung diterbitkan akan tetapi tidak langsung ditampilkan</p>
+            </div> --}}
+        </div>
+    </div>
     <x-slot:additional>
         <div class=" w-full">
             <div class=" w-full flex flex-col max-w-full gap-2 text-sm sm:text-base font-semibold">

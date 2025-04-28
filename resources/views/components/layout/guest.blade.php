@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-@props(['title' => null])
+@props(['title' => null, 'desc' => null, 'tags' => null])
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
@@ -8,6 +8,10 @@
         <link rel="icon" href="{{ asset('/assets/images/logo.png') }}" type="image/x-icon">
 
         <title>{{$title ?? ''}}</title>
+
+        <meta name="description" content="{{ $desc ?? '' }}">
+        <meta name="keywords" content="{{ collect($tags)->pluck('tag')->implode(', ') }}">
+        <link rel="canonical" href="{{ url()->current() }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

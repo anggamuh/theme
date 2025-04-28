@@ -17,7 +17,7 @@ class PageController extends Controller
         Paginator::currentPageResolver(function () use ($request) {
             return $request->route('page', 1); // default ke halaman 1
         });
-        $data = ArticleShow::latest()->paginate(12);
+        $data = ArticleShow::where('status', 'publish')->latest()->paginate(12);
 
         $data->transform(function ($data) {
             $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
@@ -31,13 +31,13 @@ class PageController extends Controller
 
     public function article(Request $request, $username = null, $category = null) {
         Paginator::currentPageResolver(function () use ($request) {
-            return $request->route('page', 1); // default ke halaman 1
+            return $request->route('page', 1);
         });
 
         if ($username) {
             $data = ArticleShow::whereHas('articles.user', function ($query) use ($username) {
                 $query->where('slug', $username);
-            })->latest()->paginate(12);
+            })->where('status', 'publish')->latest()->paginate(12);
 
             $user = User::where('slug', $username)->first();
             
@@ -47,19 +47,19 @@ class PageController extends Controller
         } elseif ($category) {
             $data = ArticleShow::whereHas('articles.articleTag', function ($query) use ($category) {
                 $query->where('slug', $category);
-            })->latest()->paginate(12);
+            })->where('status', 'publish')->latest()->paginate(12);
 
             $data->withPath("/kategori/{$category}/page");
             
             $category = ArticleTag::where('slug', $category)->first()->tag;
             $title = 'Kategori : '.$category;
         } elseif ($request->search) {
-            $data = ArticleShow::where('judul', 'like', '%' . $request->search . '%')->latest()->paginate(12);
+            $data = ArticleShow::where('judul', 'like', '%' . $request->search . '%')->where('status', 'publish')->latest()->paginate(12);
 
             $data->withPath("/artikel/page");
             $title = 'Pecaharian : '.$request->search;
         } else {
-            $data = ArticleShow::latest()->paginate(12);
+            $data = ArticleShow::where('status', 'publish')->latest()->paginate(12);
 
             $data->withPath("/artikel/page");
             $title = 'Artikel Terbaru';
@@ -76,12 +76,16 @@ class PageController extends Controller
 
     public function business($slug) {
         $data = ArticleShow::where('slug', $slug)->first();
+
+        if (!$data) {
+            return redirect()->route('not.found');
+        }
         
         $template = $data->template;
 
         // dd($data->articles->phoneNumber);
-        if ($data->articles->phoneNumber) {
-            $data->no_tlp = $data->articles->phoneNumber->no_tlp;
+        if ($data->phoneNumber) {
+            $data->no_tlp = $data->phoneNumber->no_tlp;
         } elseif ($data->articles->articletag->first()?->phonenumber) {
             $data->no_tlp = $data->articles->articletag->first()->phoneNumber->no_tlp;
         } else {
@@ -91,5 +95,9 @@ class PageController extends Controller
         $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
         // dd($data->articles);
         return view('guest.business', compact('data', 'template'));
+    }
+
+    public function notFound() {
+        return view('guest.pagenotfound');
     }
 }

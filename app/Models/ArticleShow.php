@@ -16,6 +16,10 @@ class ArticleShow extends Model
     {
         return $this->hasMany(ArticleShowGallery::class);
     }
+    public function phoneNumber() 
+    {
+        return $this->belongsTo(PhoneNumber::class);
+    }
     public function template()
     {
         return $this->belongsTo(Template::class, 'template_id');

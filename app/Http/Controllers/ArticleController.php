@@ -22,6 +22,17 @@ class ArticleController extends Controller
     public function generatearticle($id, Request $request)
     {
         $article = Article::findOrFail($id);
+        
+        $hasScheduleStatus = $article->articleshow()->where('status', 'schedule')->exists();
+
+        if ($hasScheduleStatus) {
+            $article->schedule = true;
+        } else {
+            $article->schedule = $request->schedule;
+        }
+
+        $article->save();
+        
         $total = (int) $request->total;
 
         $maxAttempts = 10000; // Lebih fleksibel
@@ -70,6 +81,12 @@ class ArticleController extends Controller
                 $newArticleShow->template_id = optional($article->template->random())->id;
                 $newArticleShow->banner = optional($article->articlebanner->random())->image;
 
+                if ($request->schedule == true) {
+                    $newArticleShow->status = 'schedule';
+                } else {
+                    $newArticleShow->status = 'publish';
+                }
+
                 $newArticleShow->save();
                 
                 $galleries = $article->articlegallery->shuffle()->take(6);
@@ -106,9 +123,14 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Article::with('articleshow')->get();
+        if ($request->search) {
+            $data = Article::where('judul', 'like', '%' . $request->search . '%')->paginate(1);
+
+        } else {
+            $data = Article::with('articleshow')->paginate(1);
+        }
         return view('admin.article.index' ,compact('data'));
     }
 

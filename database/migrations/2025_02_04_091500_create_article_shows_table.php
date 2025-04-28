@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('article_shows', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('phone_number_id');
+            $table->foreign('phone_number_id')->references('id')->on('phone_numbers')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('template_id');
             $table->foreign('template_id')->references('id')->on('templates')->onUpdate('cascade')->onDelete('cascade');
             $table->unsignedBigInteger('article_id');
@@ -20,6 +22,7 @@ return new class extends Migration
             $table->string('banner');
             $table->string('judul');
             $table->longText('article');
+            $table->enum('status', ['publish', 'schedule', 'private'])->default('publish');
             $table->timestamps();
         });
     }

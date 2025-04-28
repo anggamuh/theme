@@ -10,9 +10,6 @@ class Article extends Model
     use HasFactory;
     protected $fillable = ['phone_number_id'];
 
-    public function phoneNumber() {
-        return $this->belongsTo(PhoneNumber::class);
-    }
     public function articleshow()
     {
         return $this->hasMany(ArticleShow::class);

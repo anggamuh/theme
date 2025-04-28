@@ -26,26 +26,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [PageController::class, 'home'])->name('home');
-Route::get('/page/{page?}', [PageController::class, 'home'])->name('pagearticle');
+Route::middleware('daily_schedule')->group(function () {
+    Route::get('/', [PageController::class, 'home'])->name('home');
+    Route::get('/page/{page?}', [PageController::class, 'home'])->name('pagearticle');
+    
+    Route::get('/artikel', function(Request $request) {
+        return app(PageController::class)->article($request, null, null);
+    })->name('allarticle');
+    Route::get('/artikel/page/{page?}', function(Request $request) {
+        return app(PageController::class)->article($request, null, null);
+    })->name('pageallarticle');
+    
+    Route::get('/penulis/{username}', [PageController::class, 'article'])->name('author');
+    Route::get('/penulis/{username}/page/{page?}', [PageController::class, 'article'])->name('pageauthor');
+    
+    Route::get('/kategori/{category}', function(Request $request, $category) {
+        return app(PageController::class)->article($request, null, $category);
+    })->name('category');
+    
+    Route::get('/kategori/{category}/page/{page?}', function(Request $request, $category) {
+        return app(PageController::class)->article($request, null, $category);
+    })->name('pagecategory');
 
-Route::get('/artikel', function(Request $request) {
-    return app(PageController::class)->article($request, null, null);
-})->name('allarticle');
-Route::get('/artikel/page/{page?}', function(Request $request) {
-    return app(PageController::class)->article($request, null, null);
-})->name('pageallarticle');
-
-Route::get('/penulis/{username}', [PageController::class, 'article'])->name('author');
-Route::get('/penulis/{username}/page/{page?}', [PageController::class, 'article'])->name('pageauthor');
-
-Route::get('/kategori/{category}', function(Request $request, $category) {
-    return app(PageController::class)->article($request, null, $category);
-})->name('category');
-
-Route::get('/kategori/{category}/page/{page?}', function(Request $request, $category) {
-    return app(PageController::class)->article($request, null, $category);
-})->name('pagecategory');
+    Route::get('/page-not-found', [PageController::class, 'notFound'])->name('not.found');
+});
 
 Route::get('/sitemap', [SitemapController::class, 'index']);
 

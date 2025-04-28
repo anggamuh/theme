@@ -9,6 +9,7 @@ use App\Models\ArticleShow;
 use App\Models\ArticleShowGallery;
 use App\Models\ArticleTag;
 use App\Models\Template;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -48,6 +49,12 @@ class ArticleShowController extends Controller
         $newarticle->user_id = Auth::id();
         $newarticle->judul = $request->judul;
         $newarticle->article = $request->article;
+
+        if ($request->status === "schedule") {
+            $newarticle->schedule = true;
+        } else {
+            $newarticle->schedule = false;
+        }
 
         // Cek apakah link adalah YouTube
         if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $request->link, $matches)) {
@@ -162,6 +169,11 @@ class ArticleShowController extends Controller
         $newarticleshow->slug = Str::slug($newarticleshow->judul);
         $newarticleshow->article = $newarticle->article;
         $newarticleshow->template_id = $request->template_id;
+        $newarticleshow->status = $request->status;
+
+        if ($request->status === 'schedule') {
+            $newarticleshow->created_at = $request->release;
+        }
 
         $newarticleshow->save();
 
@@ -211,6 +223,12 @@ class ArticleShowController extends Controller
 
         $newarticle->judul = $request->judul;
         $newarticle->article = $request->article;
+
+        if ($request->status === "schedule") {
+            $newarticle->schedule = true;
+        } else {
+            $newarticle->schedule = false;
+        }
 
         // Cek apakah link adalah YouTube
         if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $request->link, $matches)) {
@@ -294,6 +312,13 @@ class ArticleShowController extends Controller
         $articleShow->slug = Str::slug($articleShow->judul);
         $articleShow->article = $newarticle->article;
         $articleShow->template_id = $request->template_id;
+        $articleShow->status = $request->status;
+
+        if ($request->status === "schedule") {
+            $articleShow->created_at = $request->release;
+        } else {
+            $articleShow->created_at = now();
+        }
 
         $articleShow->save();
 
