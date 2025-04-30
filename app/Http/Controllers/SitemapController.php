@@ -24,7 +24,7 @@ class SitemapController extends Controller
         }
         foreach (ArticleTag::all() as $model) {
             $slug = $model->slug;
-            $sitemap->add(Url::create("/ketegori/{$slug}")->setLastModificationDate($model->updated_at));
+            $sitemap->add(Url::create("/kategori/{$slug}")->setLastModificationDate($model->updated_at));
         }
         foreach (ArticleShow::where('status', 'publish')->get() as $model) {
             $slug = $model->slug;
