@@ -44,7 +44,7 @@ class ArticleShowController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request);
+        // dd($request);
         // Article
         $newarticle = new Article;
 
@@ -347,7 +347,7 @@ class ArticleShowController extends Controller
         } elseif ($articleShow->status === "schedule") {
             $articleShow->created_at = now();
         }
-        
+
         $articleShow->status = $request->status;
 
         $articleShow->save();
