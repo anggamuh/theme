@@ -10,7 +10,7 @@ class PhoneNumber extends Model
     use HasFactory;
     public function article()
     {
-        return $this->hasMany(Article::class);
+        return $this->hasMany(ArticleShow::class);
     }
     public function articletag()
     {

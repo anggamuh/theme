@@ -8,6 +8,7 @@ use App\Models\ArticleGallery;
 use App\Models\ArticleShow;
 use App\Models\ArticleShowGallery;
 use App\Models\ArticleTag;
+use App\Models\PhoneNumber;
 use App\Models\Template;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\Request;
@@ -34,7 +35,8 @@ class ArticleShowController extends Controller
     {
         $tag = ArticleTag::all();
         $template = Template::all();
-        return view('admin.article.create-unique', compact('template', 'tag'));
+        $phonenumber = PhoneNumber::where('type', '!=', 'main')->get();
+        return view('admin.article.create-unique', compact('template', 'tag', 'phonenumber'));
     }
 
     /**
@@ -42,7 +44,7 @@ class ArticleShowController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
+        dd($request);
         // Article
         $newarticle = new Article;
 
@@ -163,13 +165,26 @@ class ArticleShowController extends Controller
         // Article Show
         $newarticleshow = new ArticleShow;
 
+        $no_tlp = $request->no_tlp;
+
+        if (substr($no_tlp, 0, 1) === '0') {
+            $no_tlp = '+62' . substr($no_tlp, 1);
+        }
+
+        $phoneNumber = PhoneNumber::firstOrCreate(
+            ['no_tlp' => $no_tlp]
+        );
+
         $newarticleshow->article_id = $newarticle->id;
+        $newarticleshow->phone_number_id = $phoneNumber->id;
         $newarticleshow->banner = $newbanner->image;
         $newarticleshow->judul = $newarticle->judul;
         $newarticleshow->slug = Str::slug($newarticleshow->judul);
         $newarticleshow->article = $newarticle->article;
         $newarticleshow->template_id = $request->template_id;
         $newarticleshow->status = $request->status;
+        $newarticleshow->telephone = $request->tlp;
+        $newarticleshow->whatsapp = $request->wa;
 
         if ($request->status === 'schedule') {
             $newarticleshow->created_at = $request->release;
@@ -202,7 +217,8 @@ class ArticleShowController extends Controller
         $tagid = $articleShow->articles->articletag->pluck('id')->toArray();
         $tag = ArticleTag::whereNotIn('id', $tagid)->get();
         $template = Template::all();
-        return view('admin.article.edit-unique', compact('articleShow', 'tag', 'template'));
+        $phonenumber = PhoneNumber::where('type', '!=', 'main')->where('id', '!=', $articleShow->phone_number_id)->get();
+        return view('admin.article.edit-unique', compact('articleShow', 'tag', 'template', 'phonenumber'));
     }
 
     /**
@@ -304,7 +320,18 @@ class ArticleShowController extends Controller
             // Sinkronkan tag ke dalam pivot table
             $newarticle->articletag()->sync($tagIds);
         }
+
+        $no_tlp = $request->no_tlp;
+
+        if (substr($no_tlp, 0, 1) === '0') {
+            $no_tlp = '+62' . substr($no_tlp, 1);
+        }
+
+        $phoneNumber = PhoneNumber::firstOrCreate(
+            ['no_tlp' => $no_tlp]
+        );
         
+        $articleShow->phone_number_id = $phoneNumber->id;
         if ($banner) {
             $articleShow->banner = $banner->image;
         }
@@ -312,13 +339,16 @@ class ArticleShowController extends Controller
         $articleShow->slug = Str::slug($articleShow->judul);
         $articleShow->article = $newarticle->article;
         $articleShow->template_id = $request->template_id;
-        $articleShow->status = $request->status;
-
+        $articleShow->telephone = $request->tlp;
+        $articleShow->whatsapp = $request->wa;
+        
         if ($request->status === "schedule") {
             $articleShow->created_at = $request->release;
-        } else {
+        } elseif ($articleShow->status === "schedule") {
             $articleShow->created_at = now();
         }
+        
+        $articleShow->status = $request->status;
 
         $articleShow->save();
 

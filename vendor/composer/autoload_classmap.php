@@ -6,6 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Console\\Commands\\GenerateScheduledArticles' => $baseDir . '/app/Console/Commands/GenerateScheduledArticles.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Http\\Controllers\\ArticleBannerController' => $baseDir . '/app/Http/Controllers/ArticleBannerController.php',
@@ -26,11 +27,14 @@ return array(
     'App\\Http\\Controllers\\Auth\\VerifyEmailController' => $baseDir . '/app/Http/Controllers/Auth/VerifyEmailController.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\PageController' => $baseDir . '/app/Http/Controllers/PageController.php',
+    'App\\Http\\Controllers\\PhoneNumberController' => $baseDir . '/app/Http/Controllers/PhoneNumberController.php',
     'App\\Http\\Controllers\\ProfileController' => $baseDir . '/app/Http/Controllers/ProfileController.php',
+    'App\\Http\\Controllers\\SitemapController' => $baseDir . '/app/Http/Controllers/SitemapController.php',
     'App\\Http\\Controllers\\SourceCodeController' => $baseDir . '/app/Http/Controllers/SourceCodeController.php',
     'App\\Http\\Controllers\\TemplateController' => $baseDir . '/app/Http/Controllers/TemplateController.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\Authenticate' => $baseDir . '/app/Http/Middleware/Authenticate.php',
+    'App\\Http\\Middleware\\DailyScheduleMiddleware' => $baseDir . '/app/Http/Middleware/DailyScheduleMiddleware.php',
     'App\\Http\\Middleware\\EncryptCookies' => $baseDir . '/app/Http/Middleware/EncryptCookies.php',
     'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => $baseDir . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
     'App\\Http\\Middleware\\RedirectIfAuthenticated' => $baseDir . '/app/Http/Middleware/RedirectIfAuthenticated.php',
@@ -47,6 +51,7 @@ return array(
     'App\\Models\\ArticleShow' => $baseDir . '/app/Models/ArticleShow.php',
     'App\\Models\\ArticleShowGallery' => $baseDir . '/app/Models/ArticleShowGallery.php',
     'App\\Models\\ArticleTag' => $baseDir . '/app/Models/ArticleTag.php',
+    'App\\Models\\PhoneNumber' => $baseDir . '/app/Models/PhoneNumber.php',
     'App\\Models\\SourceCode' => $baseDir . '/app/Models/SourceCode.php',
     'App\\Models\\Template' => $baseDir . '/app/Models/Template.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',

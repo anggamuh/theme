@@ -20,7 +20,7 @@
 
                 <!-- Search -->
                 <div class=" w-full md:w-auto flex flex-row font-semibold duration-300">
-                    <form action="{{route('article.index')}}">
+                    <form action="{{route('article.index')}}" class=" w-full">
                         <input type="text" placeholder="Cari Judul..." name="search" value="{{urlencode(request('search')) ?? ''}}"
                             class=" w-full text-sm sm:text-base md:w-auto py-2 px-3 border border-byolink-1 rounded-md overflow-hidden focus-within:border-byolink-3 font-normal">
                     </form>

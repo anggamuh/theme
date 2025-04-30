@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('judul');
             $table->longText('article');
             $table->enum('status', ['publish', 'schedule', 'private'])->default('publish');
+            $table->boolean('telephone')->default(true);
+            $table->boolean('whatsapp')->default(true);
             $table->timestamps();
         });
     }

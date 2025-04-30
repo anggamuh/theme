@@ -7,6 +7,7 @@ use App\Models\ArticleGallery;
 use App\Models\ArticleShow;
 use App\Models\ArticleShowGallery;
 use App\Models\ArticleTag;
+use App\Models\PhoneNumber;
 use App\Models\Template;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -47,7 +48,8 @@ class ArticleGeneratedController extends Controller
         $tag = ArticleTag::whereNotIn('id', $tagid)->get();
         $article = Article::find($articleShow->article_id);
         $template = Template::all();
-        return view('admin.article.edit-generated', compact('article', 'articleShow', 'tag', 'template'));
+        $phonenumber = PhoneNumber::where('type', '!=', 'main')->where('id', '!=', $articleShow->phone_number_id)->get();
+        return view('admin.article.edit-generated', compact('article', 'articleShow', 'tag', 'template', 'phonenumber'));
     }
 
     /**
@@ -69,10 +71,24 @@ class ArticleGeneratedController extends Controller
         if ($request->banner) {
             $articleShow->banner = $request->banner;
         }
+
+        $no_tlp = $request->no_tlp;
+
+        if (substr($no_tlp, 0, 1) === '0') {
+            $no_tlp = '+62' . substr($no_tlp, 1);
+        }
+
+        $phoneNumber = PhoneNumber::firstOrCreate(
+            ['no_tlp' => $no_tlp]
+        );
+        
+        $articleShow->phone_number_id = $phoneNumber->id;
         $articleShow->judul = $request->judul;
         $articleShow->slug = Str::slug($articleShow->judul);
         $articleShow->article = $request->article;
         $articleShow->template_id = $request->template_id;
+        $articleShow->telephone = $request->tlp;
+        $articleShow->whatsapp = $request->wa;
 
         foreach ($articleShow->articleshowgallery as $gallery) {
             $gallery->delete();

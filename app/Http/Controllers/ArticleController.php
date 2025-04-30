@@ -126,10 +126,10 @@ class ArticleController extends Controller
     public function index(Request $request)
     {
         if ($request->search) {
-            $data = Article::where('judul', 'like', '%' . $request->search . '%')->paginate(1);
+            $data = Article::where('judul', 'like', '%' . $request->search . '%')->paginate(10);
 
         } else {
-            $data = Article::with('articleshow')->paginate(1);
+            $data = Article::with('articleshow')->paginate(10);
         }
         return view('admin.article.index' ,compact('data'));
     }

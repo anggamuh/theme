@@ -45,7 +45,7 @@
             </x-admin.navbutton>
         </div>
     </div>
-    <div class="flex flex-col w-full flex-grow">
+    <div :class="open ? 'lg:max-w-[100vw-288px]' : ''" class="flex flex-col w-full flex-grow sm:max-w-[calc(100vw-80px)]">
         <div class=" hidden sm:flex w-full bg-white py-6 pl-12 pr-12 lg:pr-32 duration-300 sticky top-0 z-30">
             <div class="w-full mx-auto flex justify-between">
                 <div class="flex gap-4 items-center">
