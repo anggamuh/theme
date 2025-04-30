@@ -174,7 +174,7 @@
                                                         fill="currentColor"></path>
                                                     </svg>
                                                 </button>
-                                                <x-admin.component.deletemodal :title="$itemshow->judul" :route="route('article-show.destroy', ['id' => $itemshow->id])"/>
+                                                <x-admin.component.deletemodal :title="$itemshow->judul" :route="route('article-show.destroy', ['article-show' => $itemshow->id])"/>
                                             </div>
                                         </div>
                                     </td>
