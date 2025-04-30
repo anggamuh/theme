@@ -165,18 +165,21 @@ class ArticleShowController extends Controller
         // Article Show
         $newarticleshow = new ArticleShow;
 
-        $no_tlp = $request->no_tlp;
-
-        if (substr($no_tlp, 0, 1) === '0') {
-            $no_tlp = '+62' . substr($no_tlp, 1);
+        if ($request->no_tlp) {
+            $no_tlp = $request->no_tlp;
+    
+            if (substr($no_tlp, 0, 1) === '0') {
+                $no_tlp = '+62' . substr($no_tlp, 1);
+            }
+    
+            $phoneNumber = PhoneNumber::firstOrCreate(
+                ['no_tlp' => $no_tlp]
+            );
+            
+            $newarticleshow->phone_number_id = $phoneNumber->id;
         }
 
-        $phoneNumber = PhoneNumber::firstOrCreate(
-            ['no_tlp' => $no_tlp]
-        );
-
         $newarticleshow->article_id = $newarticle->id;
-        $newarticleshow->phone_number_id = $phoneNumber->id;
         $newarticleshow->banner = $newbanner->image;
         $newarticleshow->judul = $newarticle->judul;
         $newarticleshow->slug = Str::slug($newarticleshow->judul);
@@ -321,17 +324,20 @@ class ArticleShowController extends Controller
             $newarticle->articletag()->sync($tagIds);
         }
 
-        $no_tlp = $request->no_tlp;
-
-        if (substr($no_tlp, 0, 1) === '0') {
-            $no_tlp = '+62' . substr($no_tlp, 1);
+        if ($request->no_tlp) {
+            $no_tlp = $request->no_tlp;
+    
+            if (substr($no_tlp, 0, 1) === '0') {
+                $no_tlp = '+62' . substr($no_tlp, 1);
+            }
+    
+            $phoneNumber = PhoneNumber::firstOrCreate(
+                ['no_tlp' => $no_tlp]
+            );
+            
+            $articleShow->phone_number_id = $phoneNumber->id;
         }
 
-        $phoneNumber = PhoneNumber::firstOrCreate(
-            ['no_tlp' => $no_tlp]
-        );
-        
-        $articleShow->phone_number_id = $phoneNumber->id;
         if ($banner) {
             $articleShow->banner = $banner->image;
         }

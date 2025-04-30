@@ -72,17 +72,20 @@ class ArticleGeneratedController extends Controller
             $articleShow->banner = $request->banner;
         }
 
-        $no_tlp = $request->no_tlp;
-
-        if (substr($no_tlp, 0, 1) === '0') {
-            $no_tlp = '+62' . substr($no_tlp, 1);
+        if ($request->no_tlp) {
+            $no_tlp = $request->no_tlp;
+    
+            if (substr($no_tlp, 0, 1) === '0') {
+                $no_tlp = '+62' . substr($no_tlp, 1);
+            }
+    
+            $phoneNumber = PhoneNumber::firstOrCreate(
+                ['no_tlp' => $no_tlp]
+            );
+            
+            $articleShow->phone_number_id = $phoneNumber->id;
         }
-
-        $phoneNumber = PhoneNumber::firstOrCreate(
-            ['no_tlp' => $no_tlp]
-        );
         
-        $articleShow->phone_number_id = $phoneNumber->id;
         $articleShow->judul = $request->judul;
         $articleShow->slug = Str::slug($articleShow->judul);
         $articleShow->article = $request->article;
