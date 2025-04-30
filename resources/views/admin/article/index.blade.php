@@ -148,7 +148,7 @@
 
                         @if ($item->article_type === 'spintax')
                             @foreach ($item->articleshow as $itemshow)
-                                <tr x-show="spin" class="{{ $rowBg }} h-10 text-neutral-600 divide-x-2 divide-white">
+                                <tr x-show="spin" class="{{ $itemshow->status === 'schedule' ? 'bg-red-100' : ($itemshow->status === 'publish' ? 'bg-green-100' : 'bg-purple-100') }} h-10 text-neutral-600 divide-x-2 divide-white">
                                     <td class="px-3 py-1 text-center font-semibold bg-white"></td>
                                     <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold flex">
                                         <p class=" w-8">{{ $loop->iteration }}</p>
