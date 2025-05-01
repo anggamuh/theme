@@ -54,7 +54,7 @@ Route::middleware('daily_schedule')->group(function () {
 Route::get('/sitemap', [SitemapController::class, 'index']);
 
 Route::middleware('auth')->group(function () {
-    Route::get('/dashboard', function () {
+    Route::get('/admin/dashboard', function () {
         return view('dashboard');
     })->middleware(['auth', 'verified'])->name('dashboard');
 

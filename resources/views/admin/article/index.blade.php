@@ -41,7 +41,13 @@
                     <tbody x-data="{ spin: false }">
                         <tr class="{{ $rowBg }} h-10 text-neutral-600 divide-x-2 divide-white">
                             <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration }}</td>
-                            <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold line-clamp-2">{{ $item->judul }}</td>
+                            <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold line-clamp-2">
+                                @if ($item->article_type === 'unique')
+                                    <a href="{{ route('business', ['slug' => $item->articleshow->first()->slug]) }}">{{$item->judul}}</a>
+                                @else
+                                    {{ $item->judul }}
+                                @endif
+                            </td>
                             <td class="px-1 sm:px-2">
                                 <div class="flex gap-1 sm:gap-2 justify-center">
                                     @if ($item->article_type === 'spintax')
@@ -152,7 +158,9 @@
                                     <td class="px-3 py-1 text-center font-semibold bg-white"></td>
                                     <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold flex">
                                         <p class=" w-8">{{ $loop->iteration }}</p>
-                                        <p class="line-clamp-2">{{ $itemshow->judul }}</p>
+                                        <p class="line-clamp-2">
+                                            <a href="{{ route('business', ['slug' => $itemshow->slug]) }}">{{$itemshow->judul}}</a>
+                                        </p>
                                     </td>
                                     <td class="px-1 sm:px-2">
                                         <div class="flex gap-1 sm:gap-2 justify-center">

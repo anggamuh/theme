@@ -1,4 +1,4 @@
-<x-admin.article.form head="Edit Article Unique" title="Admin - Edit Article Unique" :form="route('article-show.update', ['article_show' => $articleShow->id])">
+<x-admin.article.form head="Edit Article Unique" title="Admin - Edit Article Unique" :link="route('business', ['slug' => $articleShow->slug])" :form="route('article-show.update', ['article_show' => $articleShow->id])">
     @method('PUT')
     <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="$articleShow->judul" name="judul" />
     <x-admin.component.taginput title="Tag" :tag="$tag" :value="$articleShow->articles->articletag" name="tag[]" />

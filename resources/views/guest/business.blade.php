@@ -3,7 +3,7 @@
     $cleanedText = str_replace('&nbsp;', ' ', $cleanedText);  // Mengganti &nbsp; dengan spasi
     $sentence = strtok($cleanedText, '.');
 @endphp
-<x-layout.guest :title="$data->judul" :desc="$sentence" :tags="$data->articles->articletag">
+<x-layout.guest :title="$data->judul. ' - Bizlink'" :desc="$sentence" :tags="$data->articles->articletag">
     <div class=" background w-full">
         {{-- Header --}}
         @include('components.guest.header.'.$template->head_type)

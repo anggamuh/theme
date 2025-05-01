@@ -4,6 +4,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
         
         <link rel="icon" href="{{ asset('/assets/images/logo.png') }}" type="image/x-icon">
 
@@ -12,6 +13,11 @@
         <meta name="description" content="{{ $desc ?? '' }}">
         <meta name="keywords" content="{{ collect($tags)->pluck('tag')->implode(', ') }}">
         <link rel="canonical" href="{{ url()->current() }}">
+
+        <meta property="og:title" content="{{$title ?? ''}}">
+        <meta property="og:description" content="{{ $desc ?? '' }}">
+        <meta property="og:url" content="{{ url()->current() }}">
+        <meta property="og:site_name" content="Bizlink">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

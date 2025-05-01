@@ -112,7 +112,7 @@ class ArticleGeneratedController extends Controller
 
         $articleShow->save();
 
-        return redirect()->route('article.index');
+        return redirect()->back();
     }
 
     /**

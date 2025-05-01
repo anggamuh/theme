@@ -1,4 +1,4 @@
-<x-admin.article.form head="Edit Article Generated" title="Admin - Edit Article Generated" :form="route('article-generated.update', ['article_generated' => $articleShow->id])">
+<x-admin.article.form head="Edit Article Generated" title="Admin - Edit Article Generated" :link="route('business', ['slug' => $articleShow->slug])" :form="route('article-generated.update', ['article_generated' => $articleShow->id])">
     @method('PUT')
     <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="$articleShow->judul" name="judul" />
     <x-admin.component.summernoteinput title="Artikel" :value="$articleShow->article" name="article" />
