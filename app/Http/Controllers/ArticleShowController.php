@@ -47,6 +47,9 @@ class ArticleShowController extends Controller
     public function store(Request $request)
     {
         // dd($request);
+        $validated = $request->validate([
+            'judul' => 'required|max:255|unique:'.ArticleShow::class,
+        ]);
         // Article
         $newarticle = new Article;
 

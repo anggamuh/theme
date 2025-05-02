@@ -20,7 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('article_id');
             $table->foreign('article_id')->references('id')->on('articles')->onUpdate('cascade')->onDelete('cascade');
             $table->string('banner')->nullable();
-            $table->string('judul');
+            $table->string('judul')->unique();
+            $table->string('slug')->unique();
             $table->longText('article');
             $table->enum('status', ['publish', 'schedule', 'private'])->default('publish');
             $table->boolean('telephone')->default(true);
