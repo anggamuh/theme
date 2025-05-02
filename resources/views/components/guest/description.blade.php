@@ -2,9 +2,9 @@
 <div class=" w-full max-w-[600px] mx-auto">
     <div style="background-color: {{$template->desc_main_color ?? 'white'}}; color: {{$template->desc_text_color}}" class=" w-full rounded-md shadow-md p-4 space-y-2 sm:space-y-4">
         <div class=" w-full flex flex-wrap gap-2">
-            @foreach ($data->articles->articletag as $item)
-                <a href="{{route('category', ['category' => $item->tag])}}">
-                    <button style="background-color: {{$template->desc_second_color ?? '#1d588d'}}" class=" px-2 sm:px-3 py-1 text-xs sm:text-sm text-white rounded-md">{{$item->tag}}</button>
+            @foreach ($data->articles->articlecategory as $item)
+                <a href="{{route('category', ['category' => $item->slug])}}">
+                    <button style="background-color: {{$template->desc_second_color ?? '#1d588d'}}" class=" px-2 sm:px-3 py-1 text-xs sm:text-sm text-white rounded-md">{{$item->category}}</button>
                 </a>
             @endforeach
         </div>
@@ -25,6 +25,11 @@
         </div>
         <div class=" article space-y-4 sm:space-y-6">
             {!! nl2br($data->article == '' ? '' : $data->article) !!}
+            <div class=" flex flex-wrap gap-1">
+                @foreach ($data->articles->articletag as $item)
+                    <a style="color: {{$template->desc_text_color}}" href="{{route('tag', ['tag' => $item->slug])}}" class=" lowercase">#{{$item->tag}}</a>
+                @endforeach
+            </div>
         </div>
         <style>
             .article a {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArticleCategory;
 use App\Models\ArticleShow;
 use App\Models\ArticleTag;
 use App\Models\PhoneNumber;
@@ -29,7 +30,7 @@ class PageController extends Controller
         return view('guest.home', compact('data'));
     }
 
-    public function article(Request $request, $username = null, $category = null) {
+    public function article(Request $request, $username = null, $category = null, $tag = null) {
         Paginator::currentPageResolver(function () use ($request) {
             return $request->route('page', 1);
         });
@@ -45,14 +46,23 @@ class PageController extends Controller
             
             $title = 'Penulis : '.$user->name;
         } elseif ($category) {
-            $data = ArticleShow::whereHas('articles.articleTag', function ($query) use ($category) {
+            $data = ArticleShow::whereHas('articles.articleCategory', function ($query) use ($category) {
                 $query->where('slug', $category);
             })->where('status', 'publish')->latest()->paginate(12);
 
             $data->withPath("/kategori/{$category}/page");
             
-            $category = ArticleTag::where('slug', $category)->first()->tag;
+            $category = ArticleCategory::where('slug', $category)->first()->category;
             $title = 'Kategori : '.$category;
+        } elseif ($tag) {
+            $data = ArticleShow::whereHas('articles.articleTag', function ($query) use ($tag) {
+                $query->where('slug', $tag);
+            })->where('status', 'publish')->latest()->paginate(12);
+
+            $data->withPath("/tag/{$tag}/page");
+            
+            $tag = ArticleTag::where('slug', $tag)->first()->tag;
+            $title = 'Tag : '.$tag;
         } elseif ($request->search) {
             $data = ArticleShow::where('judul', 'like', '%' . $request->search . '%')->where('status', 'publish')->latest()->paginate(12);
 

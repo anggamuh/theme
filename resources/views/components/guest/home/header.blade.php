@@ -5,15 +5,15 @@
                 @foreach ($data->take(3) as $item)    
                     <div class=" swiper-slide w-full aspect-[5/4] overflow-hidden relative">
                         <div class=" absolute inset-0 ">
-                            <img src="{{asset('storage/images/article/banner/'. $item->banner)}}" class=" w-full h-full object-cover" alt="">
+                            <img src="{{$item->banner ? asset('storage/images/article/banner/'. $item->banner) : asset('assets/images/placeholder.webp')}}" class=" w-full h-full object-cover" alt="">
                         </div>
                         <div style="box-shadow: 0px -178px 115px -74px rgba(0,0,0,0.75) inset;" class=" w-full h-full flex items-end relative bg-black/20">
                             <div class=" w-full py-4 text-white divide-y-2 divide-white/50">
                                 <div class=" px-4 sm:px-6 pb-4 space-y-2">
                                     <div class=" w-full flex flex-wrap gap-2">
-                                        @foreach ($item->articles->articletag as $tag)
-                                            <a href="{{route('category', ['category' => $tag->slug])}}">
-                                                <div class=" py-0.5 px-3 bg-white text-gray-600 text-xs rounded-full">{{$tag->tag}}</div>
+                                        @foreach ($item->articles->articlecategory as $category)
+                                            <a href="{{route('category', ['category' => $category->slug])}}">
+                                                <div class=" py-0.5 px-3 bg-white text-gray-600 text-xs rounded-full">{{$category->category}}</div>
                                             </a>
                                         @endforeach
                                     </div>
@@ -41,15 +41,15 @@
             @foreach ($data->take(3) as $item)
                 <div class=" w-full h-44 sm:h-56 md:h-full overflow-hidden relative rounded-md {{ $loop->index === 2 ? 'sm:col-span-2' : '' }}">
                     <div class=" absolute inset-0 ">
-                        <img src="{{asset('storage/images/article/banner/'. $item->banner)}}" class=" w-full h-full object-cover" alt="">
+                        <img src="{{ $item->banner ? asset('storage/images/article/banner/'. $item->banner) : asset('assets/images/placeholder.webp')}}" class=" w-full h-full object-cover" alt="">
                     </div>
                     <div style="box-shadow: 0px -178px 115px -74px rgba(0,0,0,0.75) inset;" class=" w-full h-full flex items-end relative bg-black/20">
                         <div class=" w-full py-4 text-white">
                             <div class=" px-4 sm:px-6 space-y-2">
                                 <div class=" w-full flex flex-wrap gap-2">
-                                    @foreach ($item->articles->articletag as $tag)
-                                        <a href="{{route('category', ['category' => $tag->slug])}}">
-                                            <div class=" py-0.5 px-3 bg-white text-gray-600 text-xs rounded-full">{{$tag->tag}}</div>
+                                    @foreach ($item->articles->articlecategory as $category)
+                                        <a href="{{route('category', ['category' => $category->slug])}}">
+                                            <div class=" py-0.5 px-3 bg-white text-gray-600 text-xs rounded-full">{{$category->category}}</div>
                                         </a>
                                     @endforeach
                                 </div>

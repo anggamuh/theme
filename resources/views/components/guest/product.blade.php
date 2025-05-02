@@ -3,14 +3,14 @@
         <div class=" relative">
             <a href="{{ route('business', ['slug' => $item->slug]) }}" aria-label="{{$item->judul}}">
                 <div class=" w-full aspect-[3/2] bg-white overflow-hidden">
-                    <img src="{{ asset('storage/images/article/banner/' . $item->banner) }}"
+                    <img src="{{$item->banner ? asset('storage/images/article/banner/' . $item->banner) : asset('assets/images/placeholder.webp')}}"
                         class=" w-full h-full object-cover" alt="">
                 </div>
             </a>
             <div class=" absolute bottom-2 left-2 w-full flex flex-wrap gap-2">
-                @foreach ($item->articles->articletag as $tag)
-                    <a href="{{route('category', ['category' => $tag->slug])}}" aria-label="{{$tag->tag}}">
-                        <div class=" py-0.5 px-3 bg-white text-gray-600 text-xs rounded-full">{{$tag->tag}}</div>
+                @foreach ($item->articles->articlecategory as $category)
+                    <a href="{{route('category', ['category' => $category->slug])}}" aria-label="{{$category->category}}">
+                        <div class=" py-0.5 px-3 bg-white text-gray-600 text-xs rounded-full">{{$category->category}}</div>
                     </a>
                 @endforeach
             </div>

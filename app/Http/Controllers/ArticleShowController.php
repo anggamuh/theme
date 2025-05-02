@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\ArticleBanner;
+use App\Models\ArticleCategory;
 use App\Models\ArticleGallery;
 use App\Models\ArticleShow;
 use App\Models\ArticleShowGallery;
@@ -34,9 +35,10 @@ class ArticleShowController extends Controller
     public function create()
     {
         $tag = ArticleTag::all();
+        $category = ArticleCategory::all();
         $template = Template::all();
         $phonenumber = PhoneNumber::where('type', '!=', 'main')->get();
-        return view('admin.article.create-unique', compact('template', 'tag', 'phonenumber'));
+        return view('admin.article.create-unique', compact('template', 'tag', 'phonenumber', 'category'));
     }
 
     /**
@@ -78,12 +80,14 @@ class ArticleShowController extends Controller
 
         $newarticle->template()->sync([$request->template_id]);
         
-        $newbanner = new ArticleBanner;
-
-        $newbanner->article_id = $newarticle->id;
+        $newbanner = null;
 
         // Banner
         if ($request->hasFile('image')) {
+            $newbanner = new ArticleBanner;
+    
+            $newbanner->article_id = $newarticle->id;
+
             $imageFile = $request->file('image');
             $imageName = time();
             $imagePath = public_path('storage/images/article/banner/');
@@ -101,9 +105,10 @@ class ArticleShowController extends Controller
 
             $newbanner->image = $imageName . '.webp';
             $newbanner->image_alt = $imageName;
+            
+            $newbanner->save();
         }
         
-        $newbanner->save();
 
         // Tag
         if ($request->tag) {
@@ -123,6 +128,26 @@ class ArticleShowController extends Controller
             }
 
             $newarticle->articletag()->attach($tagIds);
+        }
+        
+        // Category
+        if ($request->category) {
+            $category = array_map(fn($item) => ucfirst($item), $request->category);
+        
+            $categoryIds = [];
+            foreach ($category as $categoryName) {
+                $formattedCategoryName = Str::title($categoryName);
+                $slug = Str::slug($categoryName);
+
+                $category = ArticleCategory::firstOrCreate(
+                    ['slug' => $slug],
+                    ['category' => $formattedCategoryName]
+                );
+
+                $categoryIds[] = $category->id;
+            }
+
+            $newarticle->articlecategory()->attach($categoryIds);
         }
 
         // Gallery
@@ -180,7 +205,7 @@ class ArticleShowController extends Controller
         }
 
         $newarticleshow->article_id = $newarticle->id;
-        $newarticleshow->banner = $newbanner->image;
+        $newarticleshow->banner = $newbanner->image ?? null;
         $newarticleshow->judul = $newarticle->judul;
         $newarticleshow->slug = Str::slug($newarticleshow->judul);
         $newarticleshow->article = $newarticle->article;
@@ -219,9 +244,11 @@ class ArticleShowController extends Controller
     {
         $tagid = $articleShow->articles->articletag->pluck('id')->toArray();
         $tag = ArticleTag::whereNotIn('id', $tagid)->get();
+        $categoryid = $articleShow->articles->articlecategory->pluck('id')->toArray();
+        $category = ArticleCategory::whereNotIn('id', $categoryid)->get();
         $template = Template::all();
         $phonenumber = PhoneNumber::where('type', '!=', 'main')->where('id', '!=', $articleShow->phone_number_id)->get();
-        return view('admin.article.edit-unique', compact('articleShow', 'tag', 'template', 'phonenumber'));
+        return view('admin.article.edit-unique', compact('articleShow', 'tag', 'template', 'phonenumber', 'category'));
     }
 
     /**
@@ -322,6 +349,29 @@ class ArticleShowController extends Controller
         
             // Sinkronkan tag ke dalam pivot table
             $newarticle->articletag()->sync($tagIds);
+        }
+
+        // Category
+        if ($request->category) {
+            // Ubah tag menjadi huruf besar di awal
+            $categories = array_map(fn($item) => ucfirst($item), $request->category);
+        
+            // Pastikan setiap tag ada di database
+            $categoryIds = [];
+            foreach ($categories as $categoryName) {
+                $formattedCategoryName = Str::title($categoryName);
+                $slug = Str::slug($categoryName);
+
+                $category = ArticleCategory::firstOrCreate(
+                    ['slug' => $slug],
+                    ['category' => $formattedCategoryName]
+                );
+
+                $categoryIds[] = $category->id;
+            }
+        
+            // Sinkronkan tag ke dalam pivot table
+            $newarticle->articlecategory()->sync($categoryIds);
         }
 
         if ($request->no_tlp) {

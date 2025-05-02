@@ -1,6 +1,7 @@
 <x-admin.article.form head="Edit Article Unique" title="Admin - Edit Article Unique" :link="route('business', ['slug' => $articleShow->slug])" :form="route('article-show.update', ['article_show' => $articleShow->id])">
     @method('PUT')
     <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="$articleShow->judul" name="judul" />
+    <x-admin.component.categoryinput title="Kategori" :tag="$category" :value="$articleShow->articles->articlecategory" name="category[]" />
     <x-admin.component.taginput title="Tag" :tag="$tag" :value="$articleShow->articles->articletag" name="tag[]" />
     <x-admin.component.summernoteinput title="Artikel" :value="$articleShow->article" name="article" />
     <div class=" grid grid-cols-2 gap-4">
@@ -35,7 +36,7 @@
     </div>
     <div class="flex flex-col gap-2">
         <label class="font-medium text-sm sm:text-base">No. Telephone (optional)</label>
-        <select class="js-example-basic-single" name="no_tlp" multiple="multiple">
+        <select class="no-tlp-one" name="no_tlp" multiple="multiple">
             @if ($articleShow->phoneNumber)
                 <option value="{{$articleShow->phoneNumber->no_tlp}}" selected>{{$articleShow->phoneNumber->no_tlp}}</option>
             @endif
@@ -89,7 +90,7 @@
         window.addEventListener('load', function select2() {
             var $j = jQuery.noConflict();
             $j(document).ready(function() {
-                $j('.js-example-basic-single').select2({
+                $j('.no-tlp-one').select2({
                     tags: true,
                     tokenSeparators: [','],
                     maximumSelectionLength: 1,
@@ -129,7 +130,7 @@
                 <label>Banner</label>
                 <div class="w-full sm:h-52 flex items-center justify-center overflow-hidden">
                     <div class=" aspect-[3/2] max-h-full max-w-full rounded-md overflow-hidden shadow-md shadow-black/20 ">
-                        <x-admin.component.imageinput value="{{asset('storage/images/article/banner/'.$articleShow->banner)}}" name="image" />
+                        <x-admin.component.imageinput value="{{ $articleShow->banner ? asset('storage/images/article/banner/'.$articleShow->banner) : null}}" name="image" />
                     </div>
                 </div>
             </div>

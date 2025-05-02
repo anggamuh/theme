@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\ArticleBanner;
+use App\Models\ArticleCategory;
 use App\Models\ArticleGallery;
 use App\Models\ArticleShow;
 use App\Models\ArticleShowGallery;
@@ -141,7 +142,8 @@ class ArticleController extends Controller
     {
         $tag = ArticleTag::all();
         $template = Template::all();
-        return view('admin.article.create-spintax', compact('tag', 'template'));
+        $category = ArticleCategory::all();
+        return view('admin.article.create-spintax', compact('tag', 'category', 'template'));
     }
 
     /**
@@ -238,6 +240,26 @@ class ArticleController extends Controller
             $newarticle->articletag()->attach($tagIds);
         }
 
+        // Category
+        if ($request->category) {
+            $category = array_map(fn($item) => ucfirst($item), $request->category);
+        
+            $categoryIds = [];
+            foreach ($category as $categoryName) {
+                $formattedCategoryName = Str::title($categoryName);
+                $slug = Str::slug($categoryName);
+
+                $category = ArticleCategory::firstOrCreate(
+                    ['slug' => $slug],
+                    ['category' => $formattedCategoryName]
+                );
+
+                $categoryIds[] = $category->id;
+            }
+
+            $newarticle->articlecategory()->attach($categoryIds);
+        }
+
         // Gallery
         if ($request->has('image_gallery') && !empty($request->image_gallery)) {
             foreach ($request->image_gallery as $image) {
@@ -285,8 +307,10 @@ class ArticleController extends Controller
     {
         $tagid = $article->articletag->pluck('id')->toArray();
         $tag = ArticleTag::whereNotIn('id', $tagid)->get();
+        $categoryid = $article->articlecategory->pluck('id')->toArray();
+        $category = ArticleCategory::whereNotIn('id', $categoryid)->get();
         $template = Template::all();
-        return view('admin.article.edit-spintax', compact('article', 'tag', 'template'));
+        return view('admin.article.edit-spintax', compact('article', 'tag', 'category', 'template'));
     }
 
     /**
@@ -346,7 +370,30 @@ class ArticleController extends Controller
             $article->articletag()->sync($tagIds);
         }
 
-        return redirect()->route('article.index');
+        // Category
+        if ($request->category) {
+            // Ubah tag menjadi huruf besar di awal
+            $categories = array_map(fn($item) => ucfirst($item), $request->category);
+        
+            // Pastikan setiap tag ada di database
+            $categoryIds = [];
+            foreach ($categories as $categoryName) {
+                $formattedCategoryName = Str::title($categoryName);
+                $slug = Str::slug($categoryName);
+
+                $category = ArticleCategory::firstOrCreate(
+                    ['slug' => $slug],
+                    ['category' => $formattedCategoryName]
+                );
+
+                $categoryIds[] = $category->id;
+            }
+        
+            // Sinkronkan tag ke dalam pivot table
+            $article->articlecategory()->sync($categoryIds);
+        }
+
+        return redirect()->back();
     }
 
     /**

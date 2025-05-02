@@ -4,9 +4,16 @@
         <div class="swiper-wrapper">
             @foreach ($data->articleshowgallery as $item)
                 <div class="swiper-slide w-full aspect-[3/4] rounded-md overflow-hidden relative">
-                    <img src="{{asset('storage/images/article/gallery/'. $item->image)}}" class=" w-full h-full object-cover" alt="">
+                    <a data-fancybox="gallery" href="{{asset('storage/images/article/gallery/'. $item->image)}}" class="">
+                        <img src="{{asset('storage/images/article/gallery/'. $item->image)}}" class=" w-full h-full object-cover" alt="">
+                    </a>
                 </div>
             @endforeach
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    Fancybox.bind("[data-fancybox]", {});
+                });
+            </script>
         </div>
         <div class="prev absolute top-1/2 -translate-y-1/2 flex items-center pr-2 left-0 z-10 py-3 bg-black/70 rounded-r-full">
             <div class=" text-white w-6 h-6">

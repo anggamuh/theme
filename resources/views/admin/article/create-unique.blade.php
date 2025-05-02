@@ -1,5 +1,6 @@
 <x-admin.article.form head="Create Article Unique" title="Admin - Create Article Unique" :form="route('article-show.store')" >
     <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="''" name="judul" />
+    <x-admin.component.categoryinput title="Kategori" :tag="$category" :value="null" name="category[]" />
     <x-admin.component.taginput title="Tag" :tag="$tag" :value="null" name="tag[]" />
     <x-admin.component.summernoteinput title="Artikel" value="" name="article" />
     <div class=" grid grid-cols-2 gap-4">
@@ -34,7 +35,7 @@
     </div>
     <div class="flex flex-col gap-2">
         <label class="font-medium text-sm sm:text-base">No. Telephone (optional)</label>
-        <select class="js-example-basic-single" name="no_tlp" multiple="multiple">
+        <select class="no-tlp-one" name="no_tlp" multiple="multiple">
             @foreach($phonenumber as $item)
                 <option value="{{ $item->no_tlp }}">{{ $item->no_tlp }}</option>
             @endforeach
@@ -85,7 +86,7 @@
         window.addEventListener('load', function select2() {
             var $j = jQuery.noConflict();
             $j(document).ready(function() {
-                $j('.js-example-basic-single').select2({
+                $j('.no-tlp-one').select2({
                     tags: true,
                     tokenSeparators: [','],
                     maximumSelectionLength: 1,
@@ -129,7 +130,7 @@
                 <label>Banner</label>
                 <div class="w-full h-52 sm:h-60 flex items-center justify-center">
                     <div class=" aspect-[3/2] max-h-full max-w-full rounded-md overflow-hidden shadow-md shadow-black/20 ">
-                        <x-admin.component.imageinput title="Nama/Tipe" placeholder="Masukkan nama/tipe web..." :value="''" name="image" status="required" />
+                        <x-admin.component.imageinput title="Nama/Tipe" placeholder="Masukkan nama/tipe web..." :value="''" name="image" />
                     </div>
                 </div>
             </div>

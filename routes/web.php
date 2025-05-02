@@ -31,22 +31,30 @@ Route::middleware('daily_schedule')->group(function () {
     Route::get('/page/{page?}', [PageController::class, 'home'])->name('pagearticle');
     
     Route::get('/artikel', function(Request $request) {
-        return app(PageController::class)->article($request, null, null);
+        return app(PageController::class)->article($request, null, null, null);
     })->name('allarticle');
     Route::get('/artikel/page/{page?}', function(Request $request) {
-        return app(PageController::class)->article($request, null, null);
+        return app(PageController::class)->article($request, null, null, null);
     })->name('pageallarticle');
     
     Route::get('/penulis/{username}', [PageController::class, 'article'])->name('author');
     Route::get('/penulis/{username}/page/{page?}', [PageController::class, 'article'])->name('pageauthor');
     
     Route::get('/kategori/{category}', function(Request $request, $category) {
-        return app(PageController::class)->article($request, null, $category);
+        return app(PageController::class)->article($request, null, $category, null);
     })->name('category');
     
     Route::get('/kategori/{category}/page/{page?}', function(Request $request, $category) {
-        return app(PageController::class)->article($request, null, $category);
+        return app(PageController::class)->article($request, null, $category, null);
     })->name('pagecategory');
+    
+    Route::get('/tag/{tag}', function(Request $request, $tag) {
+        return app(PageController::class)->article($request, null, null, $tag);
+    })->name('tag');
+    
+    Route::get('/tag/{tag}/page/{page?}', function(Request $request, $tag) {
+        return app(PageController::class)->article($request, null, null, $tag);
+    })->name('pagetag');
 
     Route::get('/page-not-found', [PageController::class, 'notFound'])->name('not.found');
 });

@@ -29,6 +29,10 @@ class Article extends Model
     {
         return $this->belongsToMany(ArticleTag::class, 'pivot_articles_tags', 'article_id', 'tag_id');
     } 
+    public function articlecategory()
+    {
+        return $this->belongsToMany(ArticleCategory::class, 'pivot_articles_categories', 'article_id', 'category_id');
+    } 
     public function template()
     {
         return $this->belongsToMany(Template::class, 'pivot_templates_articles', 'article_id', 'template_id');

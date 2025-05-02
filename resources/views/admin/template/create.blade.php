@@ -23,7 +23,7 @@
                     </div>
                     <div class=" w-full">
                         <div class="w-full flex items-center justify-center">
-                            <div class=" w-[400px] rounded-md overflow-hidden shadow-md shadow-black/20 relative">
+                            <div class=" w-[400px] rounded-md overflow-hidden relative">
                                 @include('components.admin.template.gallery')
                                 <div class=" w-full">
                                     <img id="gallery" src="{{asset('assets/images/template/gallery/one.png')}}" class=" w-full" alt="">
@@ -61,6 +61,9 @@
                                         <br>
                                         <br>
                                         Oleh sebab itu, Svargaloka menawari tanah pemakaman mewah dengan biaya yang transparan, dirancang untuk menciptakan suasana yang berbeda dan penuh makna.
+                                        <br>
+                                        <br>
+                                        #svargaloka #tanah makam mewah
                                     </p>
                                 </div>
                                 <style>

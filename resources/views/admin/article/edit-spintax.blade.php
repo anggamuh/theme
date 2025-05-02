@@ -1,6 +1,7 @@
 <x-admin.article.form head="Edit Article Spintax" title="Admin - Edit Article Spintax" :form="route('article.update', ['article' => $article->id])" >
     @method('PUT')
     <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="$article->judul" name="judul" />
+    <x-admin.component.categoryinput title="Kategori" :tag="$category" :value="$article->articlecategory" name="category[]" />
     <x-admin.component.taginput title="Tag" :tag="$tag" :value="$article->articletag" name="tag[]" />
     <x-admin.component.summernoteinput title="Artikel" :value="$article->article" name="article" />
     <x-slot:additional>
