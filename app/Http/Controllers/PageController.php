@@ -110,4 +110,25 @@ class PageController extends Controller
     public function notFound() {
         return view('guest.pagenotfound');
     }
+
+    public function test() {
+        $duplikatJudul = ArticleShow::select('judul')
+            ->groupBy('judul')
+            ->havingRaw('COUNT(*) > 1')
+            ->pluck('judul');
+
+        if ($duplikatJudul->isEmpty()) {
+            return response()->json([
+                'status' => 'ok',
+                'message' => 'Tidak ada judul yang duplikat.',
+                'data' => []
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'duplikat',
+            'message' => 'Ditemukan judul yang duplikat.',
+            'data' => $duplikatJudul
+        ]);
+    }
 }

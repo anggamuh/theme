@@ -88,6 +88,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/test', [PageController::class, 'test'])->name('testing');
+
 require __DIR__.'/auth.php';
 
 Route::get('/{slug}', [PageController::class, 'business'])->name('business');
