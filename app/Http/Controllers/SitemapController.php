@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArticleCategory;
 use App\Models\ArticleShow;
 use App\Models\ArticleTag;
 use App\Models\User;
@@ -22,9 +23,13 @@ class SitemapController extends Controller
             $slug = $model->slug;
             $sitemap->add(Url::create("/penulis/{$slug}")->setLastModificationDate($model->updated_at));
         }
-        foreach (ArticleTag::all() as $model) {
+        foreach (ArticleCategory::all() as $model) {
             $slug = $model->slug;
             $sitemap->add(Url::create("/kategori/{$slug}")->setLastModificationDate($model->updated_at));
+        }
+        foreach (ArticleTag::all() as $model) {
+            $slug = $model->slug;
+            $sitemap->add(Url::create("/tag/{$slug}")->setLastModificationDate($model->updated_at));
         }
         foreach (ArticleShow::where('status', 'publish')->get() as $model) {
             $slug = $model->slug;
