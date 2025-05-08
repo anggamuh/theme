@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SourceCodeController;
 use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -70,6 +71,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/admin/template/edit-image/{id}', [TemplateController::class, 'editimage'])->name('template.editimage');
 
     Route::resource('/admin/phone-number', PhoneNumberController::class);
+
+    Route::resource('/admin/user', UserController::class);
 
     Route::resource('/admin/article', ArticleController::class);
     Route::resource('/admin/article-banner', ArticleBannerController::class);

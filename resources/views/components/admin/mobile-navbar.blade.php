@@ -26,13 +26,19 @@
     </div>
     <div 
         class="fixed w-[calc(100vw-32px)] left-1/2 -translate-x-1/2 bg-white shadow-md shadow-black/20 bottom-[44px] rounded-t-md z-10 transition-all duration-300 overflow-hidden border border-neutral-300"
-        :class="isOpen ? ' h-36 pb-7' : 'h-0'">
+        :class="isOpen ? ' h-48 pb-7' : 'h-0'">
         <div class=" grid grid-cols-2 p-4 gap-4 text-sm">
             <x-admin.mobile-navbutton route="dashboard" :active="'dashboard'">
                 <x-slot:svg>
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 13h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1zm-1 7a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v4zm10 0a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v7zm1-10h6a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1z" fill="currentColor" class="fill-000000"></path></svg>
                 </x-slot:svg>
                 Dashboard
+            </x-admin.mobile-navbutton>
+            <x-admin.mobile-navbutton route="user.index" :active="['user.index', 'article.create', 'user.show']">
+                <x-slot:svg>
+                    <svg fill="none" viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M1.5 0A1.5 1.5 0 0 0 0 1.5v12A1.5 1.5 0 0 0 1.5 15h12a1.5 1.5 0 0 0 1.5-1.5v-12A1.5 1.5 0 0 0 13.5 0h-12Zm5 9A3.5 3.5 0 0 0 3 12.5v1a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-1A3.5 3.5 0 0 0 8.5 9h-2ZM5 5.5a2.5 2.5 0 1 1 5 0 2.5 2.5 0 0 1-5 0Z" fill="currentColor" fill-rule="evenodd" class="fill-000000"></path></svg>
+                </x-slot:svg>
+                User
             </x-admin.mobile-navbutton>
             <x-admin.mobile-navbutton route="template.index" :active="['template.index', 'template.create', 'template.show']">
                 <x-slot:svg>
@@ -44,6 +50,12 @@
                     </svg>
                 </x-slot:svg>
                 Template
+            </x-admin.mobile-navbutton>
+            <x-admin.mobile-navbutton route="phone-number.index" :active="['phone-number.index', 'phone-number.create', 'phone-number.show']">
+                <x-slot:svg>
+                    <svg viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M384 32H64C28.65 32 0 60.65 0 96v320c0 35.35 28.65 64 64 64h320c35.35 0 64-28.65 64-64V96c0-35.35-28.7-64-64-64zm-32.4 289.5-11.62 50.39c-1.633 7.125-7.9 12.11-15.24 12.11-126.1 0-228.7-102.6-228.7-228.8 0-7.328 4.984-13.59 12.11-15.22l50.38-11.63c7.344-1.703 14.88 2.109 17.93 9.062l23.27 54.28a15.642 15.642 0 0 1-4.492 18.22L168.3 232c16.99 34.61 45.14 62.75 79.77 79.75l22.02-26.91c4.344-5.391 11.85-7.25 18.24-4.484l54.24 23.25c6.93 2.994 10.73 10.594 9.03 17.894z" fill="currentColor" class="fill-000000"></path></svg>
+                </x-slot:svg>
+                Phone
             </x-admin.mobile-navbutton>
             <x-admin.mobile-navbutton route="article.index" :active="['article.index', 'article.create', 'article.show', 'article-show.index', 'article-show.create', 'article-show.show']">
                 <x-slot:svg>

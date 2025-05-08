@@ -26,10 +26,10 @@
                     </form>
                 </div>
             </div>
-            <table class="w-full text-sm sm:text-base rounded-md ">
+            <table class="w-full max-w-full text-sm sm:text-base rounded-md">
                 <thead>
                     <tr class="h-10 bg-byolink-1 text-white divide-x-2 divide-white">
-                        <th class=" px-2 py-1 rounded-tl-md">No</th>
+                        <th class=" w-10 px-2 py-1 rounded-tl-md">No</th>
                         <th class=" px-1 sm:px-2 py-1">Judul</th>
                         <th class=" px-1 sm:px-2 py-1 w-[90px] sm:w-[100px] rounded-tr-md">Opsi</th>
                     </tr>
@@ -41,11 +41,13 @@
                     <tbody x-data="{ spin: false }">
                         <tr class="{{ $rowBg }} h-10 text-neutral-600 divide-x-2 divide-white">
                             <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration }}</td>
-                            <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold line-clamp-2">
+                            <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold">
                                 @if ($item->article_type === 'unique')
-                                    <a href="{{ route('business', ['slug' => $item->articleshow->first()->slug]) }}">{{$item->judul}}</a>
+                                    <a href="{{ route('business', ['slug' => $item->articleshow->first()->slug]) }}">
+                                        <p class="line-clamp-2">{{$item->judul}}</p>
+                                    </a>
                                 @else
-                                    {{ $item->judul }}
+                                    <p class=" w-44 sm:w-auto line-clamp-2">{{$item->judul}}</p>
                                 @endif
                             </td>
                             <td class="px-1 sm:px-2">
@@ -69,7 +71,7 @@
                                                 </svg>
                                             </button>
                                             
-                                            <div x-show="open" @click.outside="open = false" class="absolute z-10 mt-1 bg-white border rounded shadow-lg w-32">
+                                            <div x-show="open" @click.outside="open = false" class="absolute z-10 mt-1 right-0 bottom-0 bg-white border rounded shadow-lg w-32">
                                                 <a href="{{ route('article.show', ['article' => $item->id]) }}" class="block px-4 py-2 text-sm hover:bg-gray-100">Edit</a>
                                                 <button @click="generatemodal = !generatemodal" class=" w-full text-left block px-4 py-2 text-sm hover:bg-gray-100">Generate</button>
                                             </div>
@@ -86,7 +88,7 @@
                                                     fill="currentColor"></path>
                                                 </svg>
                                             </button>
-                                            <div x-show="open" @click.outside="open = false" class="absolute z-30 mt-1 right-0 bg-white border rounded shadow-lg w-52">
+                                            <div x-show="open" @click.outside="open = false" class="absolute z-30 mt-1 right-0 bottom-0 bg-white border rounded shadow-lg w-52">
                                                 <button  @click="deletegeneratemodal = !deletegeneratemodal" class=" w-full text-left block px-4 py-2 text-sm hover:bg-gray-100">Delete Generate Artikel</button>
                                                 <button @click="deletemodal = !deletemodal" class="w-full text-left block px-4 py-2 text-sm hover:bg-gray-100">Delete Artikel</button>
                                                 
@@ -157,7 +159,6 @@
                                 <tr x-show="spin" class="{{ $itemshow->status === 'schedule' ? 'bg-red-100' : ($itemshow->status === 'publish' ? 'bg-green-100' : 'bg-purple-100') }} h-10 text-neutral-600 divide-x-2 divide-white">
                                     <td class="px-3 py-1 text-center font-semibold bg-white"></td>
                                     <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold flex">
-                                        <p class=" w-8">{{ $loop->iteration }}</p>
                                         <p class="line-clamp-2">
                                             <a href="{{ route('business', ['slug' => $itemshow->slug]) }}">{{$itemshow->judul}}</a>
                                         </p>
@@ -195,4 +196,6 @@
             {{ $data->links('vendor.pagination.admin') }}
         </div>
     </div>
+
+    @include('components.admin.component.success')
 </x-app-layout>

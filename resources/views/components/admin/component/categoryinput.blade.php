@@ -7,9 +7,16 @@
                 <option value="{{ $item->category }}" selected>{{ $item->category }}</option>
             @endforeach
         @endif
+
         @if (isset($tag))
             @foreach ($tag as $item)
-                <option value="{{$item->category}}">{{$item->category}}</option>
+                @if ($value)
+                    @if (!in_array($item->category, $value->pluck('category')->toArray())) <!-- Cek jika category tidak ada di value -->
+                        <option value="{{$item->category}}">{{$item->category}}</option>
+                    @endif
+                @else
+                    <option value="{{$item->category}}">{{$item->category}}</option>
+                @endif
             @endforeach
         @endif
     </select>

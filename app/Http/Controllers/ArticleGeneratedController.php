@@ -11,6 +11,9 @@ use App\Models\PhoneNumber;
 use App\Models\Template;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class ArticleGeneratedController extends Controller
 {
@@ -65,6 +68,15 @@ class ArticleGeneratedController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $validated = $request->validate([
+            'judul' => [
+                'required',
+                'max:255',
+                Rule::unique('article_shows')->ignore($id),
+            ],
+            'article' => 'required',
+        ]);
+
         // dd($request);
 
         $articleShow = ArticleShow::find($id);
@@ -112,7 +124,7 @@ class ArticleGeneratedController extends Controller
 
         $articleShow->save();
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Artikel berhasil diperbarui.');
     }
 
     /**

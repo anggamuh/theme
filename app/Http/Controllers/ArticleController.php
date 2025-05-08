@@ -15,6 +15,9 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 
@@ -151,6 +154,45 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
+        try {
+            $validated = $request->validate([
+                'judul' => 'required|max:255|unique:'.Article::class.'|unique:'.ArticleShow::class,
+                'category' => 'array',
+                'tag' => 'array',
+                'template_id' => 'required|array',
+                'article' => 'required',
+            ]);
+    
+            // Proses simpan data jika valid
+        } catch (ValidationException $e) {
+            // Hapus input lama otomatis dari Laravel
+            Session::forget('_old_input');
+        
+            // Set ulang dengan input yang dimodifikasi
+            $oldInput = $request->except(['_token', 'image']);
+            // $oldInput['judul'] = ($request->input('judul') ?? '') . ' paksa';
+            if ($request->has('category')) {
+                $oldInput['category'] = collect($request->category)
+                    ->map(fn($item) => (object) ['category' => $item])  // Mengubah setiap item menjadi objek
+                    ->pipe(function($collection) {
+                        return new \Illuminate\Database\Eloquent\Collection($collection->all());  // Mengubah menjadi Eloquent Collection
+                    });
+            }
+            if ($request->has('tag')) {
+                $oldInput['tag'] = collect($request->tag)
+                    ->map(fn($item) => (object) ['tag' => $item])  // Mengubah setiap item menjadi objek
+                    ->pipe(function($collection) {
+                        return new \Illuminate\Database\Eloquent\Collection($collection->all());  // Mengubah menjadi Eloquent Collection
+                    });
+            }
+        
+            Session::flashInput($oldInput);
+        
+            return redirect()
+                ->back()
+                ->withErrors($e->validator);
+        }
+
         // dd($request);
         $newarticle = new Article;
 
@@ -297,7 +339,7 @@ class ArticleController extends Controller
             }
         }
 
-        return redirect()->route('article.index');
+        return redirect()->route('article.index')->with('success', 'Artikel berhasil disimpan.');
     }
 
     /**
@@ -326,6 +368,50 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+        try {
+            $validated = $request->validate([
+                'judul' => [
+                    'required',
+                    'max:255',
+                    Rule::unique('articles')->ignore($article->id),
+                    Rule::unique('article_shows'),
+                ],
+                'category' => 'array',
+                'tag' => 'array',
+                'template_id' => 'required|array',
+                'article' => 'required',
+            ]);
+    
+            // Proses simpan data jika valid
+        } catch (ValidationException $e) {
+            // Hapus input lama otomatis dari Laravel
+            Session::forget('_old_input');
+        
+            // Set ulang dengan input yang dimodifikasi
+            $oldInput = $request->except(['_token', 'image']);
+            // $oldInput['judul'] = ($request->input('judul') ?? '') . ' paksa';
+            if ($request->has('category')) {
+                $oldInput['category'] = collect($request->category)
+                    ->map(fn($item) => (object) ['category' => $item])  // Mengubah setiap item menjadi objek
+                    ->pipe(function($collection) {
+                        return new \Illuminate\Database\Eloquent\Collection($collection->all());  // Mengubah menjadi Eloquent Collection
+                    });
+            }
+            if ($request->has('tag')) {
+                $oldInput['tag'] = collect($request->tag)
+                    ->map(fn($item) => (object) ['tag' => $item])  // Mengubah setiap item menjadi objek
+                    ->pipe(function($collection) {
+                        return new \Illuminate\Database\Eloquent\Collection($collection->all());  // Mengubah menjadi Eloquent Collection
+                    });
+            }
+        
+            Session::flashInput($oldInput);
+        
+            return redirect()
+                ->back()
+                ->withErrors($e->validator);
+        }
+
         $article->judul = $request->judul;
         $article->article = $request->article;
 
@@ -393,7 +479,7 @@ class ArticleController extends Controller
             $article->articlecategory()->sync($categoryIds);
         }
 
-        return redirect()->back();
+        return redirect()->back()->with('success', 'Artikel berhasil diperbarui.');
     }
 
     /**

@@ -9,7 +9,7 @@
                     <p class=" text-neutral-600">{{$head}}</p>
                 </div>
                 @if ($link)
-                    <a href="{{$link}}" class=" text-byolink-1 hover:text-byolink-3 duration-300" target="__blank">Lihat Artikel</a>
+                    <a href="{{$link}}" class=" text-sm sm:text-base text-byolink-1 hover:text-byolink-3 duration-300" target="__blank">Lihat Artikel</a>
                 @endif
             </div>
         </div>

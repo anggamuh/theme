@@ -1,9 +1,9 @@
 <x-admin.article.form head="Edit Article Spintax" title="Admin - Edit Article Spintax" :form="route('article.update', ['article' => $article->id])" >
     @method('PUT')
-    <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="$article->judul" name="judul" />
-    <x-admin.component.categoryinput title="Kategori" :tag="$category" :value="$article->articlecategory" name="category[]" />
-    <x-admin.component.taginput title="Tag" :tag="$tag" :value="$article->articletag" name="tag[]" />
-    <x-admin.component.summernoteinput title="Artikel" :value="$article->article" name="article" />
+    <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="old('judul', $article->judul)" name="judul" />
+    <x-admin.component.categoryinput title="Kategori" :tag="$category" :value="old('category', $article->articlecategory)" name="category[]" />
+    <x-admin.component.taginput title="Tag" :tag="$tag" :value="old('tag', $article->articletag)" name="tag[]" />
+    <x-admin.component.summernoteinput title="Artikel" :value="old('article', $article->article)" name="article" />
     <x-slot:additional>
         <div x-data="bannerComponent({{ $article->articlebanner }}, {{ $article->id }})" class="flex flex-col gap-2">
             <label class="text-sm sm:text-base font-semibold" for="image_banner">Banner (Max 6)</label>
@@ -177,7 +177,7 @@
                 };
             }
         </script>
-        <x-admin.component.linkinput title="Video (Link Youtube/Tiktok) (Optional)" placeholder="Masukkan link..." value="{{ ($article->video_type === 'youtube') ? $article->youtube : (($article->video_type === 'tiktok') ? $article->tiktok : '') }}" name="link" link="Url" />
+        <x-admin.component.linkinput title="Video (Link Youtube/Tiktok) (Optional)" placeholder="Masukkan link..." value="{{ old('link', ($article->video_type === 'youtube') ? $article->youtube : (($article->video_type === 'tiktok') ? $article->tiktok : '')) }}" name="link" link="Url" />
     </x-slot:additional>
     <x-slot:template>
         <div class=" space-y-2">
@@ -185,7 +185,7 @@
             <div class=" w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach ($template as $item)
                     <label class="w-full rounded-md bg-white aspect-[2/3] overflow-hidden relative">
-                        <input type="checkbox" name="template_id[]" value="{{$item->id}}" class="hidden peer" {{ $article->template->contains('id', $item->id) ? 'checked' : '' }}>
+                        <input type="checkbox" name="template_id[]" value="{{$item->id}}" class="hidden peer" {{ (is_array(old('template_id')) ? in_array($item->id, old('template_id')) : $article->template->contains('id', $item->id)) ? 'checked' : '' }}>
                         <img src="{{asset('/storage/images/template/'.$item->image)}}" class=" w-full h-full object-cover object-top" alt="">
                         <div class=" absolute inset-0 peer-checked:bg-black/50 duration-300">
                         </div>
@@ -194,4 +194,7 @@
             </div>
         </div>
     </x-slot:template>
+    
+    @include('components.admin.component.success')
+    @include('components.admin.component.validationerror')
 </x-admin.article.form>

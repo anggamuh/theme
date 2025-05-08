@@ -1,7 +1,8 @@
 <x-admin.article.form head="Create Article Spintax" title="Admin - Create Article Spintax" :form="route('article.store')" >
-    <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="''" name="judul" />
-    <x-admin.component.taginput title="Tag" :tag="$tag" :value="null" name="tag[]" />
-    <x-admin.component.summernoteinput title="Artikel" value="" name="article" />
+    <x-admin.component.textinput title="Judul" placeholder="Masukkan Judul" :value="old('judul')" name="judul" />
+    <x-admin.component.categoryinput title="Kategori" :tag="$category" :value="old('category')" name="category[]" />
+    <x-admin.component.taginput title="Tag" :tag="$tag" :value="old('tag')" name="tag[]" />
+    <x-admin.component.summernoteinput title="Artikel" :value="old('article')" name="article" />
     <x-slot:additional>
         <div x-data="imageBanner" class="flex flex-col gap-2">
             <label class=" text-sm sm:text-base font-medium" for="image_banner">Banner (Max 6)</label>
@@ -94,7 +95,7 @@
                 };
             }
         </script>
-        <x-admin.component.linkinput title="Video (Link Youtube/Tiktok)" placeholder="Masukkan link..." value="" name="link" link="Url" />
+        <x-admin.component.linkinput title="Video (Link Youtube/Tiktok)" placeholder="Masukkan link..." :value="old('link')" name="link" link="Url" />
     </x-slot:additional>
     <x-slot:template>
         <div class=" space-y-2">
@@ -102,7 +103,7 @@
             <div class=" w-full grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
                 @foreach ($template as $item)
                     <label class="w-full rounded-md bg-white aspect-[2/3] overflow-hidden relative">
-                        <input type="checkbox" name="template_id[]" value="{{$item->id}}" class="hidden peer">
+                        <input type="checkbox" name="template_id[]" value="{{$item->id}}" class="hidden peer" {{ is_array(old('template_id')) && in_array($item->id, old('template_id')) ? 'checked' : '' }}>
                         <img src="{{asset('/storage/images/template/'.$item->image)}}" class=" w-full h-full object-cover object-top" alt="">
                         <div class=" absolute inset-0 peer-checked:bg-black/50 duration-300">
                         </div>
@@ -111,4 +112,5 @@
             </div>
         </div>
     </x-slot:template>
+    @include('components.admin.component.validationerror')
 </x-admin.article.form>

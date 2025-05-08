@@ -1,23 +1,15 @@
-@props(['title', 'name', 'value', 'tag'])
+@props(['phone' => null, 'value' => null , 'title' => null, 'name' => null])
 <div class="flex flex-col gap-2">
-    <label class="font-medium text-sm sm:text-base">{{$title}} (Pisahkan menggunakan "," atau "enter")</label>
-    <select class="js-example-basic-single" name="{{$name}}" multiple="multiple">
-        @if(isset($value))
-            @foreach($value as $item)
-                <option value="{{ $item->tag }}" selected>{{ $item->tag }}</option>
-            @endforeach
+    <label class="font-medium text-sm sm:text-base">{{$title}}</label>
+    <select class="no-tlp-one" name="{{$name}}" multiple="multiple">
+        @if ($value)
+            <option value="{{$value}}" selected>{{$value}}</option>
         @endif
-        @if (isset($tag))
-            @foreach ($tag as $item)
-                @if ($value)
-                    @if (!in_array($item->tag, $value->pluck('tag')->toArray())) <!-- Cek jika category tidak ada di value -->
-                        <option value="{{$item->tag}}">{{$item->tag}}</option>
-                    @endif
-                @else
-                    <option value="{{$item->tag}}">{{$item->tag}}</option>
-                @endif
-            @endforeach
-        @endif
+        @foreach($phone as $item)
+            @if ($item->no_tlp != $value)
+                <option value="{{ $item->no_tlp }}">{{ $item->no_tlp }}</option>
+            @endif
+        @endforeach
     </select>
     <style>
         .select2 {
@@ -65,9 +57,15 @@
     window.addEventListener('load', function select2() {
         var $j = jQuery.noConflict();
         $j(document).ready(function() {
-            $j('.js-example-basic-single').select2({
+            $j('.no-tlp-one').select2({
                 tags: true,
                 tokenSeparators: [','],
+                maximumSelectionLength: 1,
+                language: {
+                    maximumSelected: function (args) {
+                        return "Hanya bisa memilih satu saja";
+                    }
+                }
             });
         });
     });
