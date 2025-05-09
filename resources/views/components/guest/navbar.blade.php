@@ -22,7 +22,7 @@
             </div>
             <div class=" hidden md:flex flex-row gap-6 items-center text-neutral-500">
                 <x-guest.nav-button route="{{route('home')}}" active="{{request()->routeIs('home')}}">Beranda</x-guest.nav-button>
-                <x-guest.nav-button route="{{route('allarticle')}}" active="{{request()->routeIs('allarticle')}}">Artikel</x-guest.nav-button>
+                <x-guest.nav-button route="{{route('allarticle')}}" active="{{request()->routeIs('allarticle', 'pageallarticle', 'author', 'pageauthor', 'category', 'pagecategory', 'tag', 'pagetag')}}">Artikel</x-guest.nav-button>
                 <x-guest.nav-button route="" active="">Tentang</x-guest.nav-button>
                 {{-- @if (Route::has('login'))
                     @auth
@@ -46,7 +46,7 @@
     </div>
     <div :class="{' top-[70px] sm:top-20': open, '-translate-y-full top-0': !open}" class=" fixed flex md:hidden flex-col bg-white w-full left-0 justify-center gap-4 font-semibold text-neutral-600 pt-2 px-4 pb-4 duration-300 z-40">
         <x-guest.nav-button route="{{route('home')}}" active="{{request()->routeIs('home')}}">Beranda</x-guest.nav-button>
-        <x-guest.nav-button route="{{route('allarticle')}}" active="{{request()->routeIs('allarticle')}}">Article</x-guest.nav-button>
+        <x-guest.nav-button route="{{route('allarticle')}}" active="{{request()->routeIs('allarticle', 'pageallarticle', 'author', 'pageauthor', 'category', 'pagecategory', 'tag', 'pagetag')}}">Article</x-guest.nav-button>
         <x-guest.nav-button route="" active="">Tentang</x-guest.nav-button>
         <form action="{{route('allarticle')}}" method="get">
             <div class=" flex items-center justify-between h-10 bg-white">

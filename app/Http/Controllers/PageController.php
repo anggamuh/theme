@@ -26,8 +26,10 @@ class PageController extends Controller
             $data->articles->user ;
             return $data;
         });
+
+        $trend = ArticleShow::orderBy('view', 'desc')->take(6)->get();
         $data->withPath("/artikel/page");
-        return view('guest.home', compact('data'));
+        return view('guest.home', compact('data', 'trend'));
     }
 
     public function article(Request $request, $username = null, $category = null, $tag = null) {
@@ -90,6 +92,10 @@ class PageController extends Controller
         if (!$data) {
             return redirect()->route('not.found');
         }
+
+        $data->view = $data->view + 1;
+
+        $data->save();
         
         $template = $data->template;
 

@@ -3,7 +3,7 @@
         <div class=" w-full py-6 sm:py-10 px-4 sm:px-6 space-y-8 sm:space-y-12">
             @include('components.guest.home.header')
             <div class=" w-full max-w-[1080px] mx-auto">
-                <div class=" grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class=" grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div class=" md:col-span-3 w-full space-y-4 sm:space-y-6">
                         <div class=" w-full flex justify-between items-center">
                             <div class=" w-full flex items-center gap-2 sm:gap-4">
@@ -26,7 +26,36 @@
                             {{ $data->links() }}
                         </div>
                     </div>
-                    <div class=""></div>
+                    <div class="">
+                        <div class=" md:sticky top-24 space-y-4 sm:space-y-6">
+                            <div class=" w-full flex items-center gap-2 sm:gap-4 h-7 sm:h-10">
+                                <div class=" w-1 h-7 bg-byolink-2 rounded-full"></div>
+                                <p class=" text-xl font-bold text-center">Artikel Populer</p>
+                            </div>
+                            <div class=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-4 sm:gap-6">
+                                @foreach ($trend as $item)
+                                    <div class=" grid grid-cols-5 sm:grid-cols-4 gap-2">
+                                        <a href="{{ route('business', ['slug' => $item->slug]) }}" aria-label="{{$item->judul}}">
+                                            <div class=" w-full aspect-square rounded-md bg-white overflow-hidden">
+                                                <img src="{{$item->banner ? asset('storage/images/article/banner/' . $item->banner) : asset('assets/images/placeholder.webp')}}"
+                                                    class=" w-full h-full object-cover" alt="">
+                                            </div>
+                                        </a>
+                                        <div class=" col-span-4 sm:col-span-3 flex flex-col justify-between">
+                                            <a href="{{ route('business', ['slug' => $item->slug]) }}" aria-label="{{$item->judul}}">
+                                                <p class=" line-clamp-2 text-sm h-10">{{$item->judul}}</p>
+                                            </a>
+                                            <div class="flex flex-row justify-between text-xs">
+                                                <a href="{{ route('author', ['username' => $item->articles->user->slug]) }}" aria-label="{{$item->judul}}">
+                                                    <p class="font-bold text-neutral-600 hover:text-blue-600 duration-300">{{$item->articles->user->name}}</p>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -26,6 +26,7 @@ return new class extends Migration
             $table->enum('status', ['publish', 'schedule', 'private'])->default('publish');
             $table->boolean('telephone')->default(true);
             $table->boolean('whatsapp')->default(true);
+            $table->unsignedBigInteger('view')->default(0);
             $table->timestamps();
         });
     }
