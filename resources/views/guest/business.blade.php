@@ -1,6 +1,8 @@
 @php
     preg_match('/<p[^>]*>(.*?)<\/p>/is', $data->article, $matches);
-    $sentence = $matches[1] ?? strip_tags($data->article); // fallback kalau tidak ada <p>
+    $firstParagraph = $matches[1] ?? $data->article;
+
+    $sentence = Str::limit(strip_tags($firstParagraph), 155);
 @endphp
 <x-layout.guest :title="$data->judul. ' - Bizlink'" :desc="$sentence" :tags="$data->articles->articletag">
     <div class=" background w-full">
