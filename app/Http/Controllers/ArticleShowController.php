@@ -26,9 +26,15 @@ class ArticleShowController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->search) {
+            $data = Article::where('article_type', 'unique')->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
+
+        } else {
+            $data = Article::where('article_type', 'unique')->with('articleshow')->paginate(10);
+        }
+        return view('admin.article.index' ,compact('data'));
     }
 
     /**

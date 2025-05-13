@@ -20,11 +20,25 @@
 
                 <!-- Search -->
                 <div class=" w-full md:w-auto flex flex-row font-semibold duration-300">
-                    <form action="{{route('article.index')}}" class=" w-full">
+                    <form action="{{ url()->current() }}" class=" w-full">
                         <input type="text" placeholder="Cari Judul..." name="search" value="{{urlencode(request('search')) ?? ''}}"
                             class=" w-full text-sm sm:text-base md:w-auto py-2 px-3 border border-byolink-1 rounded-md overflow-hidden focus-within:border-byolink-3 font-normal">
                     </form>
                 </div>
+            </div>
+            <div class=" w-full grid grid-cols-3 gap-2 sm:gap-4">
+                <a href="{{ route('article.index') }}"
+                    class="{{ request()->routeIs(['article.index']) ? 'bg-byolink-1 text-white' : ' text-black rounded-md hover:text-white hover:bg-byolink-1'}} text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 font-semibold rounded-md duration-300">
+                    Semua
+                </a>
+                <a href="{{ route('article-generated.index') }}"
+                    class="{{ request()->routeIs(['article-generated.index']) ? 'bg-byolink-1 text-white' : ' text-black rounded-md hover:text-white hover:bg-byolink-1'}} text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 font-semibold rounded-md duration-300">
+                    Spintax
+                </a>
+                <a href="{{ route('article-show.index') }}"
+                    class="{{ request()->routeIs(['article-show.index']) ? 'bg-byolink-1 text-white' : ' text-black rounded-md hover:text-white hover:bg-byolink-1'}} text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 font-semibold rounded-md duration-300">
+                    Unique
+                </a>
             </div>
             <table class="w-full max-w-full text-sm sm:text-base rounded-md">
                 <thead>
