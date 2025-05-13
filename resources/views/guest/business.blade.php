@@ -1,8 +1,14 @@
 @php
-    preg_match('/<p[^>]*>(.*?)<\/p>/is', $data->article, $matches);
-    $firstParagraph = $matches[1] ?? $data->article;
+    preg_match('/<(p|div)[^>]*>(.*?)<\/\1>/is', $data->article, $matches);
+    $firstBlock = $matches[2] ?? $data->article;
 
-    $sentence = Str::limit(strip_tags($firstParagraph), 155);
+    $cleanText = strip_tags($firstBlock);
+
+    // Hapus &nbsp; dan decode entity lain seperti &amp;, &quot;, dll
+    $cleanText = str_replace('&nbsp;', ' ', $cleanText);
+    $cleanText = html_entity_decode($cleanText, ENT_QUOTES | ENT_HTML5);
+
+    $sentence = Str::limit(trim($cleanText), 155);
 @endphp
 <x-layout.guest :title="$data->judul. ' - Bizlink'" :desc="$sentence" :tags="$data->articles->articletag">
     <div class=" background w-full">
