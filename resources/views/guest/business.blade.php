@@ -1,7 +1,6 @@
 @php
-    $cleanedText = strip_tags($data->article);
-    $cleanedText = str_replace('&nbsp;', ' ', $cleanedText);  // Mengganti &nbsp; dengan spasi
-    $sentence = strtok($cleanedText, '.');
+    preg_match('/<p[^>]*>(.*?)<\/p>/is', $data->article, $matches);
+    $sentence = $matches[1] ?? strip_tags($data->article); // fallback kalau tidak ada <p>
 @endphp
 <x-layout.guest :title="$data->judul. ' - Bizlink'" :desc="$sentence" :tags="$data->articles->articletag">
     <div class=" background w-full">
