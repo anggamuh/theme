@@ -57,7 +57,7 @@
                 </x-slot:svg>
                 Phone
             </x-admin.mobile-navbutton>
-            <x-admin.mobile-navbutton route="article.index" :active="['article.index', 'article.create', 'article.show', 'article-show.index', 'article-show.create', 'article-show.show']">
+            <x-admin.mobile-navbutton route="article.index" :active="['article.index', 'article.create', 'article.show', 'articel-show.create', 'article-show.create', 'article-show.show', 'article.spintax', 'article.unique', 'article.filter', 'article.spintax.filter', 'article.unique.filter']">
                 <x-slot:svg>
                     <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path d="M8 28h8v-8H8v8zm0 10h8v-8H8v8zm0-20h8v-8H8v8zm10 10h24v-8H18v8zm0 10h24v-8H18v8zm0-28v8h24v-8H18z" fill="currentColor" class="fill-000000"></path><path d="M0 0h48v48H0z" fill="none"></path></svg>
                 </x-slot:svg>

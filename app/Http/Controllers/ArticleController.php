@@ -127,13 +127,50 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, $filter = null)
     {
-        if ($request->search) {
+        if ($request->search && $filter) {
+            $filter = $filter === 'publish' ? 0 : 1;
+            $data = Article::where('schedule', $filter)->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
+        } elseif ($filter) {
+            $filter = $filter === 'publish' ? 0 : 1;
+            $data = Article::where('schedule', $filter)->paginate(10);
+        } elseif ($request->search) {
             $data = Article::where('judul', 'like', '%' . $request->search . '%')->paginate(10);
-
         } else {
             $data = Article::with('articleshow')->paginate(10);
+        }
+        return view('admin.article.index' ,compact('data'));
+    }
+
+    public function indexspintax(Request $request, $filter = null)
+    {
+        if ($request->search && $filter) {
+            $filter = $filter === 'publish' ? 0 : 1;
+            $data = Article::where('article_type', 'spintax')->where('schedule', $filter)->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
+        } elseif ($filter) {
+            $filter = $filter === 'publish' ? 0 : 1;
+            $data = Article::where('article_type', 'spintax')->where('schedule', $filter)->paginate(10);
+        } elseif ($request->search) {
+            $data = Article::where('article_type', 'spintax')->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
+        } else {
+            $data = Article::where('article_type', 'spintax')->with('articleshow')->paginate(10);
+        }
+        return view('admin.article.index' ,compact('data'));
+    }
+    
+    public function indexunique(Request $request, $filter = null)
+    {
+        if ($request->search && $filter) {
+            $filter = $filter === 'publish' ? 0 : 1;
+            $data = Article::where('article_type', 'unique')->where('schedule', $filter)->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
+        } elseif ($filter) {
+            $filter = $filter === 'publish' ? 0 : 1;
+            $data = Article::where('article_type', 'unique')->where('schedule', $filter)->paginate(10);
+        } elseif ($request->search) {
+            $data = Article::where('article_type', 'unique')->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
+        } else {
+            $data = Article::where('article_type', 'unique')->with('articleshow')->paginate(10);
         }
         return view('admin.article.index' ,compact('data'));
     }

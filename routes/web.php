@@ -75,6 +75,14 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/user', UserController::class);
 
     Route::resource('/admin/article', ArticleController::class);
+    Route::get('/admin/article/filter/{filter}', [ArticleController::class, 'index'])->name('article.filter');
+
+    Route::get('/admin/article-spintax', [ArticleController::class, 'indexspintax'])->name('article.spintax');
+    Route::get('/admin/article-spintax/filter/{filter}', [ArticleController::class, 'indexspintax'])->name('article.spintax.filter');
+
+    Route::get('/admin/article-unique', [ArticleController::class, 'indexunique'])->name('article.unique');
+    Route::get('/admin/article-unique/filter/{filter}', [ArticleController::class, 'indexunique'])->name('article.unique.filter');
+
     Route::resource('/admin/article-banner', ArticleBannerController::class);
     Route::resource('/admin/article-gallery', ArticleGalleryController::class);
     Route::resource('/admin/source-code', SourceCodeController::class);

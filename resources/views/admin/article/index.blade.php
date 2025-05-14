@@ -28,15 +28,15 @@
             </div>
             <div class=" w-full grid grid-cols-3 gap-2 sm:gap-4">
                 <a href="{{ route('article.index') }}"
-                    class="{{ request()->routeIs(['article.index']) ? 'bg-byolink-1 text-white' : ' text-black rounded-md hover:text-white hover:bg-byolink-1'}} text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 font-semibold rounded-md duration-300">
+                    class="{{ request()->routeIs(['article.index', 'article.filter']) ? 'bg-byolink-1 text-white' : ' text-black rounded-md hover:text-white hover:bg-byolink-1'}} text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 font-semibold rounded-md duration-300">
                     Semua
                 </a>
-                <a href="{{ route('article-generated.index') }}"
-                    class="{{ request()->routeIs(['article-generated.index']) ? 'bg-byolink-1 text-white' : ' text-black rounded-md hover:text-white hover:bg-byolink-1'}} text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 font-semibold rounded-md duration-300">
+                <a href="{{ route('article.spintax') }}"
+                    class="{{ request()->routeIs(['article.spintax', 'article.spintax.filter']) ? 'bg-byolink-1 text-white' : ' text-black rounded-md hover:text-white hover:bg-byolink-1'}} text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 font-semibold rounded-md duration-300">
                     Spintax
                 </a>
-                <a href="{{ route('article-show.index') }}"
-                    class="{{ request()->routeIs(['article-show.index']) ? 'bg-byolink-1 text-white' : ' text-black rounded-md hover:text-white hover:bg-byolink-1'}} text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 font-semibold rounded-md duration-300">
+                <a href="{{ route('article.unique') }}"
+                    class="{{ request()->routeIs(['article.unique', 'article.unique.filter']) ? 'bg-byolink-1 text-white' : ' text-black rounded-md hover:text-white hover:bg-byolink-1'}} text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 font-semibold rounded-md duration-300">
                     Unique
                 </a>
             </div>
@@ -44,15 +44,27 @@
                 <thead>
                     <tr class="h-10 bg-byolink-1 text-white divide-x-2 divide-white">
                         <th class=" w-10 px-2 py-1 rounded-tl-md">No</th>
-                        <th class=" px-1 sm:px-2 py-1">Judul</th>
+                        <th x-data="{ filter: false }" class=" px-1 sm:px-2 py-1 relative">
+                            Judul
+                            <button @click="filter = !filter" class=" absolute top-1/2 -translate-y-1/2 right-2 w-5 sm:w-6 aspect-square hover:text-byolink-2 duration-300 overflow-hidden">
+                                <svg viewBox="0 0 32 32" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path d="M29.815 6.168A1.991 1.991 0 0 0 27.986 5H4.014c-.797 0-1.498.448-1.83 1.168a1.972 1.972 0 0 0 .297 2.128l.001.001L12 19.371V28a1 1 0 0 0 1.555.832l6-4c.278-.186.445-.498.445-.832v-4.629l9.519-11.074a1.972 1.972 0 0 0 .296-2.129z" fill="currentColor" class="fill-000000"></path></svg>
+                            </button>
+                            <div x-show="filter" @click.outside="filter = false" class="absolute z-50 top-2 right-2 text-neutral-600 text-left flex flex-col bg-white border rounded shadow-lg w-32">
+                                @php
+                                    $baseUrl = preg_replace('/\/filter\/(schedule|publish|private)/', '', url()->current());
+                                @endphp
+                                <a href="{{ $baseUrl }}/filter/schedule" class="block px-4 py-2 text-sm hover:bg-gray-100">Schedule</a>
+                                <a href="{{ $baseUrl }}/filter/publish" class="block px-4 py-2 text-sm hover:bg-gray-100">Publish</a>
+                            </div>
+                        </th>
                         <th class=" px-1 sm:px-2 py-1 w-[90px] sm:w-[100px] rounded-tr-md">Opsi</th>
                     </tr>
                 </thead>
-                @foreach ($data as $item)
+                @forelse ($data as $item)
                     @php
                         $rowBg = $loop->even ? 'bg-neutral-100' : 'bg-neutral-200';
                     @endphp
-                    <tbody x-data="{ spin: false }">
+                    <tbody x-data="{ spin: false, search: '' }">
                         <tr class="{{ $rowBg }} h-10 text-neutral-600 divide-x-2 divide-white">
                             <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration }}</td>
                             <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold">
@@ -169,8 +181,24 @@
                         </tr>
 
                         @if ($item->article_type === 'spintax')
+                            <tr x-show="spin" class=" h-10">
+                                <td class="px-3 py-1 text-center font-semibold bg-white"></td>
+                                <td colspan="2" class=" bg-byolink-1">
+                                    <div class=" flex items-center justify-between px-2">
+                                        <p class=" text-white font-semibold">
+                                            Artikel 
+                                            <span class=" text-nowrap">
+                                                <span class=" text-green-500">{{$item->articleshow->where('status', 'publish')->count()}}</span>
+                                                /{{$item->articleshow->count()}} Publish
+                                            </span>
+                                        </p>
+                                        <input type="text" placeholder="Cari..." x-model="search" class=" min-w-0 w-36 sm:w-auto bg-white py-1 border-x-pink-200 text-sm sm:text-base border-none ring-0 focus:ring-0 rounded-md">
+                                    </div>
+                                </td>
+                            </tr>
                             @foreach ($item->articleshow as $itemshow)
-                                <tr x-show="spin" class="{{ $itemshow->status === 'schedule' ? 'bg-red-100' : ($itemshow->status === 'publish' ? 'bg-green-100' : 'bg-purple-100') }} h-10 text-neutral-600 divide-x-2 divide-white">
+                                <tr x-show="spin && '{{ strtolower($itemshow->judul) }}'.includes(search.toLowerCase())" 
+                                    class="{{ $itemshow->status === 'schedule' ? 'bg-red-100' : ($itemshow->status === 'publish' ? 'bg-green-100' : 'bg-purple-100') }} h-10 text-neutral-600 divide-x-2 divide-white">
                                     <td class="px-3 py-1 text-center font-semibold bg-white"></td>
                                     <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold flex">
                                         <p class="line-clamp-2">
@@ -205,7 +233,11 @@
                             @endforeach
                         @endif
                     </tbody>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="3" class=" bg-neutral-100 px-1 sm:px-2 py-1 text-center rounded-b-md text-neutral-600">Data tidak ditemukan</td>
+                    </tr>
+                @endforelse
             </table>
             {{ $data->links('vendor.pagination.admin') }}
         </div>

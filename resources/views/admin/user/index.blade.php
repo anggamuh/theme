@@ -26,7 +26,7 @@
                         <th class=" px-1 sm:px-2 py-1 w-[90px] sm:w-[100px] rounded-tr-md">Opsi</th>
                     </tr>
                 </thead>
-                @foreach ($data as $item)
+                @forelse ($data as $item)
                     <tbody>
                         <tr class="{{ $loop->even ? 'bg-neutral-100' : 'bg-neutral-200' }} h-10 text-neutral-600 divide-x-2 divide-white">
                             <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration }}</td>
@@ -56,7 +56,11 @@
                             </td>
                         </tr>
                     </tbody>
-                @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="4" class=" bg-neutral-100 px-1 sm:px-2 py-1 text-center rounded-b-md text-neutral-600">Data tidak ditemukan</td>
+                    </tr>
+                @endforelse
             </table>
             {{ $data->links('vendor.pagination.admin') }}
         </div>
