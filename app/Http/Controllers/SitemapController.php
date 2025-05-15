@@ -18,19 +18,64 @@ class SitemapController extends Controller
             ->add(Url::create('/')->setLastModificationDate(now()))
             ->add(Url::create('/artikel')->setLastModificationDate(now()));
 
-        // Dynamically add more URLs if needed, such as from a database
+        $perPage = 12;
+        $totalArticles = ArticleShow::where('status', 'publish')->count();
+        $totalPages = ceil($totalArticles / $perPage);
+
+        for ($page = 1; $page <= $totalPages; $page++) {
+            $sitemap->add(
+                Url::create("/artikel/page/{$page}")->setLastModificationDate(now())
+            );
+        }
+
         foreach (User::all() as $model) {
             $slug = $model->slug;
-            $sitemap->add(Url::create("/penulis/{$slug}")->setLastModificationDate($model->updated_at));
+            $baseUrl = "/penulis/{$slug}";
+            $lastMod = $model->updated_at;
+        
+            $sitemap->add(Url::create($baseUrl)->setLastModificationDate($lastMod));
+        
+            $articleIds = $model->articles()->pluck('id');
+            $articleCount = ArticleShow::where('status', 'publish')->whereIn('article_id', $articleIds)->count();
+            $pages = ceil($articleCount / $perPage);
+        
+            for ($page = 1; $page <= $pages; $page++) {
+                $sitemap->add(Url::create("{$baseUrl}/page/{$page}")->setLastModificationDate($lastMod));
+            }
         }
+        
         foreach (ArticleCategory::all() as $model) {
             $slug = $model->slug;
-            $sitemap->add(Url::create("/kategori/{$slug}")->setLastModificationDate($model->updated_at));
+            $baseUrl = "/kategori/{$slug}";
+            $lastMod = $model->updated_at;
+        
+            $sitemap->add(Url::create($baseUrl)->setLastModificationDate($lastMod));
+        
+            $articleIds = $model->articles()->pluck('articles.id');
+            $articleCount = ArticleShow::where('status', 'publish')->whereIn('article_id', $articleIds)->count();
+            $pages = ceil($articleCount / $perPage);
+        
+            for ($page = 1; $page <= $pages; $page++) {
+                $sitemap->add(Url::create("{$baseUrl}/page/{$page}")->setLastModificationDate($lastMod));
+            }
         }
+        
         foreach (ArticleTag::all() as $model) {
             $slug = $model->slug;
-            $sitemap->add(Url::create("/tag/{$slug}")->setLastModificationDate($model->updated_at));
+            $baseUrl = "/tag/{$slug}";
+            $lastMod = $model->updated_at;
+        
+            $sitemap->add(Url::create($baseUrl)->setLastModificationDate($lastMod));
+        
+            $articleIds = $model->articles()->pluck('articles.id'); // penting: ambil id dari tabel articles
+            $articleCount = ArticleShow::where('status', 'publish')->whereIn('article_id', $articleIds)->count();
+            $pages = ceil($articleCount / $perPage);
+        
+            for ($page = 1; $page <= $pages; $page++) {
+                $sitemap->add(Url::create("{$baseUrl}/page/{$page}")->setLastModificationDate($lastMod));
+            }
         }
+
         foreach (ArticleShow::where('status', 'publish')->get() as $model) {
             $slug = $model->slug;
             $sitemap->add(Url::create("/{$slug}")->setLastModificationDate($model->updated_at));
