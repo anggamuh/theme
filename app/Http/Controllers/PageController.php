@@ -37,6 +37,8 @@ class PageController extends Controller
             return $request->route('page', 1);
         });
 
+        $page = $request->route('page') ?? null;
+
         if ($username) {
             $data = ArticleShow::whereHas('articles.user', function ($query) use ($username) {
                 $query->where('slug', $username);
@@ -83,7 +85,7 @@ class PageController extends Controller
             $data->articles->user ;
             return $data;
         });
-        return view('guest.article', compact('data', 'title'));
+        return view('guest.article', compact('data', 'title', 'page'));
     }
 
     public function business($slug) {
