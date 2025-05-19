@@ -36,13 +36,13 @@
                             </div>
                         </label>
                         <label class="w-full rounded-md bg-white overflow-hidden relative">
-                            <input type="radio" name="gallery" value="two" class="hidden peer" {{isset($template) && $template->gallery_type === 'two' ? 'checked' : ''}}>
+                            <input type="radio" name="gallery" value="two" class="hidden peer" {{old('gallery', $template->gallery_type?? '') === 'two' ? 'checked' : ''}}>
                             <img src="{{asset('assets/images/template/gallery/two.png')}}" class=" w-full" alt="">
                             <div class=" absolute inset-0 peer-checked:bg-black/50 duration-300">
                             </div>
                         </label>
                         <label class="w-full rounded-md bg-white overflow-hidden relative">
-                            <input type="radio" name="gallery" value="three" class="hidden peer" {{isset($template) && $template->gallery_type === 'three' ? 'checked' : ''}}>
+                            <input type="radio" name="gallery" value="three" class="hidden peer" {{old('gallery', $template->gallery_type?? '') === 'three' ? 'checked' : ''}}>
                             <img src="{{asset('assets/images/template/gallery/three.png')}}" class=" w-full" alt="">
                             <div class=" absolute inset-0 peer-checked:bg-black/50 duration-300">
                             </div>

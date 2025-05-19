@@ -3,7 +3,7 @@
         <form action="{{route('phone-number.store')}}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="w-full p-4 sm:p-8 bg-white rounded-md shadow-md shadow-black/20 flex flex-col gap-6">
-                <x-admin.component.textinput title="No. Telephone" placeholder="Masukkan no. telephone" :value="''" name="no_tlp" />
+                <x-admin.component.textinput title="No. Telephone" placeholder="Masukkan no. telephone" :value="old('no_tlp')" name="no_tlp" />
                 <div class=" w-full relative pt-9">
                     <div class=" w-full">
                         <input type="radio" name="type" value="category" id="category" class="hidden peer" checked>
@@ -14,7 +14,7 @@
                                 <label class="font-medium text-sm sm:text-base">Pilih Kategori</label>
                                 <select class="js-example-basic-single" name="category[]" multiple="multiple">
                                     @foreach($category as $item)
-                                        <option value="{{ $item->id }}">{{ $item->tag }}</option>
+                                        <option value="{{ $item->id }}" {{ in_array($item->id, old('category', [])) ? 'selected' : '' }}>{{ $item->tag }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -30,7 +30,7 @@
                     </div>
                     
                     <div class=" w-full">
-                        <input type="radio" name="type" value="article" id="article" class="hidden peer">
+                        <input type="radio" name="type" value="article" id="article" class="hidden peer" {{old('type') === 'article' ? 'checked' : ''}}>
                         <label for="article" class=" absolute w-[calc(50%-8px)] cursor-pointer right-0 top-0 flex justify-center pb-2 text-center font-medium border-b-2 peer-checked:bg-white peer-checked:border-blue-500">Artikel</label>
                         <!-- Tab 2 -->
                         <div class="peer-checked:block hidden mt-4">
@@ -38,7 +38,7 @@
                                 <label class="font-medium text-sm sm:text-base">Pilih Artikel</label>
                                 <select class="js-example-basic-single" name="article[]" multiple="multiple">
                                     @foreach($article as $item)
-                                        <option value="{{ $item->id }}">{{ $item->judul }}</option>
+                                        <option value="{{ $item->id }}" {{ in_array($item->id, old('article', [])) ? 'selected' : '' }}>{{ $item->judul }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -98,4 +98,6 @@
             </div>
         </form>
     </div>
+
+    @include('components.admin.component.validationerror')
 </x-app-layout>

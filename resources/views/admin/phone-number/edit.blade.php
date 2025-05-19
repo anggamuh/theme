@@ -4,7 +4,7 @@
             @csrf
             @method('PUT')
             <div class="w-full p-4 sm:p-8 bg-white rounded-md shadow-md shadow-black/20 flex flex-col gap-6">
-                <x-admin.component.textinput title="No. Telephone" placeholder="Masukkan no. telephone" :value="$phoneNumber->no_tlp" name="no_tlp" />
+                <x-admin.component.textinput title="No. Telephone" placeholder="Masukkan no. telephone" :value="old('no_tlp', $phoneNumber->no_tlp)" name="no_tlp" />
                 @if ($phoneNumber->type != 'main')
                     <div class=" w-full relative pt-9">
                         <div class=" w-full">
@@ -14,12 +14,15 @@
                             <div class="peer-checked:block hidden mt-4">
                                 <div class="flex flex-col gap-2">
                                     <label class="font-medium text-sm sm:text-base">Pilih Kategori</label>
+                                    @php
+                                        $selectedTags = old('category', $phoneNumber->articletag->pluck('id')->toArray());
+                                    @endphp
                                     <select class="js-example-basic-single" name="category[]" multiple="multiple">
                                         @foreach($category as $item)
-                                            <option value="{{ $item->id }}">{{ $item->tag }}</option>
-                                        @endforeach
-                                        @foreach ($phoneNumber->articletag as $item)
-                                            <option value="{{ $item->id }}" selected>{{ $item->tag }}</option>
+                                            <option value="{{ $item->id }}" 
+                                                {{ in_array($item->id, $selectedTags) ? 'selected' : '' }}>
+                                                {{ $item->tag }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -41,12 +44,16 @@
                             <div class="peer-checked:block hidden mt-4">
                                 <div class="flex flex-col gap-2">
                                     <label class="font-medium text-sm sm:text-base">Pilih Artikel</label>
+                                    @php
+                                        $selectedArticles = old('article', $phoneNumber->article->pluck('id')->toArray());
+                                    @endphp
+
                                     <select class="js-example-basic-single" name="article[]" multiple="multiple">
                                         @foreach($article as $item)
-                                            <option value="{{ $item->id }}">{{ $item->judul }}</option>
-                                        @endforeach
-                                        @foreach ($phoneNumber->article as $item)
-                                            <option value="{{ $item->id }}" selected>{{ $item->judul }}</option>
+                                            <option value="{{ $item->id }}" 
+                                                {{ in_array($item->id, $selectedArticles) ? 'selected' : '' }}>
+                                                {{ $item->judul }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -107,4 +114,6 @@
             </div>
         </form>
     </div>
+
+    @include('components.admin.component.validationerror')
 </x-app-layout>

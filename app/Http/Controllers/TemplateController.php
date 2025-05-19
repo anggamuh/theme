@@ -35,6 +35,10 @@ class TemplateController extends Controller
      */
     public function store(Request $request)
     {
+        $validated = $request->validate([
+            'name' => 'required|max:255|unique:'.Template::class,
+        ]);
+
         $newdata = new Template;
 
         $newdata->name = $request->name;
@@ -118,6 +122,10 @@ class TemplateController extends Controller
      */
     public function update(Request $request, template $template)
     {
+        $validated = $request->validate([
+            'name' => 'required|max:255|unique:'.Template::class,
+        ]);
+        
         $template->name = $request->name;
         $template->bg_type = $request->bg_type;
         $template->head_type = $request->header;

@@ -6,6 +6,8 @@ use App\Models\ArticleShow;
 use App\Models\ArticleTag;
 use App\Models\PhoneNumber;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Validation\ValidationException;
 
 class PhoneNumberController extends Controller
 {
@@ -34,6 +36,12 @@ class PhoneNumberController extends Controller
     public function store(Request $request)
     {
         // dd($request);
+        $validated = $request->validate([
+            'no_tlp' => 'required|max:255|unique:'.PhoneNumber::class,
+            'category' => 'array',
+            'article' => 'array',
+        ]);
+
         $newtlp = new PhoneNumber;
 
         $newtlp->no_tlp = preg_replace('/^0/', '+62', $request->no_tlp);
@@ -67,8 +75,8 @@ class PhoneNumberController extends Controller
      */
     public function show(PhoneNumber $phoneNumber)
     {
-        $category = ArticleTag::where('phone_number_id', '!=', $phoneNumber->id)->orWhereNull('phone_number_id')->get();
-        $article = ArticleShow::where('phone_number_id', '!=', $phoneNumber->id)->orWhereNull('phone_number_id')->get();
+        $category = ArticleTag::all();
+        $article = ArticleShow::all();
         return view('admin.phone-number.edit', compact('phoneNumber', 'category', 'article'));
     }
 
@@ -85,6 +93,12 @@ class PhoneNumberController extends Controller
      */
     public function update(Request $request, PhoneNumber $phoneNumber)
     {
+        $validated = $request->validate([
+            'no_tlp' => 'required|max:255|unique:'.PhoneNumber::class,
+            'category' => 'array',
+            'article' => 'array',
+        ]);
+        
         $phoneNumber->no_tlp = preg_replace('/^0/', '+62', $request->no_tlp);
 
         if ($phoneNumber->type != 'main') {

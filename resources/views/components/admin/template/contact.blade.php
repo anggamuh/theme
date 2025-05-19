@@ -32,7 +32,7 @@
                         <div class="flex flex-col gap-2 text-sm sm:text-base font-medium">
                             <label for="contact_main_color">Telephone Color</label>
                             <div class=" w-full flex items-center justify-center overflow-hidden shadow-md shadow-black/20 rounded-md h-10">
-                                <input type="color" name="contact_main_color" id="contact_main_color" class=" min-w-[105%] h-14 rounded-md cursor-pointer" value="{{$template->contact_main_color ?? '#1d588d'}}">
+                                <input type="color" name="contact_main_color" id="contact_main_color" class=" min-w-[105%] h-14 rounded-md cursor-pointer" value="{{old('contact_main_color', $template->contact_main_color ?? null) ?? '#1d588d'}}">
                             </div>
                         </div>
                     </div>
@@ -40,7 +40,7 @@
                         <div class="flex flex-col gap-2 text-sm sm:text-base font-medium">
                             <label for="contact_second_color">WhatsApp Color</label>
                             <div class=" w-full flex items-center justify-center overflow-hidden shadow-md shadow-black/20 rounded-md h-10">
-                                <input type="color" name="contact_second_color" id="contact_second_color" class=" min-w-[105%] h-14 rounded-md cursor-pointer" value="{{$template->contact_second_color ?? '#25d366'}}">
+                                <input type="color" name="contact_second_color" id="contact_second_color" class=" min-w-[105%] h-14 rounded-md cursor-pointer" value="{{old('contact_second_color', $template->contact_second_color ?? null) ?? '#25d366'}}">
                             </div>
                         </div>
                     </div>
