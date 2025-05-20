@@ -129,6 +129,12 @@ class ArticleController extends Controller
      */
     public function index(Request $request, $filter = null)
     {
+        $count = new \stdClass();
+        $count->all = ArticleShow::count();
+        $count->schedule = ArticleShow::where('status', 'schedule')->count();
+        $count->publish = ArticleShow::where('status', 'publish')->count();
+        $count->private = ArticleShow::where('status', 'private')->count();
+        
         if ($request->search && $filter) {
             $filter = $filter === 'publish' ? 0 : 1;
             $data = Article::where('schedule', $filter)->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
@@ -140,11 +146,17 @@ class ArticleController extends Controller
         } else {
             $data = Article::with('articleshow')->paginate(10);
         }
-        return view('admin.article.index' ,compact('data'));
+        return view('admin.article.index' ,compact('data', 'count'));
     }
 
     public function indexspintax(Request $request, $filter = null)
     {
+        $count = new \stdClass();
+        $count->all = ArticleShow::count();
+        $count->schedule = ArticleShow::where('status', 'schedule')->count();
+        $count->publish = ArticleShow::where('status', 'publish')->count();
+        $count->private = ArticleShow::where('status', 'private')->count();
+
         if ($request->search && $filter) {
             $filter = $filter === 'publish' ? 0 : 1;
             $data = Article::where('article_type', 'spintax')->where('schedule', $filter)->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
@@ -156,11 +168,17 @@ class ArticleController extends Controller
         } else {
             $data = Article::where('article_type', 'spintax')->with('articleshow')->paginate(10);
         }
-        return view('admin.article.index' ,compact('data'));
+        return view('admin.article.index' ,compact('data', 'count'));
     }
     
     public function indexunique(Request $request, $filter = null)
     {
+        $count = new \stdClass();
+        $count->all = ArticleShow::count();
+        $count->schedule = ArticleShow::where('status', 'schedule')->count();
+        $count->publish = ArticleShow::where('status', 'publish')->count();
+        $count->private = ArticleShow::where('status', 'private')->count();
+
         if ($request->search && $filter) {
             $filter = $filter === 'publish' ? 0 : 1;
             $data = Article::where('article_type', 'unique')->where('schedule', $filter)->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
@@ -172,7 +190,7 @@ class ArticleController extends Controller
         } else {
             $data = Article::where('article_type', 'unique')->with('articleshow')->paginate(10);
         }
-        return view('admin.article.index' ,compact('data'));
+        return view('admin.article.index' ,compact('data', 'count'));
     }
 
     /**
