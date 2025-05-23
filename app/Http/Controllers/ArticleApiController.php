@@ -52,6 +52,11 @@ class ArticleApiController extends Controller
             $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
             return $data;
         });
+        
+        $trend->transform(function ($data) {
+            $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
+            return $data;
+        });
 
         return response()->json([
             'success' => true,
