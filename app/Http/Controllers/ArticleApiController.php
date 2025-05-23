@@ -36,7 +36,7 @@ class ArticleApiController extends Controller
 
         $articleIds = $web->articles->pluck('id');
 
-        $perPage = $request->input(12);
+        $perPage = 12;
 
         $articles = ArticleShow::whereIn('article_id', $articleIds)
             ->where('status', 'publish')
