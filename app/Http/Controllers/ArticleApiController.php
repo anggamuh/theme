@@ -43,6 +43,11 @@ class ArticleApiController extends Controller
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
             ->paginate($perPage);
 
+        $trend = ArticleShow::whereIn('article_id', $articleIds)
+            ->where('status', 'publish')
+            ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
+            ->orderBy('view', 'desc')->take(6)->get();
+
         $articles->transform(function ($data) {
             $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
             return $data;
@@ -51,6 +56,7 @@ class ArticleApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $articles,
+            'trend' => $trend,
         ]);
     }
 
