@@ -94,6 +94,7 @@ class ArticleApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $articles,
+            'user' => $user->name,
         ]);
     }
 
