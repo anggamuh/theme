@@ -182,6 +182,13 @@ class ArticleApiController extends Controller
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
             ->first();
 
+        if (!$articles) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Artikel tidak ditemukan.',
+            ], 404); // Bisa pakai 404 atau 200 tergantung standar kamu
+        }
+        
         return response()->json([
             'success' => true,
             'data' => $articles,
