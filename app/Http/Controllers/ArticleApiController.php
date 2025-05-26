@@ -41,6 +41,9 @@ class ArticleApiController extends Controller
         $articles = ArticleShow::whereIn('article_id', $articleIds)
             ->where('status', 'publish')
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
+            ->when($request->search, function ($query, $search) {
+                return $query->where('judul', 'like', '%' . $search . '%');
+            })
             ->paginate($perPage);
 
         $trend = ArticleShow::whereIn('article_id', $articleIds)
