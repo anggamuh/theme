@@ -109,13 +109,15 @@ class ArticleApiController extends Controller
         
         $articleIds = $web->articles->pluck('id');
 
+        $perPage = 12;
+
         $articles = ArticleShow::whereIn('article_id', $articleIds)
             ->where('status', 'publish')
             ->whereHas('articles.articlecategory', function ($query) use ($category) {
                 $query->where('category_id', $category->id);
             })
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
-            ->get();
+            ->paginate($perPage);
 
         $articles->transform(function ($data) {
             $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
@@ -140,13 +142,15 @@ class ArticleApiController extends Controller
         
         $articleIds = $web->articles->pluck('id');
 
+        $perPage = 12;
+
         $articles = ArticleShow::whereIn('article_id', $articleIds)
             ->where('status', 'publish')
             ->whereHas('articles.articletag', function ($query) use ($tag) {
                 $query->where('tag_id', $tag->id);
             })
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
-            ->get();
+            ->paginate($perPage);
 
         $articles->transform(function ($data) {
             $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
