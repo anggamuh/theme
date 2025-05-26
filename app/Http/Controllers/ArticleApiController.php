@@ -65,7 +65,7 @@ class ArticleApiController extends Controller
         ]);
     }
 
-    public function indexUser($user, $code) {
+    public function indexUser(Request $request, $user, $code) {
         $web = $this->findWebByCode($code);
 
         if ($web instanceof \Illuminate\Http\JsonResponse) {
@@ -76,13 +76,20 @@ class ArticleApiController extends Controller
 
         $articleIds = $web->articles->pluck('id');
 
+        $perPage = 12;
+
         $articles = ArticleShow::whereIn('article_id', $articleIds)
             ->where('status', 'publish')
             ->whereHas('articles.user', function ($query) use ($user) {
                 $query->where('id', $user->id);
             })
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
-            ->get();
+            ->paginate($perPage);
+
+        $articles->transform(function ($data) {
+            $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
+            return $data;
+        });
 
         return response()->json([
             'success' => true,
