@@ -117,9 +117,15 @@ class ArticleApiController extends Controller
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
             ->get();
 
+        $articles->transform(function ($data) {
+            $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
+            return $data;
+        });
+
         return response()->json([
             'success' => true,
             'data' => $articles,
+            'category' => $category->category,
         ]);
     }
 
@@ -142,9 +148,15 @@ class ArticleApiController extends Controller
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
             ->get();
 
+        $articles->transform(function ($data) {
+            $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
+            return $data;
+        });
+
         return response()->json([
             'success' => true,
             'data' => $articles,
+            'tag' => $tag->tag,
         ]);
     }
 
