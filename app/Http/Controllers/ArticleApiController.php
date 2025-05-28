@@ -182,6 +182,10 @@ class ArticleApiController extends Controller
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
             ->first();
 
+        $articles->view = $articles->view + 1;
+
+        $articles->save();
+
         if (!$articles) {
             return response()->json([
                 'success' => false,
