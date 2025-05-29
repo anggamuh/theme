@@ -209,15 +209,88 @@ class ArticleApiController extends Controller
         }
 
         $articleIds = $web->articles->pluck('id');
+        $perPage = 12;
 
-        $data = ArticleShow::where('status', 'publish')
+        $pages = [];
+    
+        // Artikel Utama
+        $totalArticles = ArticleShow::where('status', 'publish')
             ->whereIn('article_id', $articleIds)
-            ->get(['slug', 'updated_at']);
-
+            ->count();
+            
+        $totalPages = ceil($totalArticles / $perPage);
+        for ($page = 1; $page <= $totalPages; $page++) {
+            $pages[] = [
+                'url' => "/artikel/page/{$page}",
+                'updated_at' => now(),
+            ];
+        }
+    
+        // Penulis
+        foreach (User::all() as $user) {
+            $articleCount = ArticleShow::where('status', 'publish')
+                ->whereIn('article_id', $user->articles()->pluck('id')->intersect($articleIds))
+                ->count();
+            if ($articleCount == 0) continue;
+    
+            $pages[] = [
+                'url' => "/penulis/{$user->slug}",
+                'updated_at' => $user->updated_at,
+            ];
+    
+            $totalPages = ceil($articleCount / $perPage);
+            for ($page = 1; $page <= $totalPages; $page++) {
+                $pages[] = [
+                    'url' => "/penulis/{$user->slug}/page/{$page}",
+                    'updated_at' => $user->updated_at,
+                ];
+            }
+        }
+    
+        // Kategori
+        foreach (ArticleCategory::all() as $category) {
+            $articleCount = ArticleShow::where('status', 'publish')
+                ->whereIn('article_id', $category->articles()->pluck('articles.id')->intersect($articleIds))
+                ->count();
+            if ($articleCount == 0) continue;
+    
+            $pages[] = [
+                'url' => "/kategori/{$category->slug}",
+                'updated_at' => $category->updated_at,
+            ];
+    
+            $totalPages = ceil($articleCount / $perPage);
+            for ($page = 1; $page <= $totalPages; $page++) {
+                $pages[] = [
+                    'url' => "/kategori/{$category->slug}/page/{$page}",
+                    'updated_at' => $category->updated_at,
+                ];
+            }
+        }
+    
+        // Tag
+        foreach (ArticleTag::all() as $tag) {
+            $articleCount = ArticleShow::where('status', 'publish')
+                ->whereIn('article_id', $tag->articles()->pluck('articles.id')->intersect($articleIds))
+                ->count();
+            if ($articleCount == 0) continue;
+    
+            $pages[] = [
+                'url' => "/tag/{$tag->slug}",
+                'updated_at' => $tag->updated_at,
+            ];
+    
+            $totalPages = ceil($articleCount / $perPage);
+            for ($page = 1; $page <= $totalPages; $page++) {
+                $pages[] = [
+                    'url' => "/tag/{$tag->slug}/page/{$page}",
+                    'updated_at' => $tag->updated_at,
+                ];
+            }
+        }
+    
         return response()->json([
-            'homepage' => '/',
-            'artikel_index' => '/artikel',
-            'articles' => $data,
+            'pages' => $pages
         ]);
     }
 }
