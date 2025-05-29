@@ -19,6 +19,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/sitemap/{code}', [ArticleApiController::class, 'sitemap']);
+
 Route::get('/article/{code}', [ArticleApiController::class, 'index']);
 Route::get('/article/user/{user}/{code}', [ArticleApiController::class, 'indexUser']);
 Route::get('/article/category/{category}/{code}', [ArticleApiController::class, 'indexCategory']);

@@ -10,6 +10,8 @@ use App\Models\GuardianWeb;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Spatie\Sitemap\Sitemap;
+use Spatie\Sitemap\Tags\Url;
 
 class ArticleApiController extends Controller
 {
@@ -196,6 +198,26 @@ class ArticleApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $articles,
+        ]);
+    }
+
+    public function sitemap($code) {
+        $web = $this->findWebByCode($code);
+
+        if ($web instanceof \Illuminate\Http\JsonResponse) {
+            return $web; // Return error jika tidak ditemukan
+        }
+
+        $articleIds = $web->articles->pluck('id');
+
+        $data = ArticleShow::where('status', 'publish')
+            ->whereIn('article_id', $articleIds)
+            ->get(['slug', 'updated_at']);
+
+        return response()->json([
+            'homepage' => '/',
+            'artikel_index' => '/artikel',
+            'articles' => $data,
         ]);
     }
 }
