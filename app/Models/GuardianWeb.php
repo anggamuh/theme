@@ -11,4 +11,7 @@ class GuardianWeb extends Model
     public function articles(){
         return $this->belongsToMany(Article::class, 'pivot_guardian_webs_articles', 'guardian_web_id', 'article_id');
     }
+    public function categories(){
+        return $this->belongsToMany(ArticleCategory::class, 'pivot_guardian_webs_categories', 'guardian_web_id', 'category_id');
+    }
 }

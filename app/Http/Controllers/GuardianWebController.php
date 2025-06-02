@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\ArticleCategory;
 use App\Models\GuardianWeb;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -28,8 +29,9 @@ class GuardianWebController extends Controller
     public function create()
     {
         $article = Article::all();
+        $category = ArticleCategory::all();
 
-        return view('admin.guardian.create', compact('article'));
+        return view('admin.guardian.create', compact('article', 'category'));
     }
 
     /**
@@ -49,9 +51,17 @@ class GuardianWebController extends Controller
 
         $newguardian->save();
 
-        if ($request->has('article') && is_array($request->article)) {
-            $newguardian->articles()->attach($request->article);
+        if ($request->type === 'category') {
+            if ($request->has('category') && is_array($request->category)) {
+                $newguardian->categories()->attach($request->category);
+            }
+        } elseif ($request->type === 'article') {
+            if ($request->has('article') && is_array($request->article)) {
+                $newguardian->articles()->attach($request->article);
+            }
         }
+
+
 
         return redirect()->route('guardian.index');
     }
@@ -62,10 +72,11 @@ class GuardianWebController extends Controller
     public function show($id, GuardianWeb $guardianWeb)
     {
         $article = Article::all();
+        $category = ArticleCategory::all();
 
         $guardianWeb = GuardianWeb::find($id);
 
-        return view('admin.guardian.edit', compact('guardianWeb', 'article'));
+        return view('admin.guardian.edit', compact('guardianWeb', 'article', 'category'));
     }
 
     /**
@@ -92,11 +103,16 @@ class GuardianWebController extends Controller
 
         $guardianWeb->save();
         
-        if ($request->has('article') && is_array($request->article)) {
-            $guardianWeb->articles()->sync($request->article);
-        } else {
-            // Jika tidak ada data artikel dikirim, hapus semua relasi
-            $guardianWeb->articles()->detach();
+        if ($request->type === 'category') {
+            if ($request->has('category') && is_array($request->category)) {
+                $guardianWeb->categories()->sync($request->category);
+                $guardianWeb->articles()->detach();
+            }
+        } elseif ($request->type === 'article') {
+            if ($request->has('article') && is_array($request->article)) {
+                $guardianWeb->articles()->sync($request->article);
+                $guardianWeb->categories()->detach();
+            }
         }
         
         return redirect()->route('guardian.index');

@@ -36,7 +36,14 @@ class ArticleApiController extends Controller
             return $web; // Return error jika tidak ditemukan
         }
 
-        $articleIds = $web->articles->pluck('id');
+        $articleIds = [];
+        if ($web->articles->isNotEmpty()) {
+            $articleIds = $web->articles->pluck('id');
+        } elseif ($web->categories->isNotEmpty()) {
+            $articleIds = Article::whereHas('articlecategory', function ($query) use ($web) {
+                $query->whereIn('category_id', $web->categories->pluck('id'));
+            })->pluck('id');
+        }
 
         $perPage = 12;
 
@@ -79,7 +86,14 @@ class ArticleApiController extends Controller
 
         $user = User::where('slug', $user)->first();
 
-        $articleIds = $web->articles->pluck('id');
+        $articleIds = [];
+        if ($web->articles->isNotEmpty()) {
+            $articleIds = $web->articles->pluck('id');
+        } elseif ($web->categories->isNotEmpty()) {
+            $articleIds = Article::whereHas('articlecategory', function ($query) use ($web) {
+                $query->whereIn('category_id', $web->categories->pluck('id'));
+            })->pluck('id');
+        }
 
         $perPage = 12;
 
@@ -112,7 +126,14 @@ class ArticleApiController extends Controller
 
         $category = ArticleCategory::where('slug', $category)->first();
         
-        $articleIds = $web->articles->pluck('id');
+        $articleIds = [];
+        if ($web->articles->isNotEmpty()) {
+            $articleIds = $web->articles->pluck('id');
+        } elseif ($web->categories->isNotEmpty()) {
+            $articleIds = Article::whereHas('articlecategory', function ($query) use ($web) {
+                $query->whereIn('category_id', $web->categories->pluck('id'));
+            })->pluck('id');
+        }
 
         $perPage = 12;
 
@@ -145,7 +166,14 @@ class ArticleApiController extends Controller
 
         $tag = ArticleTag::where('slug', $tag)->first();
         
-        $articleIds = $web->articles->pluck('id');
+        $articleIds = [];
+        if ($web->articles->isNotEmpty()) {
+            $articleIds = $web->articles->pluck('id');
+        } elseif ($web->categories->isNotEmpty()) {
+            $articleIds = Article::whereHas('articlecategory', function ($query) use ($web) {
+                $query->whereIn('category_id', $web->categories->pluck('id'));
+            })->pluck('id');
+        }
 
         $perPage = 12;
 
@@ -176,7 +204,14 @@ class ArticleApiController extends Controller
             return $web; // Return error jika tidak ditemukan
         }
 
-        $articleIds = $web->articles->pluck('id');
+        $articleIds = [];
+        if ($web->articles->isNotEmpty()) {
+            $articleIds = $web->articles->pluck('id');
+        } elseif ($web->categories->isNotEmpty()) {
+            $articleIds = Article::whereHas('articlecategory', function ($query) use ($web) {
+                $query->whereIn('category_id', $web->categories->pluck('id'));
+            })->pluck('id');
+        }
 
         $articles = ArticleShow::whereIn('article_id', $articleIds)
             ->where('slug', $slug)
@@ -208,7 +243,14 @@ class ArticleApiController extends Controller
             return $web; // Return error jika tidak ditemukan
         }
 
-        $articleIds = $web->articles->pluck('id');
+        $articleIds = [];
+        if ($web->articles->isNotEmpty()) {
+            $articleIds = $web->articles->pluck('id');
+        } elseif ($web->categories->isNotEmpty()) {
+            $articleIds = Article::whereHas('articlecategory', function ($query) use ($web) {
+                $query->whereIn('category_id', $web->categories->pluck('id'));
+            })->pluck('id');
+        }
         $perPage = 12;
 
         $pages = [];
