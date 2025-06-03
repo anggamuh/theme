@@ -9,6 +9,7 @@ use App\Models\ArticleGallery;
 use App\Models\ArticleShow;
 use App\Models\ArticleShowGallery;
 use App\Models\ArticleTag;
+use App\Models\GuardianWeb;
 use App\Models\SourceCode;
 use App\Models\Template;
 use Illuminate\Support\Str;
@@ -127,29 +128,57 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, $filter = null)
+    public function index(Request $request, $status = null, $filterweb = null)
     {
         $count = new \stdClass();
         $count->all = ArticleShow::count();
         $count->schedule = ArticleShow::where('status', 'schedule')->count();
         $count->publish = ArticleShow::where('status', 'publish')->count();
         $count->private = ArticleShow::where('status', 'private')->count();
-        
-        if ($request->search && $filter) {
-            $filter = $filter === 'publish' ? 0 : 1;
-            $data = Article::where('schedule', $filter)->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
-        } elseif ($filter) {
-            $filter = $filter === 'publish' ? 0 : 1;
-            $data = Article::where('schedule', $filter)->paginate(10);
-        } elseif ($request->search) {
-            $data = Article::where('judul', 'like', '%' . $request->search . '%')->paginate(10);
-        } else {
-            $data = Article::with('articleshow')->paginate(10);
+
+        $web = GuardianWeb::all();
+
+        $articleIds = null;
+        if ($filterweb && $filterweb != 'all') {
+            $guardian = GuardianWeb::find($filterweb);
+
+            $articleIds1 = $guardian->articles->pluck('id');
+
+            $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($guardian) {
+                $query->whereIn('category_id', $guardian->categories->pluck('id'));
+            })->pluck('id');
+
+            $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
         }
-        return view('admin.article.index' ,compact('data', 'count'));
+        
+        $filter = $status === 'schedule' ? 1 : 0;
+
+        $data = Article::with('articleshow')
+            ->when($articleIds, function ($query) use ($articleIds) {
+                $query->whereIn('id', $articleIds);
+            })
+            ->when($request->search, function ($query) use ($request) {
+                $query->where('judul', 'like', '%' . $request->search . '%');
+            })
+            ->when($status !== 'all' && $status, function ($query) use ($status, $filter) {
+                $query->where('schedule', $filter);
+                if ($status === 'private') {
+                    $query->whereHas('articleshow', function ($q) {
+                        $q->where('status', 'private');
+                    });
+                } else {
+                    $query->whereDoesntHave('articleshow', function ($q) {
+                        $q->where('status', 'private');
+                    });
+                }
+                return $query;
+            })
+            ->paginate(10);
+
+        return view('admin.article.index' ,compact('data', 'count', 'web', 'status', 'filterweb'));
     }
 
-    public function indexspintax(Request $request, $filter = null)
+    public function indexspintax(Request $request, $status = null, $filterweb = null)
     {
         $count = new \stdClass();
         $count->all = ArticleShow::count();
@@ -157,21 +186,49 @@ class ArticleController extends Controller
         $count->publish = ArticleShow::where('status', 'publish')->count();
         $count->private = ArticleShow::where('status', 'private')->count();
 
-        if ($request->search && $filter) {
-            $filter = $filter === 'publish' ? 0 : 1;
-            $data = Article::where('article_type', 'spintax')->where('schedule', $filter)->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
-        } elseif ($filter) {
-            $filter = $filter === 'publish' ? 0 : 1;
-            $data = Article::where('article_type', 'spintax')->where('schedule', $filter)->paginate(10);
-        } elseif ($request->search) {
-            $data = Article::where('article_type', 'spintax')->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
-        } else {
-            $data = Article::where('article_type', 'spintax')->with('articleshow')->paginate(10);
+        $web = GuardianWeb::all();
+
+        $articleIds = null;
+        if ($filterweb && $filterweb != 'all') {
+            $guardian = GuardianWeb::find($filterweb);
+
+            $articleIds1 = $guardian->articles->pluck('id');
+
+            $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($guardian) {
+                $query->whereIn('category_id', $guardian->categories->pluck('id'));
+            })->pluck('id');
+
+            $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
         }
-        return view('admin.article.index' ,compact('data', 'count'));
+        
+        $filter = $status === 'schedule' ? 1 : 0;
+
+        $data = Article::with('articleshow')->where('article_type', 'spintax')
+            ->when($articleIds, function ($query) use ($articleIds) {
+                $query->whereIn('id', $articleIds);
+            })
+            ->when($request->search, function ($query) use ($request) {
+                $query->where('judul', 'like', '%' . $request->search . '%');
+            })
+            ->when($status !== 'all' && $status, function ($query) use ($status, $filter) {
+                $query->where('schedule', $filter);
+                if ($status === 'private') {
+                    $query->whereHas('articleshow', function ($q) {
+                        $q->where('status', 'private');
+                    });
+                } else {
+                    $query->whereDoesntHave('articleshow', function ($q) {
+                        $q->where('status', 'private');
+                    });
+                }
+                return $query;
+            })
+            ->paginate(10);
+
+        return view('admin.article.index' ,compact('data', 'count', 'web', 'status', 'filterweb'));
     }
     
-    public function indexunique(Request $request, $filter = null)
+    public function indexunique(Request $request, $status = null, $filterweb = null)
     {
         $count = new \stdClass();
         $count->all = ArticleShow::count();
@@ -179,18 +236,46 @@ class ArticleController extends Controller
         $count->publish = ArticleShow::where('status', 'publish')->count();
         $count->private = ArticleShow::where('status', 'private')->count();
 
-        if ($request->search && $filter) {
-            $filter = $filter === 'publish' ? 0 : 1;
-            $data = Article::where('article_type', 'unique')->where('schedule', $filter)->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
-        } elseif ($filter) {
-            $filter = $filter === 'publish' ? 0 : 1;
-            $data = Article::where('article_type', 'unique')->where('schedule', $filter)->paginate(10);
-        } elseif ($request->search) {
-            $data = Article::where('article_type', 'unique')->where('judul', 'like', '%' . $request->search . '%')->paginate(10);
-        } else {
-            $data = Article::where('article_type', 'unique')->with('articleshow')->paginate(10);
+        $web = GuardianWeb::all();
+
+        $articleIds = null;
+        if ($filterweb && $filterweb != 'all') {
+            $guardian = GuardianWeb::find($filterweb);
+
+            $articleIds1 = $guardian->articles->pluck('id');
+
+            $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($guardian) {
+                $query->whereIn('category_id', $guardian->categories->pluck('id'));
+            })->pluck('id');
+
+            $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
         }
-        return view('admin.article.index' ,compact('data', 'count'));
+        
+        $filter = $status === 'schedule' ? 1 : 0;
+
+        $data = Article::with('articleshow')->where('article_type', 'unique')
+            ->when($articleIds, function ($query) use ($articleIds) {
+                $query->whereIn('id', $articleIds);
+            })
+            ->when($request->search, function ($query) use ($request) {
+                $query->where('judul', 'like', '%' . $request->search . '%');
+            })
+            ->when($status !== 'all' && $status, function ($query) use ($status, $filter) {
+                $query->where('schedule', $filter);
+                if ($status === 'private') {
+                    $query->whereHas('articleshow', function ($q) {
+                        $q->where('status', 'private');
+                    });
+                } else {
+                    $query->whereDoesntHave('articleshow', function ($q) {
+                        $q->where('status', 'private');
+                    });
+                }
+                return $query;
+            })
+            ->paginate(10);
+
+        return view('admin.article.index' ,compact('data', 'count', 'web', 'status', 'filterweb'));
     }
 
     /**
@@ -201,6 +286,7 @@ class ArticleController extends Controller
         $tag = ArticleTag::all();
         $template = Template::all();
         $category = ArticleCategory::all();
+        $guardian = GuardianWeb::all();
         return view('admin.article.create-spintax', compact('tag', 'category', 'template'));
     }
 

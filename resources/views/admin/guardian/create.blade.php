@@ -4,18 +4,8 @@
             @csrf
             <div class="w-full p-4 sm:p-8 bg-white rounded-md shadow-md shadow-black/20 flex flex-col gap-6">
                 <x-admin.component.linkinput title="Url Web Guardian" placeholder="Masukkan link..." :value="old('url')" name="url" link="Url" />
-                <div x-data="{type : '{{old('type', 'category')}}'}" class=" w-full space-y-6">
-                    <div class=" w-full grid grid-cols-2 gap-4">
-                        <div class="">
-                            <input type="radio" name="type" value="category" id="category" x-model="type" class="hidden peer">
-                            <label for="category" class=" cursor-pointer flex justify-center pb-2 text-center font-medium border-b-2 peer-checked:bg-white peer-checked:border-blue-500 duration-300">Kategori</label>
-                        </div>
-                        <div class="">
-                            <input type="radio" name="type" value="article" id="article" x-model="type" class="hidden peer">
-                            <label for="article" class=" cursor-pointer flex justify-center pb-2 text-center font-medium border-b-2 peer-checked:bg-white peer-checked:border-blue-500 duration-300">Artikel</label>
-                        </div>
-                    </div>
-                    <div x-show="type === 'category'" class="flex flex-col gap-2">
+                <div class=" w-full space-y-6">
+                    <div class="flex flex-col gap-2">
                         <label class="font-medium text-sm sm:text-base">Pilih Kategori</label>
                         <select class="js-example-basic-single" name="category[]" multiple="multiple">
                             @foreach($category as $item)
@@ -23,7 +13,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div x-show="type === 'article'" class="flex flex-col gap-2">
+                    <div class="flex flex-col gap-2">
                         <label class="font-medium text-sm sm:text-base">Pilih Artikel</label>
                         <select class="js-example-basic-single" name="article[]" multiple="multiple">
                             @foreach($article as $item)

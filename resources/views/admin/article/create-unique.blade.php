@@ -33,6 +33,7 @@
         </div>
     </div>
     <x-admin.component.nochoseinput title="Phone Number (optional)" :phone="$phonenumber" :value="old('no_tlp')" name="no_tlp" />
+    
     <div class=" w-full relative pt-10 sm:pt-11">
         <div class=" w-full">
             <input type="radio" name="status" value="publish" id="publish" class="hidden peer" checked>

@@ -51,14 +51,12 @@ class GuardianWebController extends Controller
 
         $newguardian->save();
 
-        if ($request->type === 'category') {
-            if ($request->has('category') && is_array($request->category)) {
-                $newguardian->categories()->attach($request->category);
-            }
-        } elseif ($request->type === 'article') {
-            if ($request->has('article') && is_array($request->article)) {
-                $newguardian->articles()->attach($request->article);
-            }
+        if ($request->has('category') && is_array($request->category)) {
+            $newguardian->categories()->attach($request->category);
+        }
+
+        if ($request->has('article') && is_array($request->article)) {
+            $newguardian->articles()->attach($request->article);
         }
 
 
@@ -103,16 +101,11 @@ class GuardianWebController extends Controller
 
         $guardianWeb->save();
         
-        if ($request->type === 'category') {
-            if ($request->has('category') && is_array($request->category)) {
-                $guardianWeb->categories()->sync($request->category);
-                $guardianWeb->articles()->detach();
-            }
-        } elseif ($request->type === 'article') {
-            if ($request->has('article') && is_array($request->article)) {
-                $guardianWeb->articles()->sync($request->article);
-                $guardianWeb->categories()->detach();
-            }
+        if ($request->has('category') && is_array($request->category)) {
+            $guardianWeb->categories()->sync($request->category);
+        }
+        if ($request->has('article') && is_array($request->article)) {
+            $guardianWeb->articles()->sync($request->article);
         }
         
         return redirect()->route('guardian.index');

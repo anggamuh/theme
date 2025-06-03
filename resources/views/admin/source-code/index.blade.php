@@ -122,7 +122,7 @@
             <!-- Create Modal -->
             <div x-show="showModal"
                 class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-40">
-                <div class="w-full max-w-[720px] bg-white pb-6 rounded-md flex flex-col gap-4 relative overflow-hidden border-2 border-byolink-1">
+                <div class="w-full max-w-[720px] max-h-full bg-white pb-6 rounded-md flex flex-col gap-4 relative overflow-hidden border-2 border-byolink-1">
                     <button @click="showModal = false"
                         class=" absolute top-6 right-6 w-6 h-6 text-white hover:text-red-500 duration-300">
                         <svg viewBox="0 0 512 512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
@@ -135,18 +135,20 @@
                     <div class=" pt-6 pb-3 bg-byolink-1 text-white">
                         <h2 class=" px-6 text-2xl font-bold">Tambah Source Code</h2>
                     </div>
-                    <form action="{{ route('source-code.store')}}" method="POST">
-                        @csrf
-                        <div class=" w-full px-6 space-y-4">
-                            <div class=" space-y-4">
-                                <x-admin.component.textinput title="Title" placeholder="Masukkan Title" :value="''" name="title" />
-                                <x-admin.component.taginput title="Konten" :value="null" name="content[]" />
+                    <div class=" max-h-full overflow-auto">
+                        <form action="{{ route('source-code.store')}}" method="POST">
+                            @csrf
+                            <div class=" w-full overflow-auto max-h-full px-6 space-y-4">
+                                <div class=" space-y-4">
+                                    <x-admin.component.textinput title="Title" placeholder="Masukkan Title" :value="''" name="title" />
+                                    <x-admin.component.taginput title="Konten" :value="null" name="content[]" />
+                                </div>
+                                <div class="flex justify-end space-x-4">
+                                    <x-admin.component.submitbutton title="Tambah" />
+                                </div>
                             </div>
-                            <div class="flex justify-end space-x-4">
-                                <x-admin.component.submitbutton title="Tambah" />
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
 
