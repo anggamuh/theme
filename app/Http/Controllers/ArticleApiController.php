@@ -52,6 +52,7 @@ class ArticleApiController extends Controller
             ->when($request->search, function ($query, $search) {
                 return $query->where('judul', 'like', '%' . $search . '%');
             })
+            ->latest()
             ->paginate($perPage);
 
         $trend = ArticleShow::whereIn('article_id', $articleIds)
@@ -101,6 +102,7 @@ class ArticleApiController extends Controller
                 $query->where('id', $user->id);
             })
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
+            ->latest()
             ->paginate($perPage);
 
         $articles->transform(function ($data) {
@@ -140,6 +142,7 @@ class ArticleApiController extends Controller
                 $query->where('category_id', $category->id);
             })
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
+            ->latest()
             ->paginate($perPage);
 
         $articles->transform(function ($data) {
@@ -179,6 +182,7 @@ class ArticleApiController extends Controller
                 $query->where('tag_id', $tag->id);
             })
             ->with(['articles.articletag', 'articles.articlecategory', 'articles.user', 'articleshowgallery', 'phoneNumber', 'template'])
+            ->latest()
             ->paginate($perPage);
 
         $articles->transform(function ($data) {
