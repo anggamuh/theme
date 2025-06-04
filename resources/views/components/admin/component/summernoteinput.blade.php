@@ -88,7 +88,7 @@
     }
 
     .note-editable > * + * {
-        margin-top: 1rem !important;
+        margin-top: 0 !important;
     }
 
     @media screen and (min-width: 640px) {
@@ -105,7 +105,7 @@
             line-height: 1.75rem !important;
         }
         .note-editable > * + * {
-            margin-top: 1.5rem !important;
+            margin-top: 0 !important;
         }
     }
 
