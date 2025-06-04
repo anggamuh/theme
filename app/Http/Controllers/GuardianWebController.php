@@ -103,8 +103,12 @@ class GuardianWebController extends Controller
         
         if ($request->has('category') && is_array($request->category)) {
             $guardianWeb->categories()->sync($request->category);
+        } else {
+            $guardianWeb->categories()->detach();
         }
         if ($request->has('article') && is_array($request->article)) {
+            $guardianWeb->articles()->sync($request->article);
+        } else {
             $guardianWeb->articles()->sync($request->article);
         }
         
