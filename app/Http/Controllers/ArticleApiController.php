@@ -324,6 +324,17 @@ class ArticleApiController extends Controller
                 ];
             }
         }
+
+        $articles = ArticleShow::where('status', 'publish')
+            ->whereIn('article_id', $articleIds)
+            ->get();
+
+        foreach ($articles as $item) {
+            $pages[] = [
+                'url' => "/{$item->slug}",
+                'updated_at' => $item->updated_at,
+            ];
+        }
     
         return response()->json([
             'pages' => $pages
