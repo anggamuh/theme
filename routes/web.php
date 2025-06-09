@@ -78,6 +78,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/guardian', GuardianWebController::class);
 
     Route::resource('/admin/article', ArticleController::class);
+    Route::get('/admin/article/shuffle-image/{id}we', [ArticleController::class, 'shuffle'])->name('shuffle.image');
     Route::get('/admin/article/status/{status}/web/{filterweb}', [ArticleController::class, 'index'])->name('article.filter');
 
     Route::get('/admin/article-spintax', [ArticleController::class, 'indexspintax'])->name('article.spintax');

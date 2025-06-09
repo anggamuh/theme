@@ -7,21 +7,6 @@
                 <x-admin.component.linkinput title="Url Web Guardian" placeholder="Masukkan link..." :value="old('url', $guardianWeb->url)" name="url" link="Url" />
                 <div class=" w-full space-y-6">
                     <div class="flex flex-col gap-2">
-                        <label class="font-medium text-sm sm:text-base">Pilih Kategori</label>
-                        @php
-                            $selectedCategories = old('category', $guardianWeb->categories->pluck('id')->toArray());
-                        @endphp
-
-                        <select class="js-example-basic-single" name="category[]" multiple="multiple">
-                            @foreach($category as $item)
-                                <option value="{{ $item->id }}" 
-                                    {{ in_array($item->id, $selectedCategories) ? 'selected' : '' }}>
-                                    {{ $item->category }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="flex flex-col gap-2">
                         <label class="font-medium text-sm sm:text-base">Pilih Artikel</label>
                         @php
                             $selectedArticles = old('article', $guardianWeb->articles->pluck('id')->toArray());

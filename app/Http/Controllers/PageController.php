@@ -18,7 +18,11 @@ class PageController extends Controller
         Paginator::currentPageResolver(function () use ($request) {
             return $request->route('page', 1); // default ke halaman 1
         });
-        $data = ArticleShow::where('status', 'publish')->latest()->paginate(12);
+        $data = ArticleShow::where('status', 'publish')
+            ->whereHas('articles', function ($query) {
+                $query->whereNull('guardian_web_id');
+            })
+            ->latest()->paginate(12);
 
         $data->transform(function ($data) {
             $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
@@ -27,7 +31,13 @@ class PageController extends Controller
             return $data;
         });
 
-        $trend = ArticleShow::orderBy('view', 'desc')->take(6)->get();
+        $trend = ArticleShow::orderBy('view', 'desc')
+            ->where('status', 'publish')
+            ->whereHas('articles', function ($query) {
+                $query->whereNull('guardian_web_id');
+            })
+            ->take(6)->get();
+            
         $data->withPath("/artikel/page");
         return view('guest.home', compact('data', 'trend'));
     }
@@ -41,8 +51,12 @@ class PageController extends Controller
 
         if ($username) {
             $data = ArticleShow::whereHas('articles.user', function ($query) use ($username) {
-                $query->where('slug', $username);
-            })->where('status', 'publish')->latest()->paginate(12);
+                    $query->where('slug', $username);
+                })
+                ->whereHas('articles', function ($query) {
+                    $query->whereNull('guardian_web_id');
+                })
+                ->where('status', 'publish')->latest()->paginate(12);
 
             $user = User::where('slug', $username)->first();
             
@@ -51,8 +65,12 @@ class PageController extends Controller
             $title = 'Penulis : '.$user->name;
         } elseif ($category) {
             $data = ArticleShow::whereHas('articles.articleCategory', function ($query) use ($category) {
-                $query->where('slug', $category);
-            })->where('status', 'publish')->latest()->paginate(12);
+                    $query->where('slug', $category);
+                })
+                ->whereHas('articles', function ($query) {
+                    $query->whereNull('guardian_web_id');
+                })
+                ->where('status', 'publish')->latest()->paginate(12);
 
             $data->withPath("/kategori/{$category}/page");
             
@@ -60,20 +78,31 @@ class PageController extends Controller
             $title = 'Kategori : '.$category;
         } elseif ($tag) {
             $data = ArticleShow::whereHas('articles.articleTag', function ($query) use ($tag) {
-                $query->where('slug', $tag);
-            })->where('status', 'publish')->latest()->paginate(12);
+                    $query->where('slug', $tag);
+                })
+                ->whereHas('articles', function ($query) {
+                    $query->whereNull('guardian_web_id');
+                })
+                ->where('status', 'publish')->latest()->paginate(12);
 
             $data->withPath("/tag/{$tag}/page");
             
             $tag = ArticleTag::where('slug', $tag)->first()->tag;
             $title = 'Tag : '.$tag;
         } elseif ($request->search) {
-            $data = ArticleShow::where('judul', 'like', '%' . $request->search . '%')->where('status', 'publish')->latest()->paginate(12);
+            $data = ArticleShow::where('judul', 'like', '%' . $request->search . '%')->where('status', 'publish')
+                ->whereHas('articles', function ($query) {
+                    $query->whereNull('guardian_web_id');
+                })->latest()->paginate(12);
 
             $data->withPath("/artikel/page");
             $title = 'Pecaharian : '.$request->search;
         } else {
-            $data = ArticleShow::where('status', 'publish')->latest()->paginate(12);
+            $data = ArticleShow::where('status', 'publish')
+                ->whereHas('articles', function ($query) {
+                    $query->whereNull('guardian_web_id');
+                })
+                ->latest()->paginate(12);
 
             $data->withPath("/artikel/page");
             $title = 'Artikel Terbaru';

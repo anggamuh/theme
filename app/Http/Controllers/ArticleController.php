@@ -125,6 +125,27 @@ class ArticleController extends Controller
         return $text;
     }
 
+    public function shuffle($id) {
+        $article = Article::find($id);
+        $articleshow = $article->articleshow;
+
+        foreach ($articleshow as $item) {
+            $item->banner = optional($article->articlebanner->random())->image;
+            $galleries = $article->articlegallery->shuffle()->take(6);
+            foreach ($galleries as $gallery) {
+                $showGallery = new ArticleShowGallery;
+                $showGallery->article_show_id = $item->id;
+                $showGallery->article_gallery_id = $gallery->id;
+                $showGallery->image = $gallery->image;
+                $showGallery->image_alt = $gallery->image_alt;
+                $showGallery->save();
+            }
+            $item->save();
+        }
+
+        return redirect()->back();
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -137,25 +158,15 @@ class ArticleController extends Controller
         $count->private = ArticleShow::where('status', 'private')->count();
 
         $web = GuardianWeb::all();
-
-        $articleIds = null;
-        if ($filterweb && $filterweb != 'all') {
-            $guardian = GuardianWeb::find($filterweb);
-
-            $articleIds1 = $guardian->articles->pluck('id');
-
-            $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($guardian) {
-                $query->whereIn('category_id', $guardian->categories->pluck('id'));
-            })->pluck('id');
-
-            $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
-        }
         
         $filter = $status === 'schedule' ? 1 : 0;
 
         $data = Article::with('articleshow')
-            ->when($articleIds, function ($query) use ($articleIds) {
-                $query->whereIn('id', $articleIds);
+            ->when($filterweb === 'main', function ($query) {
+                $query->whereNull('guardian_web_id');
+            })
+            ->when($filterweb && $filterweb != 'main' && $filterweb != 'all', function ($query) use ($filterweb) {
+                $query->where('guardian_web_id', $filterweb);
             })
             ->when($request->search, function ($query) use ($request) {
                 $query->where('judul', 'like', '%' . $request->search . '%');
@@ -187,25 +198,15 @@ class ArticleController extends Controller
         $count->private = ArticleShow::where('status', 'private')->count();
 
         $web = GuardianWeb::all();
-
-        $articleIds = null;
-        if ($filterweb && $filterweb != 'all') {
-            $guardian = GuardianWeb::find($filterweb);
-
-            $articleIds1 = $guardian->articles->pluck('id');
-
-            $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($guardian) {
-                $query->whereIn('category_id', $guardian->categories->pluck('id'));
-            })->pluck('id');
-
-            $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
-        }
         
         $filter = $status === 'schedule' ? 1 : 0;
 
         $data = Article::with('articleshow')->where('article_type', 'spintax')
-            ->when($articleIds, function ($query) use ($articleIds) {
-                $query->whereIn('id', $articleIds);
+            ->when($filterweb === 'main', function ($query) {
+                $query->whereNull('guardian_web_id');
+            })
+            ->when($filterweb && $filterweb != 'main' && $filterweb != 'all', function ($query) use ($filterweb) {
+                $query->where('guardian_web_id', $filterweb);
             })
             ->when($request->search, function ($query) use ($request) {
                 $query->where('judul', 'like', '%' . $request->search . '%');
@@ -237,25 +238,15 @@ class ArticleController extends Controller
         $count->private = ArticleShow::where('status', 'private')->count();
 
         $web = GuardianWeb::all();
-
-        $articleIds = null;
-        if ($filterweb && $filterweb != 'all') {
-            $guardian = GuardianWeb::find($filterweb);
-
-            $articleIds1 = $guardian->articles->pluck('id');
-
-            $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($guardian) {
-                $query->whereIn('category_id', $guardian->categories->pluck('id'));
-            })->pluck('id');
-
-            $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
-        }
         
         $filter = $status === 'schedule' ? 1 : 0;
 
         $data = Article::with('articleshow')->where('article_type', 'unique')
-            ->when($articleIds, function ($query) use ($articleIds) {
-                $query->whereIn('id', $articleIds);
+            ->when($filterweb === 'main', function ($query) {
+                $query->whereNull('guardian_web_id');
+            })
+            ->when($filterweb && $filterweb != 'main' && $filterweb != 'all', function ($query) use ($filterweb) {
+                $query->where('guardian_web_id', $filterweb);
             })
             ->when($request->search, function ($query) use ($request) {
                 $query->where('judul', 'like', '%' . $request->search . '%');
@@ -287,7 +278,7 @@ class ArticleController extends Controller
         $template = Template::all();
         $category = ArticleCategory::all();
         $guardian = GuardianWeb::all();
-        return view('admin.article.create-spintax', compact('tag', 'category', 'template'));
+        return view('admin.article.create-spintax', compact('tag', 'category', 'template', 'guardian'));
     }
 
     /**
@@ -340,6 +331,7 @@ class ArticleController extends Controller
         $newarticle->user_id = Auth::id();
         $newarticle->judul = $request->judul;
         $newarticle->article = $request->article;
+        $newarticle->guardian_web_id = $request->guardian;
         $newarticle->article_type = 'spintax';
 
         // Cek apakah link adalah YouTube
@@ -361,6 +353,10 @@ class ArticleController extends Controller
         $newarticle->save();
 
         $newarticle->template()->sync($request->template_id);
+
+        if ($request->guardian) {
+            $newarticle->guardian()->attach($request->guardian);
+        }
         
         $newbanner = new ArticleBanner;
 
@@ -493,7 +489,8 @@ class ArticleController extends Controller
         $categoryid = $article->articlecategory->pluck('id')->toArray();
         $category = ArticleCategory::whereNotIn('id', $categoryid)->get();
         $template = Template::all();
-        return view('admin.article.edit-spintax', compact('article', 'tag', 'category', 'template'));
+        $guardian = GuardianWeb::all();
+        return view('admin.article.edit-spintax', compact('article', 'tag', 'category', 'template', 'guardian'));
     }
 
     /**
@@ -555,6 +552,8 @@ class ArticleController extends Controller
 
         $article->judul = $request->judul;
         $article->article = $request->article;
+        $article->guardian_web_id = $request->guardian;
+
 
         if (preg_match('/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/', $request->link, $matches)) {
             $videoId = $matches[1];

@@ -28,10 +28,9 @@ class GuardianWebController extends Controller
      */
     public function create()
     {
-        $article = Article::all();
-        $category = ArticleCategory::all();
+        $article = Article::whereNull('guardian_web_id')->get();
 
-        return view('admin.guardian.create', compact('article', 'category'));
+        return view('admin.guardian.create', compact('article'));
     }
 
     /**
@@ -51,10 +50,6 @@ class GuardianWebController extends Controller
 
         $newguardian->save();
 
-        if ($request->has('category') && is_array($request->category)) {
-            $newguardian->categories()->attach($request->category);
-        }
-
         if ($request->has('article') && is_array($request->article)) {
             $newguardian->articles()->attach($request->article);
         }
@@ -69,12 +64,11 @@ class GuardianWebController extends Controller
      */
     public function show($id, GuardianWeb $guardianWeb)
     {
-        $article = Article::all();
-        $category = ArticleCategory::all();
+    $article = Article::whereNull('guardian_web_id')->orWhere('guardian_web_id', $id)->get();
 
         $guardianWeb = GuardianWeb::find($id);
 
-        return view('admin.guardian.edit', compact('guardianWeb', 'article', 'category'));
+        return view('admin.guardian.edit', compact('guardianWeb', 'article'));
     }
 
     /**
@@ -100,16 +94,17 @@ class GuardianWebController extends Controller
         $guardianWeb->url = $request->url;
 
         $guardianWeb->save();
-        
-        if ($request->has('category') && is_array($request->category)) {
-            $guardianWeb->categories()->sync($request->category);
-        } else {
-            $guardianWeb->categories()->detach();
+
+        $old = Article::where('guardian_web_id', $guardianWeb->id)->get();
+        foreach ($old as $item) {
+            $item->guardian_Web_id = null;
+            $item->save();
         }
-        if ($request->has('article') && is_array($request->article)) {
-            $guardianWeb->articles()->sync($request->article);
-        } else {
-            $guardianWeb->articles()->sync($request->article);
+
+        $articles = Article::whereIn('id', $request->article)->get();
+        foreach ($articles as $item) {
+            $item->guardian_Web_id = $guardianWeb->id;
+            $item->save();
         }
         
         return redirect()->route('guardian.index');

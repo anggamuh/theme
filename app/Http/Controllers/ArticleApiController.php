@@ -36,13 +36,7 @@ class ArticleApiController extends Controller
             return $web; // Return error jika tidak ditemukan
         }
 
-        $articleIds1 = $web->articles->pluck('id');
-
-        $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($web) {
-            $query->whereIn('category_id', $web->categories->pluck('id'));
-        })->pluck('id');
-
-        $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
+        $articleIds = $web->articles->pluck('id');
 
         $perPage = 12;
 
@@ -86,13 +80,7 @@ class ArticleApiController extends Controller
 
         $user = User::where('slug', $user)->first();
 
-        $articleIds1 = $web->articles->pluck('id');
-
-        $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($web) {
-            $query->whereIn('category_id', $web->categories->pluck('id'));
-        })->pluck('id');
-
-        $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
+        $articleIds = $web->articles->pluck('id');
 
         $perPage = 12;
 
@@ -125,14 +113,9 @@ class ArticleApiController extends Controller
         }
 
         $category = ArticleCategory::where('slug', $category)->first();
-        
-        $articleIds1 = $web->articles->pluck('id');
+    
 
-        $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($web) {
-            $query->whereIn('category_id', $web->categories->pluck('id'));
-        })->pluck('id');
-
-        $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
+        $articleIds = $web->articles->pluck('id');
 
         $perPage = 12;
 
@@ -165,14 +148,9 @@ class ArticleApiController extends Controller
         }
 
         $tag = ArticleTag::where('slug', $tag)->first();
-        
-        $articleIds1 = $web->articles->pluck('id');
+    
 
-        $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($web) {
-            $query->whereIn('category_id', $web->categories->pluck('id'));
-        })->pluck('id');
-
-        $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
+        $articleIds = $web->articles->pluck('id');
 
         $perPage = 12;
 
@@ -204,13 +182,7 @@ class ArticleApiController extends Controller
             return $web; // Return error jika tidak ditemukan
         }
 
-        $articleIds1 = $web->articles->pluck('id');
-
-        $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($web) {
-            $query->whereIn('category_id', $web->categories->pluck('id'));
-        })->pluck('id');
-
-        $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
+        $articleIds = $web->articles->pluck('id');
 
         $articles = ArticleShow::whereIn('article_id', $articleIds)
             ->where('slug', $slug)
@@ -242,13 +214,7 @@ class ArticleApiController extends Controller
             return $web; // Return error jika tidak ditemukan
         }
 
-        $articleIds1 = $web->articles->pluck('id');
-
-        $articleIds2 = Article::whereHas('articlecategory', function ($query) use ($web) {
-            $query->whereIn('category_id', $web->categories->pluck('id'));
-        })->pluck('id');
-
-        $articleIds = $articleIds1->merge($articleIds2)->unique()->values();
+        $articleIds = $web->articles->pluck('id');
         $perPage = 12;
 
         $pages = [];

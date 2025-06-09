@@ -85,6 +85,7 @@
                         <p class=" text-nowrap">Guardian : </p>
                         <select class=" text-neutral-600 border-neutral-600 w-full text-sm border pl-2 px-8 py-0.5 rounded-full" x-model="web" name="web" id="">
                             <option value="all">All</option>
+                            <option value="main">Main</option>
                             @foreach ($web as $item)
                                 <option value="{{$item->id}}">{{$item->url}}</option>
                             @endforeach
@@ -144,6 +145,7 @@
                                             
                                             <div x-show="open" @click.outside="open = false" class="absolute z-10 mt-1 right-0 bottom-0 bg-white border rounded shadow-lg w-32">
                                                 <a href="{{ route('article.show', ['article' => $item->id]) }}" class="block px-4 py-2 text-sm hover:bg-gray-100">Edit</a>
+                                                <a href="{{ route('shuffle.image', ['id' => $item->id]) }}" class="block px-4 py-2 text-sm hover:bg-gray-100">Shuffle Image</a>
                                                 <button @click="generatemodal = !generatemodal" class=" w-full text-left block px-4 py-2 text-sm hover:bg-gray-100">Generate</button>
                                             </div>
 
