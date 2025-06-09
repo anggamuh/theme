@@ -84,7 +84,8 @@ class ArticleController extends Controller
                 $newArticleShow->slug = Str::slug($newArticleShow->judul);
                 $newArticleShow->article = $spinnedBody;
                 $newArticleShow->template_id = optional($article->template->random())->id;
-                $newArticleShow->banner = optional($article->articlebanner->random())->image;
+                $banner = $article->articlebanner;
+                $newArticleShow->banner = $banner->isNotEmpty() ? $banner->random()->image : null;
 
                 if ($request->schedule == true) {
                     $newArticleShow->status = 'schedule';

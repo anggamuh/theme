@@ -115,17 +115,19 @@ class ArticleGeneratedController extends Controller
             $gallery->delete();
         }
         
-        foreach ($request->gallery as $item) {
-            $newgalleryshow = new ArticleShowGallery;
-
-            $articlegallery = ArticleGallery::find($item);
-            
-            $newgalleryshow->article_show_id = $articleShow->id;
-            $newgalleryshow->article_gallery_id = $item;
-            $newgalleryshow->image = $articlegallery->image;
-            $newgalleryshow->image_alt = $articlegallery->image_alt;
-
-            $newgalleryshow->save();
+        if ($request->gellery) {
+            foreach ($request->gallery as $item) {
+                $newgalleryshow = new ArticleShowGallery;
+    
+                $articlegallery = ArticleGallery::find($item);
+                
+                $newgalleryshow->article_show_id = $articleShow->id;
+                $newgalleryshow->article_gallery_id = $item;
+                $newgalleryshow->image = $articlegallery->image;
+                $newgalleryshow->image_alt = $articlegallery->image_alt;
+    
+                $newgalleryshow->save();
+            }
         }
 
         $articleShow->save();
