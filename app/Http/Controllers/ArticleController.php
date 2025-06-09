@@ -354,10 +354,6 @@ class ArticleController extends Controller
         $newarticle->save();
 
         $newarticle->template()->sync($request->template_id);
-
-        if ($request->guardian) {
-            $newarticle->guardian()->attach($request->guardian);
-        }
         
         $newbanner = new ArticleBanner;
 
