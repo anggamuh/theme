@@ -84,8 +84,7 @@ class ArticleController extends Controller
                 $newArticleShow->slug = Str::slug($newArticleShow->judul);
                 $newArticleShow->article = $spinnedBody;
                 $newArticleShow->template_id = optional($article->template->random())->id;
-                $banner = $article->articlebanner;
-                $newArticleShow->banner = $banner->isNotEmpty() ? $banner->random()->image : null;
+                $newArticleShow->banner = $article->articlebanner->isNotEmpty() ? $article->articlebanner->random()->image : null;
 
                 if ($request->schedule == true) {
                     $newArticleShow->status = 'schedule';
@@ -131,15 +130,17 @@ class ArticleController extends Controller
         $articleshow = $article->articleshow;
 
         foreach ($articleshow as $item) {
-            $item->banner = optional($article->articlebanner->random())->image;
+            $item->banner = $article->articlebanner->isNotEmpty() ? $article->articlebanner->random()->image : null;
             $galleries = $article->articlegallery->shuffle()->take(6);
-            foreach ($galleries as $gallery) {
-                $showGallery = new ArticleShowGallery;
-                $showGallery->article_show_id = $item->id;
-                $showGallery->article_gallery_id = $gallery->id;
-                $showGallery->image = $gallery->image;
-                $showGallery->image_alt = $gallery->image_alt;
-                $showGallery->save();
+            if ($galleries) {
+                foreach ($galleries as $gallery) {
+                    $showGallery = new ArticleShowGallery;
+                    $showGallery->article_show_id = $item->id;
+                    $showGallery->article_gallery_id = $gallery->id;
+                    $showGallery->image = $gallery->image;
+                    $showGallery->image_alt = $gallery->image_alt;
+                    $showGallery->save();
+                }
             }
             $item->save();
         }
