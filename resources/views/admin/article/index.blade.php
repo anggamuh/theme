@@ -149,7 +149,7 @@
                                                 <button @click="generatemodal = !generatemodal" class=" w-full text-left block px-4 py-2 text-sm hover:bg-gray-100">Generate</button>
                                             </div>
 
-                                            <x-admin.component.generatemodal :title="$item->judul" :route="route('article.generate', ['id' => $item->id])"/>
+                                            <x-admin.component.generatemodal :id="$item->id" :title="$item->judul" :route="route('article.generate', ['id' => $item->id])"/>
                                         </div>
 
                                         {{-- Delete --}}

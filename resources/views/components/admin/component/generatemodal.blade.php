@@ -1,4 +1,4 @@
-@props(['title', 'route'])
+@props(['title', 'route', 'id'])
 <div x-show="generatemodal"
     class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-40">
     <div class="w-full max-w-[720px] bg-white pb-6 rounded-md flex flex-col gap-4 relative overflow-hidden border-2 border-byolink-1">
@@ -21,13 +21,13 @@
                 <x-admin.component.numberinput title="Jumlah generate artikel" placeholder="Masukkan jumlah generate" :value="''" name="total" />
                 <div class=" w-full grid grid-cols-2 gap-4">
                     <div class=" w-full">
-                        <input type="radio" name="schedule" value="1" id="1" class="hidden peer" checked>
-                        <label for="1" class=" w-full cursor-pointer flex justify-center p-2 text-sm sm:text-base text-center font-medium rounded-md duration-300 peer-checked:bg-byolink-1 peer-checked:text-white">Schedule On</label>
+                        <input type="radio" name="schedule" value="1" id="1-{{$id}}" class="hidden peer" checked>
+                        <label for="1-{{$id}}" class=" w-full cursor-pointer flex justify-center p-2 text-sm sm:text-base text-center font-medium rounded-md duration-300 peer-checked:bg-byolink-1 peer-checked:text-white">Schedule On</label>
                     </div>
                     
                     <div class=" w-full">
-                        <input type="radio" name="schedule" value="0" id="0" class="hidden peer">
-                        <label for="0" class=" w-full cursor-pointer flex justify-center p-2 text-sm sm:text-base text-center font-medium rounded-md duration-300 peer-checked:bg-byolink-1 peer-checked:text-white">Schedule Off</label>
+                        <input type="radio" name="schedule" value="0" id="0-{{$id}}" class="hidden peer">
+                        <label for="0-{{$id}}" class=" w-full cursor-pointer flex justify-center p-2 text-sm sm:text-base text-center font-medium rounded-md duration-300 peer-checked:bg-byolink-1 peer-checked:text-white">Schedule Off</label>
                     </div>
                 </div>
             </div>
