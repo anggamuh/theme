@@ -18,9 +18,10 @@ class GuardianWebController extends Controller
         if ($request->search) {
             $data = GuardianWeb::where('url', 'like', '%' . $request->search . '%')->paginate(10);
         } else {
-            $data = GuardianWeb::paginate(10);
+        $data = GuardianWeb::paginate(10);
         }
-        return view('admin.guardian.index', compact('data'));
+        $mainCount = Article::whereNull('guardian_web_id')->count();
+        return view('admin.guardian.index', compact('data', 'mainCount'));
     }
 
     /**

@@ -24,16 +24,21 @@
                     <tr class="h-10 bg-byolink-1 text-white divide-x-2 divide-white">
                         <th class=" px-2 py-1 rounded-tl-md w-10">No</th>
                         <th class=" px-1 sm:px-2 py-1">Url</th>
+                        <th class=" px-1 sm:px-2 py-1">Jumlah Artikel</th>
                         <th class=" px-1 sm:px-2 py-1">Code</th>
                         <th class=" px-1 sm:px-2 py-1 w-[90px] sm:w-[100px] rounded-tr-md">Opsi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class=" bg-neutral-100 h-10 text-neutral-600 divide-x-2 divide-white">
-                        <td class="px-3 py-1 text-center font-semibold">1</td>
-                        <td colspan="3" class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap">Main</td>
-                    </tr>
-                </tbody>
+                @if ($data->currentPage() === 1)    
+                    <tbody>
+                        <tr class=" bg-neutral-100 h-10 text-neutral-600 divide-x-2 divide-white">
+                            <td class="px-3 py-1 text-center font-semibold">1</td>
+                            <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap">Main</td>
+                            <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap text-center">{{$mainCount}}</td>
+                            <td colspan="2" class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap"></td>
+                        </tr>
+                    </tbody>
+                @endif
                 @foreach ($data as $item)
                     <tbody>
                         <tr class="{{ $loop->even ? 'bg-neutral-100' : 'bg-neutral-200' }} h-10 text-neutral-600 divide-x-2 divide-white">
@@ -41,6 +46,7 @@
                             <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap">
                                 <a href="{{$item->url}}" class=" hover:text-byolink-1 duration-300" target="__blank">{{$item->url}}</a>
                             </td>
+                            <td class="px-2 sm:px-4 py-1 min-h-10 text-nowrap text-center">{{$item->articles->count()}}</td>
                             <td class="px-2 sm:px-4 py-1 min-h-10 text-nowrap">
                                 <div x-data="{ copied: false, original: '{{$item->code}}' }" 
                                     class=" flex flex-row justify-center items-center">
