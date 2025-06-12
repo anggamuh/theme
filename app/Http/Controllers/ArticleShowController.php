@@ -249,7 +249,10 @@ class ArticleShowController extends Controller
                 }
         
                 $phoneNumber = PhoneNumber::firstOrCreate(
-                    ['no_tlp' => $no_tlp]
+                    [
+                        'no_tlp' => $no_tlp,
+                        'type' => 'article'    
+                    ]
                 );
                 
                 $newarticleshow->phone_number_id = $phoneNumber->id;
@@ -478,7 +481,10 @@ class ArticleShowController extends Controller
             }
     
             $phoneNumber = PhoneNumber::firstOrCreate(
-                ['no_tlp' => $no_tlp]
+                [
+                    'no_tlp' => $no_tlp,
+                    'type' => 'article'    
+                ]
             );
             
             $articleShow->phone_number_id = $phoneNumber->id;

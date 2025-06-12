@@ -62,6 +62,7 @@ class ArticleGeneratedController extends Controller
     }
 
     /**
+     * 
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
@@ -98,7 +99,10 @@ class ArticleGeneratedController extends Controller
             }
     
             $phoneNumber = PhoneNumber::firstOrCreate(
-                ['no_tlp' => $no_tlp]
+                [
+                    'no_tlp' => $no_tlp, 
+                    'type' => 'article',
+                ]
             );
             
             $articleShow->phone_number_id = $phoneNumber->id;
