@@ -23,11 +23,22 @@
                 <p>{{$data->date}}</p>
             </div>
         </div>
+        @php
+            function hexToRgba($hex, $opacity = 0.6) {
+                $hex = str_replace('#', '', $hex);
+                $r = hexdec(substr($hex, 0, 2));
+                $g = hexdec(substr($hex, 2, 2));
+                $b = hexdec(substr($hex, 4, 2));
+                return "rgba($r, $g, $b, $opacity)";
+            }
+        @endphp
         <div class=" article ">
             {!! nl2br($data->article == '' ? '' : $data->article) !!}
-            <div class=" flex flex-wrap gap-1">
+            <div class=" pt-4 flex flex-wrap gap-2">
                 @foreach ($data->articles->articletag as $item)
-                    <a style="color: {{$template->desc_text_color}}" href="{{route('tag', ['tag' => $item->slug])}}" class=" lowercase">#{{$item->tag}}</a>
+                    <a href="{{route('tag', ['tag' => $item->slug])}}">
+                        <button style="background-color: {{hexToRgba($template->desc_second_color) ?? '#1d588d'}}" class=" px-2 sm:px-3 py-1 text-xs sm:text-sm text-white rounded-md lowercase">#{{$item->tag}}</button>
+                    </a>
                 @endforeach
             </div>
         </div>
