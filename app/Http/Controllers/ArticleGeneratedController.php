@@ -106,6 +106,8 @@ class ArticleGeneratedController extends Controller
             );
             
             $articleShow->phone_number_id = $phoneNumber->id;
+        } else {
+            $articleShow->phone_number_id = null;
         }
         
         $articleShow->judul = $request->judul;
