@@ -7,6 +7,7 @@ use App\Models\ArticleCategory;
 use App\Models\ArticleShow;
 use App\Models\ArticleTag;
 use App\Models\GuardianWeb;
+use App\Models\PhoneNumber;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -193,6 +194,14 @@ class ArticleApiController extends Controller
         $articles->view = $articles->view + 1;
 
         $articles->save();
+
+        if ($articles->phoneNumber) {
+            $articles->no_tlp = $articles->phoneNumber->no_tlp;
+        } elseif ($articles->articles->articletag->first()?->phonenumber) {
+            $articles->no_tlp = $articles->articles->articletag->first()->phoneNumber->no_tlp;
+        } else {
+            $articles->no_tlp = optional(PhoneNumber::first())->no_tlp;
+        }
 
         if (!$articles) {
             return response()->json([

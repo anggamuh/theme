@@ -23,7 +23,7 @@
             <div class=" hidden md:flex flex-row gap-6 items-center text-neutral-500">
                 <x-guest.nav-button route="{{route('home')}}" active="{{request()->routeIs('home')}}">Beranda</x-guest.nav-button>
                 <x-guest.nav-button route="{{route('allarticle')}}" active="{{request()->routeIs('allarticle', 'pageallarticle', 'author', 'pageauthor', 'category', 'pagecategory', 'tag', 'pagetag')}}">Artikel</x-guest.nav-button>
-                <x-guest.nav-button route="" active="">Tentang</x-guest.nav-button>
+                <x-guest.nav-button route="{{ request()->routeIs('business') ? route('home') : '' }}#kontak" active="">Kontak</x-guest.nav-button>
                 {{-- @if (Route::has('login'))
                     @auth
                         <form method="POST" class="" action="{{ route('logout') }}">
@@ -47,7 +47,7 @@
     <div :class="{' top-[70px] sm:top-20': open, '-translate-y-full top-0': !open}" class=" fixed flex md:hidden flex-col bg-white w-full left-0 justify-center gap-4 font-semibold text-neutral-600 pt-2 px-4 pb-4 duration-300 z-40">
         <x-guest.nav-button route="{{route('home')}}" active="{{request()->routeIs('home')}}">Beranda</x-guest.nav-button>
         <x-guest.nav-button route="{{route('allarticle')}}" active="{{request()->routeIs('allarticle', 'pageallarticle', 'author', 'pageauthor', 'category', 'pagecategory', 'tag', 'pagetag')}}">Article</x-guest.nav-button>
-        <x-guest.nav-button route="" active="">Tentang</x-guest.nav-button>
+        <x-guest.nav-button route="{{ request()->routeIs('business') ? route('home') : '' }}#kontak" active="">Kontak</x-guest.nav-button>
         <form action="{{route('allarticle')}}" method="get">
             <div class=" flex items-center justify-between h-10 bg-white">
                 <input type="text" name="search" value="{{ request('search') }}" class="flex-grow h-10 text-sm px-4 sm:px-6 border-r-0 rounded-l-full focus:border-byolink-1 focus:ring-0" placeholder="Cari Artikel....">
