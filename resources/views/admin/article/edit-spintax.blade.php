@@ -9,7 +9,7 @@
         <label class="font-medium text-sm sm:text-base">Pilih Web (optional)</label>
         <select class="guardianweb" name="guardian" multiple="multiple">
             @foreach($guardian as $item)
-                <option value="{{ $item->id }}" {{ old('guardian', $article->guardian_web_id) === $item->id ? 'selected' : '' }}>{{ $item->url }}</option>
+                <option value="{{ $item->id }}" {{ (old('guardian') ?? ($article->guardian_web_id ?? null)) == $item->id ? 'selected' : '' }}>{{ $item->url }}</option>
             @endforeach
         </select>
     </div>
