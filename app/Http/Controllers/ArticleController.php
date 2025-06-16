@@ -125,7 +125,8 @@ class ArticleController extends Controller
         return $text;
     }
 
-    public function shuffle($id) {
+    public function shuffle($id) 
+    {
         $article = Article::find($id);
         $articleshow = $article->articleshow;
 
@@ -269,6 +270,25 @@ class ArticleController extends Controller
             ->paginate(10);
 
         return view('admin.article.index' ,compact('data', 'count', 'web', 'status', 'filterweb'));
+    }
+
+    public function spin($id, Request $request) 
+    {
+        $count = new \stdClass();
+        $count->all = ArticleShow::where('article_id', $id)->count();
+        $count->schedule = ArticleShow::where('article_id', $id)->where('status', 'schedule')->count();
+        $count->publish = ArticleShow::where('article_id', $id)->where('status', 'publish')->count();
+        $count->private = ArticleShow::where('article_id', $id)->where('status', 'private')->count();
+
+        $article = Article::find($id);
+
+        $data = ArticleShow::where('article_id', $id)
+            ->when($request->search, function ($query) use ($request) {
+                $query->where('judul', 'like', '%' . $request->search . '%');
+            })
+            ->paginate(10);
+
+        return view('admin.article.index-spin', compact('article', 'data', 'count'));
     }
 
     /**

@@ -126,13 +126,11 @@
                                 <div class="flex gap-1 sm:gap-2 justify-center">
                                     @if ($item->article_type === 'spintax')
                                         {{-- Article Generated --}}
-                                        <button @click="spin = !spin" :class="spin ? 'rotate-180' : ''" class="w-5 h-5 hover:text-blue-500 duration-300 relative">
-                                            <svg fill="none" viewBox="0 0 24 24" class=" w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                                                <path clip-rule="evenodd"
-                                                    d="M20.05 17.65a3 3 0 0 0 1.2-2.4v-11a3 3 0 0 0-3-3h-12a3 3 0 0 0-3 3v11a3 3 0 0 0 1.2 2.4l6 4.5a3 3 0 0 0 3.6 0l6-4.5Z"
-                                                    fill="currentColor" fill-rule="evenodd"></path>
-                                            </svg>
-                                        </button>
+                                        <a href="{{ route('article.spin', ['id' => $item->id])}}" target="__blank">
+                                            <button class="w-5 h-5 hover:text-blue-500 duration-300 relative">
+                                                <svg viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"><path d="M20 10H4c-1.1 0-2 .9-2 2s.9 2 2 2h16c1.1 0 2-.9 2-2s-.9-2-2-2zM4 8h12c1.1 0 2-.9 2-2s-.9-2-2-2H4c-1.1 0-2 .9-2 2s.9 2 2 2zM16 16H4c-1.1 0-2 .9-2 2s.9 2 2 2h12c1.1 0 2-.9 2-2s-.9-2-2-2z" fill="currentColor" class="fill-000000"></path></svg>
+                                            </button>
+                                        </a>
 
                                         {{-- Edit --}}
                                         <div class="relative" x-data="{ open: false, generatemodal:false }">
@@ -227,7 +225,7 @@
                             </td>
                         </tr>
 
-                        @if ($item->article_type === 'spintax')
+                        {{-- @if ($item->article_type === 'spintax')
                             <tr x-show="spin" class=" h-10">
                                 <td class="px-3 py-1 text-center font-semibold bg-white"></td>
                                 <td colspan="2" class=" bg-byolink-1">
@@ -278,7 +276,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                        @endif
+                        @endif --}}
                     </tbody>
                 @empty
                     <tr>
