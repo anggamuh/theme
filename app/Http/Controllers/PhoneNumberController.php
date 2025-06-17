@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArticleCategory;
 use App\Models\ArticleShow;
-use App\Models\ArticleTag;
 use App\Models\PhoneNumber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -25,7 +25,7 @@ class PhoneNumberController extends Controller
      */
     public function create()
     {
-        $category = ArticleTag::whereNull('phone_number_id')->get();
+        $category = ArticleCategory::whereNull('phone_number_id')->get();
         $article = ArticleShow::whereNull('phone_number_id')->get();
         return view('admin.phone-number.create', compact('category', 'article'));
     }
@@ -52,7 +52,7 @@ class PhoneNumberController extends Controller
         if ($newtlp->type === 'category') {
             if ($request->category) {
                 foreach ($request->category as $item) {
-                    $category = ArticleTag::find($item);
+                    $category = ArticleCategory::find($item);
                     $category->phone_number_id = $newtlp->id;
                     $category->save();
                 }
@@ -60,7 +60,7 @@ class PhoneNumberController extends Controller
         } elseif ($newtlp->type === 'article') {
             if ($request->article) {
                 foreach ($request->article as $item) {
-                    $article = ArticleShow::find($item);
+                    $article = ArticleCategory::find($item);
                     $article->phone_number_id = $newtlp->id;
                     $article->save();
                 }
@@ -75,7 +75,7 @@ class PhoneNumberController extends Controller
      */
     public function show(PhoneNumber $phoneNumber)
     {
-        $category = ArticleTag::all();
+        $category = ArticleCategory::all();
         $article = ArticleShow::all();
         return view('admin.phone-number.edit', compact('phoneNumber', 'category', 'article'));
     }
@@ -108,11 +108,11 @@ class PhoneNumberController extends Controller
         $phoneNumber->save();
 
         if ($phoneNumber->type === 'category') {
-            ArticleTag::where('phone_number_id', $phoneNumber->id)->update(['phone_number_id' => null]);
+            ArticleCategory::where('phone_number_id', $phoneNumber->id)->update(['phone_number_id' => null]);
     
             if ($request->category) {
                 foreach ($request->category as $item) {
-                    $category = ArticleTag::find($item);
+                    $category = ArticleCategory::find($item);
                     $category->phone_number_id = $phoneNumber->id;
                     $category->save();
                 }
@@ -138,7 +138,7 @@ class PhoneNumberController extends Controller
     public function destroy(PhoneNumber $phoneNumber)
     {
         ArticleShow::where('phone_number_id', $phoneNumber->id)->update(['phone_number_id' => null]);
-        ArticleTag::where('phone_number_id', $phoneNumber->id)->update(['phone_number_id' => null]);
+        ArticleCategory::where('phone_number_id', $phoneNumber->id)->update(['phone_number_id' => null]);
 
         // dd($phoneNumber);
         $phoneNumber->delete();

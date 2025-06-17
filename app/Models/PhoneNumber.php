@@ -13,8 +13,8 @@ class PhoneNumber extends Model
     {
         return $this->hasMany(ArticleShow::class);
     }
-    public function articletag()
+    public function articlecategory()
     {
-        return $this->hasMany(ArticleTag::class);
+        return $this->hasMany(ArticleCategory::class);
     }
 }
