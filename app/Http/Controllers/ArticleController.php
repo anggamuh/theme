@@ -131,18 +131,29 @@ class ArticleController extends Controller
         $articleshow = $article->articleshow;
 
         foreach ($articleshow as $item) {
-            $item->banner = $article->articlebanner->isNotEmpty() ? $article->articlebanner->random()->image : null;
+            // Hapus gallery lama
+            ArticleShowGallery::where('article_show_id', $item->id)->delete();
+
+            // Shuffle dan simpan banner
+            $item->banner = $article->articlebanner->isNotEmpty()
+                ? $article->articlebanner->random()->image
+                : null;
+
+            // Ambil gallery acak
             $galleries = $article->articlegallery->shuffle()->take(6);
-            if ($galleries) {
-                foreach ($galleries as $gallery) {
-                    $showGallery = new ArticleShowGallery;
-                    $showGallery->article_show_id = $item->id;
-                    $showGallery->article_gallery_id = $gallery->id;
-                    $showGallery->image = $gallery->image;
-                    $showGallery->image_alt = $gallery->image_alt;
-                    $showGallery->save();
-                }
+
+            // Simpan gallery baru
+            foreach ($galleries as $gallery) {
+                $showGallery = new ArticleShowGallery;
+
+                $showGallery->article_show_id = $item->id;
+                $showGallery->article_gallery_id = $gallery->id;
+                $showGallery->image = $gallery->image;
+                $showGallery->image_alt = $gallery->image_alt;
+
+                $showGallery->save();
             }
+
             $item->save();
         }
 
@@ -310,7 +321,7 @@ class ArticleController extends Controller
     {
         try {
             $validated = $request->validate([
-                'judul' => 'required|max:255|unique:'.Article::class.'|unique:'.ArticleShow::class,
+                'judul' => 'required|unique:'.Article::class.'|unique:'.ArticleShow::class,
                 'category' => 'array',
                 'tag' => 'array',
                 'template_id' => 'required|array',
@@ -528,7 +539,6 @@ class ArticleController extends Controller
             $validated = $request->validate([
                 'judul' => [
                     'required',
-                    'max:255',
                     Rule::unique('articles')->ignore($article->id),
                     Rule::unique('article_shows'),
                 ],
