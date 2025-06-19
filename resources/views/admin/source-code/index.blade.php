@@ -141,7 +141,20 @@
                             <div class=" w-full overflow-auto max-h-full px-6 space-y-4">
                                 <div class=" space-y-4">
                                     <x-admin.component.textinput title="Title" placeholder="Masukkan Title" :value="''" name="title" />
-                                    <x-admin.component.taginput title="Konten" :value="null" name="content[]" />
+                                    <div class="flex flex-col gap-2">
+                                        <label class="font-medium text-sm sm:text-base">Konten (Pisahkan menggunakan "," atau "enter")</label>
+                                        <div class=" w-full flex gap-1">
+                                            <select class="js-example-basic-single" name="content[]" multiple="multiple"></select>
+                                            <label for="txt" class="min-w-10 w-10 h-10 max-h-10 p-3 rounded-md bg-byolink-1 text-white font-semibold hover:bg-byolink-3 duration-300 relative overflow-hidden">
+                                                <svg id="icon-default" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m20.535 7.122-5.656-5.658a4.981 4.981 0 0 0-1.417-.977c-.035-.018-.066-.04-.1-.055A4.984 4.984 0 0 0 11.343 0H6a4 4 0 0 0-4 4v16a4 4 0 0 0 4 4h12a4 4 0 0 0 4-4v-9.343a4.968 4.968 0 0 0-.433-2.016.85.85 0 0 0-.055-.1 4.976 4.976 0 0 0-.977-1.419ZM18.586 8H16a2 2 0 0 1-2-2V3.414ZM20 20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h5.343a3 3 0 0 1 .657.078V6a4 4 0 0 0 4 4h3.92a2.953 2.953 0 0 1 .08.657Z" fill="currentColor" class="fill-232323"></path><path d="M13 15h-2v-2a1 1 0 0 0-2 0v2H7a1 1 0 0 0 0 2h2v2a1 1 0 0 0 2 0v-2h2a1 1 0 0 0 0-2Z" fill="currentColor" class="fill-232323"></path></svg>
+                                            
+                                                <svg id="icon-loading" class="hidden animate-spin" fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M4 24c0 11.046 8.954 20 20 20s20-8.954 20-20S35.046 4 24 4" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+                                                </svg>
+                                            </label>
+                                            <input type="file" id="txt" class=" hidden" accept=".txt">
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="flex justify-end space-x-4">
                                     <x-admin.component.submitbutton title="Tambah" />
@@ -242,4 +255,94 @@
             }
         </script>
     </div>
+    <style>
+        .select2 {
+            width: 100% !important;
+            max-width: calc(100% - 48px) !important;
+        }
+
+        .selection .select2-selection {
+            width: 100% !important;
+            border-color: #3b82f6 !important;
+            background-color: #f5f5f5 !important;
+            min-height: 40px !important;
+            padding: 0.3rem 0.75rem !important;
+            border-radius: 0.375rem !important;
+        }
+
+        .selection .select2-selection:focus,
+        .selection .select2-selection:focus-within {
+            border: 2px solid;
+            border-radius: 0.375rem 0.375rem 0 0 !important;
+            border-color: #1e40af !important;
+        }
+        .selection li {
+            margin-top: 0px !important;
+            margin-left: 0px !important;
+            margin-right: 0.25rem !important;
+            font-size: 0.875rem !important;
+            line-height: 1.25rem !important;
+        }
+        .selection textarea {
+            margin-top: 0px !important;
+            margin-left: 0px !important;
+            margin-bottom: 2px !important;
+            font-size: 0.875rem !important;
+            line-height: 1.25rem !important;
+        }
+        .select2-dropdown {
+            font-size: 0.875rem !important;
+            overflow: hidden;
+            border-radius: 0 0 0.375rem 0.375rem !important;
+            border: 2px solid #1e40af;
+        }
+    </style>
 </x-app-layout>
+<script>
+    window.addEventListener('load', function select2() {
+        var $j = jQuery.noConflict();
+
+        $j(document).ready(function () {
+            const select = $j('.js-example-basic-single');
+
+            // Inisialisasi Select2
+            select.select2({
+                tags: true,
+                tokenSeparators: [','],
+            });
+
+            // File input handler
+            document.getElementById('txt').addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                // Tampilkan ikon loading
+                document.getElementById('icon-default').classList.add('hidden');
+                document.getElementById('icon-loading').classList.remove('hidden');
+
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const lines = e.target.result.split(/\r?\n/);
+                    lines.forEach(line => {
+                        const trimmed = line.trim();
+                        if (trimmed.length > 0) {
+                            if (select.find('option').filter((_, opt) => opt.value === trimmed).length === 0) {
+                                const newOption = new Option(trimmed, trimmed, true, true);
+                                select.append(newOption).trigger('change');
+                            } else {
+                                select.find('option[value="' + trimmed + '"]').prop('selected', true);
+                                select.trigger('change');
+                            }
+                        }
+                    });
+
+                    // Sembunyikan ikon loading, tampilkan ikon default kembali
+                    document.getElementById('icon-loading').classList.add('hidden');
+                    document.getElementById('icon-default').classList.remove('hidden');
+                };
+
+                reader.readAsText(file);
+            });
+        });
+    });
+</script>

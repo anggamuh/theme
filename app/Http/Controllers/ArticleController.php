@@ -198,6 +198,7 @@ class ArticleController extends Controller
                 }
                 return $query;
             })
+            ->latest()
             ->paginate(10);
 
         return view('admin.article.index' ,compact('data', 'count', 'web', 'status', 'filterweb'));
@@ -238,6 +239,7 @@ class ArticleController extends Controller
                 }
                 return $query;
             })
+            ->latest()
             ->paginate(10);
 
         return view('admin.article.index' ,compact('data', 'count', 'web', 'status', 'filterweb'));
@@ -278,6 +280,7 @@ class ArticleController extends Controller
                 }
                 return $query;
             })
+            ->latest()
             ->paginate(10);
 
         return view('admin.article.index' ,compact('data', 'count', 'web', 'status', 'filterweb'));
