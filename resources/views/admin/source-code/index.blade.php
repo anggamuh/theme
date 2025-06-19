@@ -290,6 +290,17 @@
             font-size: 0.875rem !important;
             line-height: 1.25rem !important;
         }
+        .selection .select2-search__field {
+            width: 100% !important;
+            flex-grow: 1 !important;
+            min-width: 60px !important;
+            padding: 0.3rem 0 !important; /* samakan dengan padding selection */
+            font-size: 0.875rem !important;
+            line-height: 1.25rem !important;
+            background-color: transparent !important;
+            border: none !important;
+            outline: none !important;
+        }
         .select2-dropdown {
             font-size: 0.875rem !important;
             overflow: hidden;
