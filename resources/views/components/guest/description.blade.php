@@ -58,6 +58,10 @@
                 list-style-type: disc;
             }
 
+            .article span {
+                font-size: inherit !important;
+            }
+
             .article p {
                 font-size: 0.875rem !important;
                 line-height: 1.25rem !important;
