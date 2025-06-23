@@ -47,6 +47,10 @@
         list-style-type: disc;
     }
 
+    .note-editor span {
+        font-size: inherit !important;
+    }
+
     .note-editor p {
         font-size: 0.875rem !important;
         line-height: 1.25rem !important;
@@ -115,15 +119,18 @@
         word-wrap: break-word !important;
         overflow-wrap: break-word !important;
     }
+
     .note-editor {
         max-width: 100%;
         border-color: #3b82f6 !important;
         /* background-color: #f5f5f5 !important; */
         border-radius: 0.375rem !important;
     }
+    
     .note-toolbar {
         border-radius: 0.375rem 0.375rem 0 0 !important;
     }
+
     .note-modal {
         transform: translateY(-50%);
         top: 50%;

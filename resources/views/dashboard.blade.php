@@ -33,5 +33,10 @@
                 </div>
             </div>
         </div>
+        <div class=" w-full p-4 sm:p-8 bg-white rounded-md shadow-md shadow-black/20">
+            <div class=" space-y-4 sm:space-y-6">
+                <p class=" text-base sm:text-lg font-semibold">List Kategori</p>
+            </div>
+        </div>
     </div>
 </x-app-layout>
