@@ -71,9 +71,9 @@
                         <p class=" text-nowrap font-semibold">: <span class=" text-purple-500">{{$count->private}}</span>/{{$count->all}}</p>
                     </div>
                 </div>
-                <div x-data="{ status: '{{$status ?? 'all'}}', web: '{{$filterweb ?? 'all'}}' }" class=" flex flex-col sm:flex-row justify-between sm:justify-start gap-4">
-                    <div class="flex gap-2">
-                        <p class=" text-nowrap">Status : </p>
+                <div x-data="{ status: '{{$status ?? 'all'}}', web: '{{$filterweb ?? 'all'}}' }" class=" flex flex-row justify-between sm:justify-start gap-4">
+                    <div class="flex items-center gap-2">
+                        <p class=" flex text-nowrap flex-nowrap">S<span class=" hidden sm:block">tatus</span> : </p>
                         <select class=" text-neutral-600 border-neutral-600 w-full text-sm border pl-2 px-8 py-0.5 rounded-full" x-model="status" name="status" id="">
                             <option value="all">All</option>
                             <option value="schedule">Schedule</option>
@@ -82,7 +82,7 @@
                         </select>
                     </div>
                     <div class="flex items-center gap-2">
-                        <p class=" text-nowrap">Guardian : </p>
+                        <p class=" flex text-nowrap flex-nowrap">G<span class=" hidden sm:block">uardian</span> : </p>
                         <select class=" text-neutral-600 border-neutral-600 w-full text-sm border pl-2 px-8 py-0.5 rounded-full" x-model="web" name="web" id="">
                             <option value="all">All</option>
                             <option value="main">Main</option>
@@ -92,7 +92,7 @@
                         </select>
                     </div>
                     <a :href="`{{ preg_replace('#/status/[^/]+/web/[^/]+#', '',url()->current()) }}/status/${status}/web/${web}`">
-                        <button class=" bg-byolink-1 hover:bg-byolink-3 duration-300 rounded-full text-white px-2 py-0.5 text-sm">Cari</button>
+                        <button class=" w-full bg-byolink-1 hover:bg-byolink-3 duration-300 rounded-full text-white px-2 py-0.5 text-sm">Cari</button>
                     </a>
                 </div>
             </div>
@@ -113,7 +113,7 @@
                     <tbody x-data="{ spin: false, search: '' }">
                         <tr class="{{ $rowBg }} h-10 text-neutral-600 divide-x-2 divide-white">
                             <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration }}</td>
-                            <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold">
+                            <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold max-w-44 sm:max-w-full">
                                 @if ($item->article_type === 'unique')
                                     <a href="{{ route('business', ['slug' => $item->articleshow->first()->slug]) }}">
                                         <p class="line-clamp-2">{{$item->judul}}</p>

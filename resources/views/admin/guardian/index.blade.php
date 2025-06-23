@@ -24,7 +24,12 @@
                     <tr class="h-10 bg-byolink-1 text-white divide-x-2 divide-white">
                         <th class=" px-2 py-1 rounded-tl-md w-10">No</th>
                         <th class=" px-1 sm:px-2 py-1">Url</th>
-                        <th class=" px-1 sm:px-2 py-1">Jumlah Artikel</th>
+                        <th class=" px-1 sm:px-2 py-1 min-w-10">
+                            <p class=" hidden sm:block">Jumlah Artikel</p>
+                            <div class=" sm:hidden w-full flex justify-center">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24"><path d="M20 10H4c-1.1 0-2 .9-2 2s.9 2 2 2h16c1.1 0 2-.9 2-2s-.9-2-2-2zM4 8h12c1.1 0 2-.9 2-2s-.9-2-2-2H4c-1.1 0-2 .9-2 2s.9 2 2 2zM16 16H4c-1.1 0-2 .9-2 2s.9 2 2 2h12c1.1 0 2-.9 2-2s-.9-2-2-2z" fill="currentColor" class="fill-000000"></path></svg>
+                            </div>
+                        </th>
                         <th class=" px-1 sm:px-2 py-1">Code</th>
                         <th class=" px-1 sm:px-2 py-1 w-[90px] sm:w-[100px] rounded-tr-md">Opsi</th>
                     </tr>
@@ -43,8 +48,8 @@
                     <tbody>
                         <tr class="{{ $loop->even ? 'bg-neutral-100' : 'bg-neutral-200' }} h-10 text-neutral-600 divide-x-2 divide-white">
                             <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration + 1 }}</td>
-                            <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap">
-                                <a href="{{$item->url}}" class=" hover:text-byolink-1 duration-300" target="__blank">{{$item->url}}</a>
+                            <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap max-w-28 sm:max-w-full">
+                                <a href="{{$item->url}}" class=" hover:text-byolink-1 duration-300 line-clamp-1" target="__blank">{{$item->url}}</a>
                             </td>
                             <td class="px-2 sm:px-4 py-1 min-h-10 text-nowrap text-center">{{$item->articles->count()}}</td>
                             <td class="px-2 sm:px-4 py-1 min-h-10 text-nowrap">

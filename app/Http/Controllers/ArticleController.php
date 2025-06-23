@@ -160,16 +160,24 @@ class ArticleController extends Controller
         return redirect()->back();
     }
 
+    private function formatCount($number)
+    {
+        if ($number >= 1000) {
+            return round($number / 1000, 1) . 'k'; // contoh: 1500 → 1.5k
+        }
+        return (string) $number;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request, $status = null, $filterweb = null)
     {
         $count = new \stdClass();
-        $count->all = ArticleShow::count();
-        $count->schedule = ArticleShow::where('status', 'schedule')->count();
-        $count->publish = ArticleShow::where('status', 'publish')->count();
-        $count->private = ArticleShow::where('status', 'private')->count();
+        $count->all = $this->formatCount(ArticleShow::count());
+        $count->schedule = $this->formatCount(ArticleShow::where('status', 'schedule')->count());
+        $count->publish = $this->formatCount(ArticleShow::where('status', 'publish')->count());
+        $count->private = $this->formatCount(ArticleShow::where('status', 'private')->count());
 
         $web = GuardianWeb::all();
         
@@ -207,10 +215,10 @@ class ArticleController extends Controller
     public function indexspintax(Request $request, $status = null, $filterweb = null)
     {
         $count = new \stdClass();
-        $count->all = ArticleShow::count();
-        $count->schedule = ArticleShow::where('status', 'schedule')->count();
-        $count->publish = ArticleShow::where('status', 'publish')->count();
-        $count->private = ArticleShow::where('status', 'private')->count();
+        $count->all = $this->formatCount(ArticleShow::count());
+        $count->schedule = $this->formatCount(ArticleShow::where('status', 'schedule')->count());
+        $count->publish = $this->formatCount(ArticleShow::where('status', 'publish')->count());
+        $count->private = $this->formatCount(ArticleShow::where('status', 'private')->count());
 
         $web = GuardianWeb::all();
         
@@ -248,10 +256,10 @@ class ArticleController extends Controller
     public function indexunique(Request $request, $status = null, $filterweb = null)
     {
         $count = new \stdClass();
-        $count->all = ArticleShow::count();
-        $count->schedule = ArticleShow::where('status', 'schedule')->count();
-        $count->publish = ArticleShow::where('status', 'publish')->count();
-        $count->private = ArticleShow::where('status', 'private')->count();
+        $count->all = $this->formatCount(ArticleShow::count());
+        $count->schedule = $this->formatCount(ArticleShow::where('status', 'schedule')->count());
+        $count->publish = $this->formatCount(ArticleShow::where('status', 'publish')->count());
+        $count->private = $this->formatCount(ArticleShow::where('status', 'private')->count());
 
         $web = GuardianWeb::all();
         
