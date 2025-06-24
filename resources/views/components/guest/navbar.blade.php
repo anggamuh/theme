@@ -24,11 +24,13 @@
                 <x-guest.nav-button route="{{route('home')}}" active="{{request()->routeIs('home')}}">Beranda</x-guest.nav-button>
                 <div x-data="{ article : false }" class=" relative">
                     <button @click="article = !article" class="{{ request()->routeIs('allarticle', 'pageallarticle', 'author', 'pageauthor', 'category', 'pagecategory', 'tag', 'pagetag') ? 'text-byolink-1' : 'hover:text-black hover:-translate-y-1'}} text-lg font-black py-2 duration-300" aria-label="Artikel">Artikel</button>
-                    <div x-show="article" class=" absolute top-full left-0 bg-white py-2 rounded-md shadow-md shadow-black/20 flex flex-col gap-1 text-sm">
-                        <a href="{{route('allarticle')}}" class=" w-full  text-nowrap px-4 hover:bg-neutral-100 duration-300 py-1">Artikel Terbaru</a>
-                        @foreach ($category as $item)
-                            <a href="{{route('category', ['category' => $item->slug])}}" class=" w-full  text-nowrap px-4 hover:bg-neutral-100 duration-300 py-1">{{$item->category}}</a>
-                        @endforeach
+                    <div x-show="article" class=" absolute top-full left-0 bg-white py-2 rounded-md shadow-md shadow-black/20 text-sm">
+                        <div class=" max-h-36 overflow-auto flex flex-col gap-1">
+                            <a href="{{route('allarticle')}}" class=" w-full  text-nowrap px-4 hover:bg-neutral-100 duration-300 py-1">Artikel Terbaru</a>
+                            @foreach ($category as $item)
+                                <a href="{{route('category', ['category' => $item->slug])}}" class=" w-full  text-nowrap px-4 hover:bg-neutral-100 duration-300 py-1">{{$item->category}}</a>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
                 <x-guest.nav-button route="{{ request()->routeIs('business') ? route('home') : '' }}#kontak" active="">Kontak</x-guest.nav-button>
@@ -56,7 +58,7 @@
         <x-guest.nav-button route="{{route('home')}}" active="{{request()->routeIs('home')}}">Beranda</x-guest.nav-button>
         <div x-data="{ article : false }">
             <button @click="article = !article" class="{{ request()->routeIs('allarticle', 'pageallarticle', 'author', 'pageauthor', 'category', 'pagecategory', 'tag', 'pagetag') ? 'text-byolink-1' : 'hover:text-black hover:-translate-y-1'}} text-lg font-black py-2 duration-300" aria-label="Artikel">Artikel</button>
-            <div x-show="article" class=" py-2 flex flex-col gap-1 text-sm">
+            <div x-show="article" class=" max-h-36 overflow-auto py-2 flex flex-col gap-1 text-sm">
                 <a href="{{route('allarticle')}}" class=" w-full  text-nowrap px-4 hover:bg-neutral-100 duration-300 py-1">Artikel Terbaru</a>
                 @foreach ($category as $item)
                     <a href="{{route('category', ['category' => $item->slug])}}" class=" w-full  text-nowrap px-4 hover:bg-neutral-100 duration-300 py-1">{{$item->category}}</a>
