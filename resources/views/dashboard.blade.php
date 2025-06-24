@@ -36,6 +36,25 @@
         <div class=" w-full p-4 sm:p-8 bg-white rounded-md shadow-md shadow-black/20">
             <div class=" space-y-4 sm:space-y-6">
                 <p class=" text-base sm:text-lg font-semibold">List Kategori</p>
+                <table class="w-full text-sm sm:text-base rounded-md overflow-hidden">
+                    <thead>
+                        <tr class="h-10 bg-byolink-1 text-white divide-x-2 divide-white">
+                            <th class=" px-2 py-1 rounded-tl-md w-10">No</th>
+                            <th class=" px-1 sm:px-2 py-1">Kategori</th>
+                            <th class=" px-1 sm:px-2 py-1 min-w-10">Jumlah Artikel</th>
+                            {{-- <th class=" px-1 sm:px-2 py-1 w-[90px] sm:w-[100px] rounded-tr-md">Opsi</th> --}}
+                        </tr>
+                    </thead>
+                    @foreach ($data as $item)
+                        <tbody>
+                            <tr class="{{ $loop->even ? 'bg-neutral-100' : 'bg-neutral-200' }} h-10 text-neutral-600 divide-x-2 divide-white">
+                                <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration }}</td>
+                                <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap max-w-28 sm:max-w-full">{{$item->category}}</td>
+                                <td class="px-2 sm:px-4 py-1 min-h-10 text-nowrap text-center">{{$item->articles->count()}}</td>
+                            </tr>
+                        </tbody>
+                    @endforeach
+                </table>
             </div>
         </div>
     </div>

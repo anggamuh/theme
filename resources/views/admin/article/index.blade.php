@@ -119,7 +119,7 @@
                                         <p class="line-clamp-2">{{$item->judul}}</p>
                                     </a>
                                 @else
-                                    <p class=" w-44 sm:w-auto line-clamp-2">{{$item->judul}}</p>
+                                    <p class=" w-full max-w-full line-clamp-2">{{$item->judul}}</p>
                                 @endif
                             </td>
                             <td class="px-1 sm:px-2">
@@ -224,59 +224,6 @@
                                 </div>
                             </td>
                         </tr>
-
-                        {{-- @if ($item->article_type === 'spintax')
-                            <tr x-show="spin" class=" h-10">
-                                <td class="px-3 py-1 text-center font-semibold bg-white"></td>
-                                <td colspan="2" class=" bg-byolink-1">
-                                    <div class=" flex items-center justify-between px-2">
-                                        <p class=" text-white font-semibold">
-                                            Artikel 
-                                            <span class=" text-nowrap">
-                                                <span class=" text-green-500">{{$item->articleshow->where('status', 'publish')->count()}}</span>
-                                                /{{$item->articleshow->count()}} Publish
-                                            </span>
-                                        </p>
-                                        <input type="text" placeholder="Cari..." x-model="search" class=" min-w-0 w-36 sm:w-auto bg-white py-1 border-x-pink-200 text-sm sm:text-base border-none ring-0 focus:ring-0 rounded-md">
-                                    </div>
-                                </td>
-                            </tr>
-                            @foreach ($item->articleshow as $itemshow)
-                                <tr x-show="spin && '{{ strtolower($itemshow->judul) }}'.includes(search.toLowerCase())" 
-                                    class="{{ $itemshow->status === 'schedule' ? 'bg-red-100' : ($itemshow->status === 'publish' ? 'bg-green-100' : 'bg-purple-100') }} h-10 text-neutral-600 divide-x-2 divide-white">
-                                    <td class="px-3 py-1 text-center font-semibold bg-white"></td>
-                                    <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold flex">
-                                        <p class="line-clamp-2">
-                                            <a href="{{ route('business', ['slug' => $itemshow->slug]) }}">{{$itemshow->judul}}</a>
-                                        </p>
-                                    </td>
-                                    <td class="px-1 sm:px-2">
-                                        <div class="flex gap-1 sm:gap-2 justify-center">
-                                            <!-- Edit -->
-                                            <a href="{{ route('article-generated.show', ['article_generated' => $itemshow->id]) }}"
-                                                class="w-5 h-5 hover:text-green-500 duration-300">
-                                                <svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M3 17.75A3.25 3.25 0 0 0 6.25 21h4.915l.356-1.423c.162-.648.497-1.24.97-1.712l5.902-5.903a3.279 3.279 0 0 1 2.607-.95V6.25A3.25 3.25 0 0 0 17.75 3H11v4.75A3.25 3.25 0 0 1 7.75 11H3v6.75ZM9.5 3.44 3.44 9.5h4.31A1.75 1.75 0 0 0 9.5 7.75V3.44Zm9.6 9.23-5.903 5.902a2.686 2.686 0 0 0-.706 1.247l-.458 1.831a1.087 1.087 0 0 0 1.319 1.318l1.83-.457a2.685 2.685 0 0 0 1.248-.707l5.902-5.902A2.286 2.286 0 0 0 19.1 12.67Z"
-                                                        fill="currentColor"></path>
-                                                </svg>
-                                            </a>
-                    
-                                            <!-- Delete -->
-                                            <div x-data="{ deletemodal:false }">
-                                                <button @click="deletemodal = !deletemodal"
-                                                    class="w-5 h-5 hover:text-red-500 duration-300">
-                                                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M19.5 8.99h-15a.5.5 0 0 0-.5.5v12.5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.49a.5.5 0 0 0-.5-.5Zm-9.25 11.5a.75.75 0 0 1-1.5 0v-8.625a.75.75 0 0 1 1.5 0Zm5 0a.75.75 0 0 1-1.5 0v-8.625a.75.75 0 0 1 1.5 0ZM20.922 4.851a11.806 11.806 0 0 0-4.12-1.07 4.945 4.945 0 0 0-9.607 0A12.157 12.157 0 0 0 3.18 4.805 1.943 1.943 0 0 0 2 6.476 1 1 0 0 0 3 7.49h18a1 1 0 0 0 1-.985 1.874 1.874 0 0 0-1.078-1.654ZM11.976 2.01A2.886 2.886 0 0 1 14.6 3.579a44.676 44.676 0 0 0-5.2 0 2.834 2.834 0 0 1 2.576-1.569Z"
-                                                        fill="currentColor"></path>
-                                                    </svg>
-                                                </button>
-                                                <x-admin.component.deletemodal :title="$itemshow->judul" :route="route('article-show.destroy', ['article_show' => $itemshow->id])"/>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif --}}
                     </tbody>
                 @empty
                     <tr>

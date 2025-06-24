@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ArticleBannerController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ArticleGalleryController;
@@ -64,9 +65,7 @@ Route::middleware('daily_schedule')->group(function () {
 Route::get('/sitemap', [SitemapController::class, 'index']);
 
 Route::middleware('auth')->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('dashboard');
-    })->middleware(['auth', 'verified'])->name('dashboard');
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
     Route::resource('/admin/template', TemplateController::class);
     Route::put('/admin/template/edit-image/{id}', [TemplateController::class, 'editimage'])->name('template.editimage');

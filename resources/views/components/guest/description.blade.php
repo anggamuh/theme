@@ -60,6 +60,7 @@
 
             .article span {
                 font-size: inherit !important;
+                color: inherit !important;
             }
 
             .article p {

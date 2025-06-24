@@ -24,6 +24,8 @@ class PageController extends Controller
             })
             ->latest()->paginate(12);
 
+        $category = ArticleCategory::all();
+
         $data->transform(function ($data) {
             $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
             $data->articles->articletag;
@@ -39,7 +41,7 @@ class PageController extends Controller
             ->take(6)->get();
             
         $data->withPath("/artikel/page");
-        return view('guest.home', compact('data', 'trend'));
+        return view('guest.home', compact('data', 'trend', 'category'));
     }
 
     public function article(Request $request, $username = null, $category = null, $tag = null) {
@@ -114,7 +116,10 @@ class PageController extends Controller
             $data->articles->user ;
             return $data;
         });
-        return view('guest.article', compact('data', 'title', 'page'));
+        
+        $category = ArticleCategory::all();
+
+        return view('guest.article', compact('data', 'title', 'page', 'category'));
     }
 
     public function business($slug) {
@@ -141,11 +146,16 @@ class PageController extends Controller
 
         $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
         // dd($data->articles);
-        return view('guest.business', compact('data', 'template'));
+        
+        $category = ArticleCategory::all();
+
+        return view('guest.business', compact('data', 'template', 'category'));
     }
 
     public function notFound() {
-        return view('guest.pagenotfound');
+        $category = ArticleCategory::all();
+
+        return view('guest.pagenotfound', compact('category'));
     }
 
     public function test() {

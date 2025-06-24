@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-@props(['title' => null, 'desc' => null, 'tags' => null])
+@props(['title' => null, 'desc' => null, 'tags' => null, 'category' => null])
 <html class=" scroll-smooth" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
