@@ -49,7 +49,7 @@
                         <tbody>
                             <tr class="{{ $loop->even ? 'bg-neutral-100' : 'bg-neutral-200' }} h-10 text-neutral-600 divide-x-2 divide-white">
                                 <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration }}</td>
-                                <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap max-w-28 sm:max-w-full">{{$item->category}}</td>
+                                <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap max-w-28 sm:max-w-full line-clamp-1">{{$item->category}}</td>
                                 <td class="px-2 sm:px-4 py-1 min-h-10 text-nowrap text-center">{{$item->articles->count()}}</td>
                             </tr>
                         </tbody>

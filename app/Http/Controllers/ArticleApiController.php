@@ -65,10 +65,15 @@ class ArticleApiController extends Controller
             return $data;
         });
 
+        $categories = ArticleCategory::whereHas('articles', function ($query) use ($articleIds) {
+            $query->whereIn('articles.id', $articleIds);
+        })->get();
+
         return response()->json([
             'success' => true,
             'data' => $articles,
             'trend' => $trend,
+            'categories' => $categories,
         ]);
     }
 
@@ -98,11 +103,16 @@ class ArticleApiController extends Controller
             $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
             return $data;
         });
+        
+        $categories = ArticleCategory::whereHas('articles', function ($query) use ($articleIds) {
+            $query->whereIn('articles.id', $articleIds);
+        })->get();
 
         return response()->json([
             'success' => true,
             'data' => $articles,
             'user' => $user->name,
+            'categories' => $categories
         ]);
     }
 
@@ -133,11 +143,16 @@ class ArticleApiController extends Controller
             $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
             return $data;
         });
+        
+        $categories = ArticleCategory::whereHas('articles', function ($query) use ($articleIds) {
+            $query->whereIn('articles.id', $articleIds);
+        })->get();
 
         return response()->json([
             'success' => true,
             'data' => $articles,
             'category' => $category->category,
+            'categories' => $categories,
         ]);
     }
 
@@ -169,10 +184,15 @@ class ArticleApiController extends Controller
             return $data;
         });
 
+        $categories = ArticleCategory::whereHas('articles', function ($query) use ($articleIds) {
+            $query->whereIn('articles.id', $articleIds);
+        })->get();
+
         return response()->json([
             'success' => true,
             'data' => $articles,
             'tag' => $tag->tag,
+            'categories' => $categories,
         ]);
     }
 
@@ -203,6 +223,10 @@ class ArticleApiController extends Controller
             $articles->no_tlp = optional(PhoneNumber::first())->no_tlp;
         }
 
+        $categories = ArticleCategory::whereHas('articles', function ($query) use ($articleIds) {
+            $query->whereIn('articles.id', $articleIds);
+        })->get();
+
         if (!$articles) {
             return response()->json([
                 'success' => false,
@@ -213,6 +237,7 @@ class ArticleApiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $articles,
+            'categories' => $categories,
         ]);
     }
 
