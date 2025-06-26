@@ -24,7 +24,9 @@ class PageController extends Controller
             })
             ->latest()->paginate(12);
 
-        $category = ArticleCategory::all();
+        $category = ArticleCategory::whereHas('articles', function ($query) {
+            $query->whereNull('guardian_web_id');
+        })->get();
 
         $data->transform(function ($data) {
             $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
@@ -117,7 +119,9 @@ class PageController extends Controller
             return $data;
         });
         
-        $category = ArticleCategory::all();
+        $category = ArticleCategory::whereHas('articles', function ($query) {
+            $query->whereNull('guardian_web_id');
+        })->get();
 
         return view('guest.article', compact('data', 'title', 'page', 'category'));
     }
@@ -147,13 +151,17 @@ class PageController extends Controller
         $data->date = Carbon::parse($data->created_at)->locale('id')->translatedFormat('d F Y');
         // dd($data->articles);
         
-        $category = ArticleCategory::all();
+        $category = ArticleCategory::whereHas('articles', function ($query) {
+            $query->whereNull('guardian_web_id');
+        })->get();
 
         return view('guest.business', compact('data', 'template', 'category'));
     }
 
     public function notFound() {
-        $category = ArticleCategory::all();
+        $category = ArticleCategory::whereHas('articles', function ($query) {
+            $query->whereNull('guardian_web_id');
+        })->get();
 
         return view('guest.pagenotfound', compact('category'));
     }
