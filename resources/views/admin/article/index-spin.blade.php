@@ -5,7 +5,7 @@
                 <div class=" flex items-center gap-2 text-sm sm:text-base">
                     <a href="{{route('article.index')}}" class=" text-byolink-1 hover:text-byolink-3 duration-300">Article</a>
                     <p class=" text-neutral-600">/</p>
-                    <p class=" text-neutral-600">List <span class=" hidden md:block">{{$article->judul}}</span></p>
+                    <p class=" text-neutral-600 flex flex-row gap-1">List Spintax <span class=" hidden md:block">{{ optional($article->articlecategory->first())->category }}</span></p>
                 </div>
                 <a href="{{route('article.show', ['article' => $article->id])}}" class=" text-sm sm:text-base text-byolink-1 hover:text-byolink-3 duration-300 text-nowrap" target="__blank">Edit Spintax</a>
             </div>

@@ -1,16 +1,21 @@
-@props(['link' => null, 'head' => null, 'form' => null, 'title' => null])
+@props(['link' => null, 'head' => null, 'form' => null, 'title' => null, 'spintax' => null])
 <x-app-layout :head="$head" :title="$title">
     <div class="sm:pl-12 sm:pr-12 lg:pr-32 duration-300 pt-8 pb-20 sm:pb-8 px-4 space-y-6">
         <div class=" w-full sm:py-4 p-4 sm:p-6 bg-white rounded-md shadow-md shadow-black/20">
-            <div class=" flex justify-between">
-                <div class=" flex gap-2 text-sm sm:text-base">
+            <div class=" flex items-center justify-between">
+                <div class=" flex items-center gap-2 text-sm sm:text-base">
                     <a href="{{route('article.index')}}" class=" text-byolink-1 hover:text-byolink-3 duration-300">Article</a>
                     <p class=" text-neutral-600">/</p>
                     <p class=" text-neutral-600">{{$head}}</p>
                 </div>
-                @if ($link)
-                    <a href="{{$link}}" class=" text-sm sm:text-base text-byolink-1 hover:text-byolink-3 duration-300" target="__blank">Lihat Artikel</a>
-                @endif
+                <div class=" flex gap-4">
+                    @if ($spintax)
+                        <a href="{{$spintax}}" class=" flex gap-1 text-sm sm:text-base text-byolink-1 hover:text-byolink-3 duration-300" target="__blank">List <span class=" hidden sm:block">Artikel</span></a>
+                    @endif
+                    @if ($link)
+                        <a href="{{$link}}" class=" flex gap-1 text-sm sm:text-base text-byolink-1 hover:text-byolink-3 duration-300" target="__blank">Lihat <span class=" hidden sm:block">Artikel</span></a>
+                    @endif
+                </div>
             </div>
         </div>
         <div class=" w-full p-4 sm:p-6 bg-white rounded-md shadow-md shadow-black/20">

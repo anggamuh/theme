@@ -62,7 +62,7 @@ Route::middleware('daily_schedule')->group(function () {
     Route::get('/page-not-found', [PageController::class, 'notFound'])->name('not.found');
 });
 
-Route::get('/sitemap', [SitemapController::class, 'index']);
+Route::get('/sitemap', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
