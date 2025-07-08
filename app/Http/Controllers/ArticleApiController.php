@@ -217,8 +217,8 @@ class ArticleApiController extends Controller
 
         if ($articles->phoneNumber) {
             $articles->no_tlp = $articles->phoneNumber->no_tlp;
-        } elseif ($articles->articles->articletag->first()?->phonenumber) {
-            $articles->no_tlp = $articles->articles->articletag->first()->phoneNumber->no_tlp;
+        } elseif ($articles->articles->articlecategory->first()?->phonenumber) {
+            $articles->no_tlp = $articles->articles->articlecategory->first()->phoneNumber->no_tlp;
         } else {
             $articles->no_tlp = optional(PhoneNumber::first())->no_tlp;
         }
