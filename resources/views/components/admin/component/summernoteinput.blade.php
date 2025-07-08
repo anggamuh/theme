@@ -36,6 +36,10 @@
     padding: 0 !important;
     }
 
+    .note-editor font {
+        color: inherit;
+    }
+
     /* Kustomisasi tambahan untuk masing-masing elemen heading */
     .note-editor ol {
         padding-left: 16px;

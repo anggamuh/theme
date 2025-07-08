@@ -48,6 +48,11 @@
                 font-weight: 700;
                 color: {{$template->desc_second_color ?? '#1d588d'}};
             }
+
+            .article font {
+                color: inherit;
+            }
+
             .article ol {
                 padding-left: 16px;
                 list-style-type: decimal;
