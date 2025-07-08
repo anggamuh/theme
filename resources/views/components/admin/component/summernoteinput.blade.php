@@ -28,12 +28,10 @@
 </script>
 <style>
     /* Override gaya default Tailwind untuk h1 hingga h6 */
-    .note-editor h1, h2, h3, h4, h5, h6 {
-    font-size: inherit !important;nt;
-    color: inherit !important;
-    line-height: inherit !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    .note-editor p, h1, h2, h3, h4, h5, h6 {
+        color: inherit !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     .note-editor font {
