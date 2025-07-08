@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('phone_numbers', function (Blueprint $table) {
             $table->id();
             $table->string('no_tlp');
-            $table->string('type');
             $table->longText('chat')->nullable();
             $table->timestamps();
         });

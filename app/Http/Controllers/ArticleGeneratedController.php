@@ -57,7 +57,8 @@ class ArticleGeneratedController extends Controller
         $tag = ArticleTag::whereNotIn('id', $tagid)->get();
         $article = Article::find($articleShow->article_id);
         $template = Template::all();
-        $phonenumber = PhoneNumber::where('type', '!=', 'main')->where('id', '!=', $articleShow->phone_number_id)->get();
+        $first = PhoneNumber::orderBy('id')->first();
+        $phonenumber = PhoneNumber::where('id', '!=', $first->id)->where('id', '!=', $articleShow->phone_number_id)->get();
         return view('admin.article.edit-generated', compact('article', 'articleShow', 'tag', 'template', 'phonenumber'));
     }
 

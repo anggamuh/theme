@@ -26,8 +26,7 @@ class PhoneNumberController extends Controller
     public function create()
     {
         $category = ArticleCategory::whereNull('phone_number_id')->get();
-        $article = ArticleShow::whereNull('phone_number_id')->get();
-        return view('admin.phone-number.create', compact('category', 'article'));
+        return view('admin.phone-number.create', compact('category'));
     }
 
     /**
@@ -39,31 +38,19 @@ class PhoneNumberController extends Controller
         $validated = $request->validate([
             'no_tlp' => 'required|max:255|unique:'.PhoneNumber::class,
             'category' => 'array',
-            'article' => 'array',
         ]);
 
         $newtlp = new PhoneNumber;
 
         $newtlp->no_tlp = preg_replace('/^0/', '+62', $request->no_tlp);
-        $newtlp->type = $request->type;
 
         $newtlp->save();
 
-        if ($newtlp->type === 'category') {
-            if ($request->category) {
-                foreach ($request->category as $item) {
-                    $category = ArticleCategory::find($item);
-                    $category->phone_number_id = $newtlp->id;
-                    $category->save();
-                }
-            }
-        } elseif ($newtlp->type === 'article') {
-            if ($request->article) {
-                foreach ($request->article as $item) {
-                    $article = ArticleCategory::find($item);
-                    $article->phone_number_id = $newtlp->id;
-                    $article->save();
-                }
+        if ($request->category) {
+            foreach ($request->category as $item) {
+                $category = ArticleCategory::find($item);
+                $category->phone_number_id = $newtlp->id;
+                $category->save();
             }
         }
 
@@ -76,8 +63,7 @@ class PhoneNumberController extends Controller
     public function show(PhoneNumber $phoneNumber)
     {
         $category = ArticleCategory::all();
-        $article = ArticleShow::all();
-        return view('admin.phone-number.edit', compact('phoneNumber', 'category', 'article'));
+        return view('admin.phone-number.edit', compact('phoneNumber', 'category'));
     }
 
     /**
@@ -96,36 +82,19 @@ class PhoneNumberController extends Controller
         $validated = $request->validate([
             'no_tlp' => 'required|max:255|unique:'.PhoneNumber::class,
             'category' => 'array',
-            'article' => 'array',
         ]);
         
         $phoneNumber->no_tlp = preg_replace('/^0/', '+62', $request->no_tlp);
 
-        if ($phoneNumber->type != 'main') {
-            $phoneNumber->type = $request->type;
-        }
-
         $phoneNumber->save();
 
-        if ($phoneNumber->type === 'category') {
-            ArticleCategory::where('phone_number_id', $phoneNumber->id)->update(['phone_number_id' => null]);
-    
-            if ($request->category) {
-                foreach ($request->category as $item) {
-                    $category = ArticleCategory::find($item);
-                    $category->phone_number_id = $phoneNumber->id;
-                    $category->save();
-                }
-            }
-        } elseif ($phoneNumber->type === 'article') {
-            ArticleShow::where('phone_number_id', $phoneNumber->id)->update(['phone_number_id' => null]);
-    
-            if ($request->article) {
-                foreach ($request->article as $item) {
-                    $article = ArticleShow::find($item);
-                    $article->phone_number_id = $phoneNumber->id;
-                    $article->save();
-                }
+        ArticleCategory::where('phone_number_id', $phoneNumber->id)->update(['phone_number_id' => null]);
+
+        if ($request->category) {
+            foreach ($request->category as $item) {
+                $category = ArticleCategory::find($item);
+                $category->phone_number_id = $phoneNumber->id;
+                $category->save();
             }
         }
 

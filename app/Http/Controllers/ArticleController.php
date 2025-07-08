@@ -171,13 +171,15 @@ class ArticleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, $status = null, $filterweb = null)
+    public function index(Request $request, $status = null, $filtercat = null, $filterweb = null)
     {
         $count = new \stdClass();
         $count->all = $this->formatCount(ArticleShow::count());
         $count->schedule = $this->formatCount(ArticleShow::where('status', 'schedule')->count());
         $count->publish = $this->formatCount(ArticleShow::where('status', 'publish')->count());
         $count->private = $this->formatCount(ArticleShow::where('status', 'private')->count());
+
+        $category = ArticleCategory::all();
 
         $web = GuardianWeb::all();
         
@@ -190,6 +192,11 @@ class ArticleController extends Controller
             ->when($filterweb && $filterweb != 'main' && $filterweb != 'all', function ($query) use ($filterweb) {
                 $query->where('guardian_web_id', $filterweb);
             })
+            ->when($filtercat && $filtercat != 'all', function ($query) use ($filtercat){
+                $query->whereHas('articlecategory', function ($q) use ($filtercat) {
+                    $q->where('category_id', $filtercat);
+                });
+            })
             ->when($request->search, function ($query) use ($request) {
                 $query->where('judul', 'like', '%' . $request->search . '%');
             })
@@ -209,16 +216,18 @@ class ArticleController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.article.index' ,compact('data', 'count', 'web', 'status', 'filterweb'));
+        return view('admin.article.index' ,compact('data', 'category', 'count', 'web', 'status', 'filtercat', 'filterweb'));
     }
 
-    public function indexspintax(Request $request, $status = null, $filterweb = null)
+    public function indexspintax(Request $request, $status = null, $filtercat = null, $filterweb = null)
     {
         $count = new \stdClass();
         $count->all = $this->formatCount(ArticleShow::count());
         $count->schedule = $this->formatCount(ArticleShow::where('status', 'schedule')->count());
         $count->publish = $this->formatCount(ArticleShow::where('status', 'publish')->count());
         $count->private = $this->formatCount(ArticleShow::where('status', 'private')->count());
+
+        $category = ArticleCategory::all();
 
         $web = GuardianWeb::all();
         
@@ -231,6 +240,11 @@ class ArticleController extends Controller
             ->when($filterweb && $filterweb != 'main' && $filterweb != 'all', function ($query) use ($filterweb) {
                 $query->where('guardian_web_id', $filterweb);
             })
+            ->when($filtercat && $filtercat != 'all', function ($query) use ($filtercat){
+                $query->whereHas('articlecategory', function ($q) use ($filtercat) {
+                    $q->where('category_id', $filtercat);
+                });
+            })
             ->when($request->search, function ($query) use ($request) {
                 $query->where('judul', 'like', '%' . $request->search . '%');
             })
@@ -250,16 +264,18 @@ class ArticleController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.article.index' ,compact('data', 'count', 'web', 'status', 'filterweb'));
+        return view('admin.article.index' ,compact('data', 'category', 'count', 'web', 'status', 'filtercat', 'filterweb'));
     }
     
-    public function indexunique(Request $request, $status = null, $filterweb = null)
+    public function indexunique(Request $request, $status = null, $filtercat = null, $filterweb = null)
     {
         $count = new \stdClass();
         $count->all = $this->formatCount(ArticleShow::count());
         $count->schedule = $this->formatCount(ArticleShow::where('status', 'schedule')->count());
         $count->publish = $this->formatCount(ArticleShow::where('status', 'publish')->count());
         $count->private = $this->formatCount(ArticleShow::where('status', 'private')->count());
+
+        $category = ArticleCategory::all();
 
         $web = GuardianWeb::all();
         
@@ -272,6 +288,11 @@ class ArticleController extends Controller
             ->when($filterweb && $filterweb != 'main' && $filterweb != 'all', function ($query) use ($filterweb) {
                 $query->where('guardian_web_id', $filterweb);
             })
+            ->when($filtercat && $filtercat != 'all', function ($query) use ($filtercat){
+                $query->whereHas('articlecategory', function ($q) use ($filtercat) {
+                    $q->where('category_id', $filtercat);
+                });
+            })
             ->when($request->search, function ($query) use ($request) {
                 $query->where('judul', 'like', '%' . $request->search . '%');
             })
@@ -291,7 +312,7 @@ class ArticleController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.article.index' ,compact('data', 'count', 'web', 'status', 'filterweb'));
+        return view('admin.article.index' ,compact('data', 'category', 'count', 'web', 'status', 'filtercat', 'filterweb'));
     }
 
     public function spin($id, Request $request) 

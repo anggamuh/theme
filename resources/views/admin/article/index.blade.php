@@ -40,8 +40,8 @@
                     Unique
                 </a>
             </div>
-            <div class=" w-full flex flex-col sm:flex-row justify-between gap-4 text-sm sm:text-base">
-                <div class=" w-full sm:w-auto flex justify-between gap-4 sm:justify-start">
+            <div class=" w-full flex flex-col lg:flex-row justify-between gap-4 text-sm sm:text-base">
+                <div class=" w-full sm:w-auto flex justify-between gap-4 lg:justify-start">
                     <div class=" flex flex-row items-center gap-1">
                         <div class=" relative group w-4 sm:w-5 aspect-square text-red-500">
                             <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><g data-name="16-Time"><path d="M24 0a24 24 0 1 0 24 24A24 24 0 0 0 24 0Zm0 46a22 22 0 1 1 22-22 22 22 0 0 1-22 22Z" fill="#ff0000" class="fill-000000"></path><path d="M24 6a18 18 0 1 0 18 18A18 18 0 0 0 24 6Zm1 33.95V35h-2v4.95A16 16 0 0 1 8.05 25H14v-2H8.05A16 16 0 0 1 23 8.05V13h2V8.05A16 16 0 0 1 39.95 23H34v2h5.95A16 16 0 0 1 25 39.95Z" fill="#ff0000" class="fill-000000"></path><path d="M25 17h-2v7a1 1 0 0 0 .29.71l6 6 1.41-1.41-5.7-5.71Z" fill="currentColor" class="fill-000000"></path></g></svg>
@@ -71,27 +71,38 @@
                         <p class=" text-nowrap font-semibold">: <span class=" text-purple-500">{{$count->private}}</span>/{{$count->all}}</p>
                     </div>
                 </div>
-                <div x-data="{ status: '{{$status ?? 'all'}}', web: '{{$filterweb ?? 'all'}}' }" class=" flex flex-row justify-between sm:justify-start gap-4">
-                    <div class="flex items-center gap-2">
-                        <p class=" flex text-nowrap flex-nowrap">S<span class=" hidden sm:block">tatus</span> : </p>
-                        <select class=" text-neutral-600 border-neutral-600 w-full text-sm border pl-2 px-8 py-0.5 rounded-full" x-model="status" name="status" id="">
-                            <option value="all">All</option>
-                            <option value="schedule">Schedule</option>
-                            <option value="publish">Publish</option>
-                            <option value="private">Private</option>
-                        </select>
+                <div x-data="{ status: '{{$status ?? 'all'}}', web: '{{$filterweb ?? 'all'}}', category: '{{$filtercat ?? 'all'}}'}" class=" flex flex-row justify-between lg:justify-start gap-4">
+                    <div class=" w-full grid grid-cols-3 gap-2">
+                        <div class="flex items-center gap-2">
+                            <p class=" flex text-nowrap flex-nowrap">S<span class=" hidden sm:block">tatus</span> : </p>
+                            <select class=" text-neutral-600 border-neutral-600 w-full text-sm border pl-2 px-8 py-0.5 rounded-full" x-model="status" name="status" id="">
+                                <option value="all">All</option>
+                                <option value="schedule">Schedule</option>
+                                <option value="publish">Publish</option>
+                                <option value="private">Private</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <p class=" flex text-nowrap flex-nowrap">K<span class=" hidden sm:block">ategori</span> : </p>
+                            <select class=" text-neutral-600 border-neutral-600 w-full text-sm border pl-2 px-8 py-0.5 rounded-full" x-model="category" name="status" id="">
+                                <option value="all">All</option>
+                                @foreach ($category as $item)
+                                    <option value="{{$item->id}}">{{$item->category}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <p class=" flex text-nowrap flex-nowrap">G<span class=" hidden sm:block">uardian</span> : </p>
+                            <select class=" text-neutral-600 border-neutral-600 w-full text-sm border pl-2 px-8 py-0.5 rounded-full" x-model="web" name="web" id="">
+                                <option value="all">All</option>
+                                <option value="main">Main</option>
+                                @foreach ($web as $item)
+                                    <option value="{{$item->id}}">{{$item->url}}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <p class=" flex text-nowrap flex-nowrap">G<span class=" hidden sm:block">uardian</span> : </p>
-                        <select class=" text-neutral-600 border-neutral-600 w-full text-sm border pl-2 px-8 py-0.5 rounded-full" x-model="web" name="web" id="">
-                            <option value="all">All</option>
-                            <option value="main">Main</option>
-                            @foreach ($web as $item)
-                                <option value="{{$item->id}}">{{$item->url}}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <a :href="`{{ preg_replace('#/status/[^/]+/web/[^/]+#', '',url()->current()) }}/status/${status}/web/${web}`">
+                    <a :href="`{{ preg_replace('#/status/[^/]+/category/[^/]+/web/[^/]+#', '',url()->current()) }}/status/${status}/category/${category}/web/${web}`">
                         <button class=" w-full bg-byolink-1 hover:bg-byolink-3 duration-300 rounded-full text-white px-2 py-0.5 text-sm">Cari</button>
                     </a>
                 </div>
@@ -110,7 +121,7 @@
                     @php
                         $rowBg = $loop->even ? 'bg-neutral-100' : 'bg-neutral-200';
                     @endphp
-                    <tbody x-data="{ spin: false, search: '' }">
+                    <tbody>
                         <tr class="{{ $rowBg }} h-10 text-neutral-600 divide-x-2 divide-white">
                             <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration }}</td>
                             <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold max-w-44 sm:max-w-full">

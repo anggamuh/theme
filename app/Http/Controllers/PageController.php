@@ -142,8 +142,8 @@ class PageController extends Controller
         // dd($data->articles->phoneNumber);
         if ($data->phoneNumber) {
             $data->no_tlp = $data->phoneNumber->no_tlp;
-        } elseif ($data->articles->articletag->first()?->phonenumber) {
-            $data->no_tlp = $data->articles->articletag->first()->phoneNumber->no_tlp;
+        } elseif ($data->articles->articlecategory->first()?->phonenumber) {
+            $data->no_tlp = $data->articles->articlecategory->first()->phoneNumber->no_tlp;
         } else {
             $data->no_tlp = optional(PhoneNumber::first())->no_tlp;
         }

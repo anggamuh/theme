@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\ArticleCategory;
+use App\Models\ArticleShow;
 use App\Models\GuardianWeb;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -20,8 +21,31 @@ class GuardianWebController extends Controller
         } else {
         $data = GuardianWeb::paginate(10);
         }
-        $mainCount = Article::whereNull('guardian_web_id')->count();
-        return view('admin.guardian.index', compact('data', 'mainCount'));
+
+        $data->transform(function ($data) {
+            $data->spintaxcount = $data->articles->where('article_type', 'spintax')->count();
+
+            $data->spincount = ArticleShow::whereHas('articles', function ($query) use ($data) {
+                $query->where('guardian_web_id', $data->id)
+                      ->where('article_type', 'spintax');
+            })->count();
+
+            $data->uniquecount = $data->articles->where('article_type', 'unique')->count();
+            return $data;
+        });
+
+        $manual = new \stdClass();
+        $manual->id = -1;
+        $manual->url = 'Main';
+        $manual->code = null;
+        $manual->spintaxcount = Article::whereNull('guardian_web_id')->where('article_type', 'spintax')->count();
+        $manual->spincount = ArticleShow::whereHas('articles', function ($query) {
+            $query->whereNull('guardian_web_id')->where('article_type', 'spintax');
+        })->count();
+        $manual->uniquecount = Article::whereNull('guardian_web_id')->where('article_type', 'unique')->count();
+
+        $data->prepend($manual);
+        return view('admin.guardian.index', compact('data'));
     }
 
     /**
