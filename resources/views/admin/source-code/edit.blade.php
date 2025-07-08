@@ -1,4 +1,4 @@
-<x-app-layout head="Edit Source Code" title="Admin - Edit Source Code">
+<x-app-layout head="Edit Short Code" title="Admin - Edit Short Code">
     <div class="sm:pl-12 sm:pr-12 lg:pr-32 duration-300 pt-8 pb-20 sm:pb-8 px-4 space-y-4">
         <form action="{{route('source-code.update', ['source_code' => $sourceCode->id])}}" method="POST">
             @csrf

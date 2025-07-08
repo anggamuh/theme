@@ -11,16 +11,24 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    private function formatCount($number)
+    {
+        if ($number >= 1000) {
+            return round($number / 1000, 1) . 'k'; // contoh: 1500 → 1.5k
+        }
+        return (string) $number;
+    }
+
     public function dashboard() {
         $data = GuardianWeb::all();
 
         $data->transform(function ($data) {
-            $data->spintaxcount = $data->articles->where('article_type', 'spintax')->count();
+            $data->spintaxcount = $this->formatCount($data->articles->where('article_type', 'spintax')->count());
 
-            $data->spincount = ArticleShow::whereHas('articles', function ($query) use ($data) {
+            $data->spincount = $this->formatCount(ArticleShow::whereHas('articles', function ($query) use ($data) {
                 $query->where('guardian_web_id', $data->id)
                       ->where('article_type', 'spintax');
-            })->count();
+            })->count());
 
             $articleIds = $data->articles->pluck('id');
             $data->categories = ArticleCategory::whereHas('articles', function ($query) use ($data) {
@@ -28,7 +36,7 @@ class AdminController extends Controller
             })->select(['category', 'slug'])->get();
 
 
-            $data->uniquecount = $data->articles->where('article_type', 'unique')->count();
+            $data->uniquecount = $this->formatCount($data->articles->where('article_type', 'unique')->count());
             return $data;
         });
 
@@ -40,20 +48,20 @@ class AdminController extends Controller
                 $query->whereNull('guardian_web_id');
             })->select(['category', 'slug'])->get();
 
-        $manual->spintaxcount = Article::whereNull('guardian_web_id')->where('article_type', 'spintax')->count();
-        $manual->spincount = ArticleShow::whereHas('articles', function ($query) {
+        $manual->spintaxcount = $this->formatCount(Article::whereNull('guardian_web_id')->where('article_type', 'spintax')->count());
+        $manual->spincount = $this->formatCount(ArticleShow::whereHas('articles', function ($query) {
             $query->whereNull('guardian_web_id')->where('article_type', 'spintax');
-        })->count();
-        $manual->uniquecount = Article::whereNull('guardian_web_id')->where('article_type', 'unique')->count();
+        })->count());
+        $manual->uniquecount = $this->formatCount(Article::whereNull('guardian_web_id')->where('article_type', 'unique')->count());
 
         $data->prepend($manual);
 
-        $sc = SourceCode::all()->count();
-        $spintax = Article::where('article_type', 'spintax')->get()->count();
-        $spin = ArticleShow::whereHas('articles', function ($query) {
+        $sc = $this->formatCount(SourceCode::all()->count());
+        $spintax = $this->formatCount(Article::where('article_type', 'spintax')->get()->count());
+        $spin = $this->formatCount(ArticleShow::whereHas('articles', function ($query) {
             $query->where('article_type', 'spintax');
-        })->count();
-        $unique = Article::where('article_type', 'unique')->get()->count();
+        })->count());
+        $unique = $this->formatCount(Article::where('article_type', 'unique')->get()->count());
         return view('dashboard', compact('data', 'sc', 'spintax', 'spin', 'unique'));
     }
 }

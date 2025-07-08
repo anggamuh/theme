@@ -1,4 +1,4 @@
-<x-app-layout head="Source Code" title="Admin - Source Code">
+<x-app-layout head="Short Code" title="Admin - Short Code">
     <div class="sm:pl-12 sm:pr-12 lg:pr-32 duration-300 pt-8 pb-20 sm:pb-8 px-4 space-y-4">
         <div x-data="auctionTable()"
             class="w-full p-4 sm:p-8 bg-white rounded-md shadow-md shadow-black/20 flex flex-col gap-6">
@@ -6,7 +6,7 @@
             <div class="w-full flex flex-col sm:flex-row gap-2 justify-between items-center">
                 <button @click="showModal = true"
                     class=" w-full text-sm sm:text-base sm:w-auto px-4 py-2 bg-byolink-1 text-white rounded-md font-semibold border border-byolink-1 hover:border-byolink-3 hover:bg-byolink-3 duration-300">
-                    Tambah Source Code
+                    Tambah Short Code
                 </a>
 
                 <!-- Search -->
@@ -133,7 +133,7 @@
                         </svg>
                     </button>
                     <div class=" pt-6 pb-3 bg-byolink-1 text-white">
-                        <h2 class=" px-6 text-2xl font-bold">Tambah Source Code</h2>
+                        <h2 class=" px-6 text-2xl font-bold">Tambah Short Code</h2>
                     </div>
                     <div class=" max-h-full overflow-auto">
                         <form action="{{ route('source-code.store')}}" method="POST">

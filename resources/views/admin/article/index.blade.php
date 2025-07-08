@@ -13,7 +13,7 @@
                     </a>
                     <a href="{{ route('source-code.index') }}"
                         class=" col-span-2 sm:col-span-1 text-nowrap w-full text-center text-sm sm:text-base md:w-auto px-4 py-2 bg-byolink-1 text-white rounded-md font-semibold border border-byolink-1 hover:border-byolink-3 hover:bg-byolink-3 duration-300">
-                        Source Code
+                        Short Code
                     </a>
 
                 </div>
