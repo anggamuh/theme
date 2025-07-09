@@ -79,7 +79,7 @@
                                 </td>
                             </tr>
                             <tr x-show="list" class="{{ $loop->even ? 'bg-neutral-100' : 'bg-neutral-200' }} min-h-10 text-neutral-600 divide-x-2 divide-white border-t-2 border-b-2 border-white">
-                                <td class="px-3 py-2" colspan="5">
+                                <td class="px-3 py-2 text-xs" colspan="5">
                                     <div class=" w-full flex flex-wrap gap-1">
                                         @foreach ($item->categories as $cat)
                                             <div class=" py-1 px-2 bg-white rounded-md">
