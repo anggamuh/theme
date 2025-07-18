@@ -117,11 +117,11 @@
                         <th class=" px-1 sm:px-2 py-1 w-[90px] sm:w-[100px] rounded-tr-md">Opsi</th>
                     </tr>
                 </thead>
-                @forelse ($data as $item)
-                    @php
-                        $rowBg = $loop->even ? 'bg-neutral-100' : 'bg-neutral-200';
-                    @endphp
-                    <tbody>
+                <tbody id="guardian-container">
+                    @forelse ($data as $item)
+                        @php
+                            $rowBg = $loop->even ? 'bg-neutral-100' : 'bg-neutral-200';
+                        @endphp
                         <tr class="{{ $rowBg }} h-10 text-neutral-600 divide-x-2 divide-white">
                             <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration }}</td>
                             <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold max-w-44 sm:max-w-full">
@@ -235,14 +235,58 @@
                                 </div>
                             </td>
                         </tr>
-                    </tbody>
-                @empty
-                    <tr>
-                        <td colspan="3" class=" bg-neutral-100 px-1 sm:px-2 py-1 text-center rounded-b-md text-neutral-600">Data tidak ditemukan</td>
-                    </tr>
-                @endforelse
+                    @empty
+                        <tr>
+                            <td colspan="3" class=" bg-neutral-100 px-1 sm:px-2 py-1 text-center rounded-b-md text-neutral-600">Data tidak ditemukan</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+                <tr>
+                    <td id="loader" colspan="3" class=" text-center text-neutral-600 h-10">
+                        Loading...
+                    </td>
+                </tr>
             </table>
-            {{ $data->links('vendor.pagination.admin') }}
+            <script>
+                let page = 2;
+                let loading = false;
+            
+                window.addEventListener('scroll', () => {
+                    if (loading) return;
+            
+                    const loader = document.getElementById('loader');
+
+                    const search = "{!! request('search') ? '&search=' . urlencode(request('search')) : '' !!}";
+            
+                    // Scroll benar-benar mentok
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                        loading = true;
+                        loader.textContent = 'Loading...';
+            
+                        fetch(`?page=${page}${search}`, {
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            // Tambahkan delay 1 detik sebelum tampilkan data
+                            setTimeout(() => {
+                                if (html.trim() !== '') {
+                                    document.getElementById('guardian-container').insertAdjacentHTML('beforeend', html);
+                                    page++;
+                                    loading = false;
+                                    loader.textContent = 'Loading...';
+                                } else {
+                                    loader.textContent = 'Semua data telah dimuat';
+                                }
+                            }, 500); // delay 1 detik
+                        })
+                        .catch(() => {
+                            loader.textContent = 'Gagal memuat data';
+                            loading = false;
+                        });
+                    }
+                });
+            </script>
         </div>
     </div>
 

@@ -17,9 +17,9 @@ class GuardianWebController extends Controller
     public function index(Request $request)
     {
         if ($request->search) {
-            $data = GuardianWeb::where('url', 'like', '%' . $request->search . '%')->paginate(10);
+            $data = GuardianWeb::where('url', 'like', '%' . $request->search . '%')->simplePaginate(20);
         } else {
-        $data = GuardianWeb::paginate(10);
+            $data = GuardianWeb::simplePaginate(20);
         }
 
         $data->transform(function ($data) {
@@ -33,18 +33,25 @@ class GuardianWebController extends Controller
             $data->uniquecount = $data->articles->where('article_type', 'unique')->count();
             return $data;
         });
+        
+        if ($request->input('page', 1) == 1) {
+            $manual = new \stdClass();
+            $manual->id = -1;
+            $manual->url = 'Main';
+            $manual->code = null;
+            $manual->spintaxcount = Article::whereNull('guardian_web_id')->where('article_type', 'spintax')->count();
+            $manual->spincount = ArticleShow::whereHas('articles', function ($query) {
+                $query->whereNull('guardian_web_id')->where('article_type', 'spintax');
+            })->count();
+            $manual->uniquecount = Article::whereNull('guardian_web_id')->where('article_type', 'unique')->count();
+    
+            $data->prepend($manual);
+        }
 
-        $manual = new \stdClass();
-        $manual->id = -1;
-        $manual->url = 'Main';
-        $manual->code = null;
-        $manual->spintaxcount = Article::whereNull('guardian_web_id')->where('article_type', 'spintax')->count();
-        $manual->spincount = ArticleShow::whereHas('articles', function ($query) {
-            $query->whereNull('guardian_web_id')->where('article_type', 'spintax');
-        })->count();
-        $manual->uniquecount = Article::whereNull('guardian_web_id')->where('article_type', 'unique')->count();
+        if ($request->ajax()) {
+            return view('admin.guardian.row', compact('data'))->render();
+        }
 
-        $data->prepend($manual);
         return view('admin.guardian.index', compact('data'));
     }
 

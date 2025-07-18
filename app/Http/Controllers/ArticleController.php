@@ -40,7 +40,7 @@ class ArticleController extends Controller
         
         $total = (int) $request->total;
 
-        $maxAttempts = 10000; // Lebih fleksibel
+        $maxAttempts = 1000; // Lebih fleksibel
         $attempts = 0;
         $savedCount = 0;
 
@@ -214,7 +214,11 @@ class ArticleController extends Controller
                 return $query;
             })
             ->latest()
-            ->paginate(10);
+            ->simplePaginate(20);
+        
+        if ($request->ajax()) {
+            return view('admin.article.row', compact('data'))->render();
+        }
 
         return view('admin.article.index' ,compact('data', 'category', 'count', 'web', 'status', 'filtercat', 'filterweb'));
     }
@@ -262,7 +266,11 @@ class ArticleController extends Controller
                 return $query;
             })
             ->latest()
-            ->paginate(10);
+            ->simplePaginate(20);
+
+        if ($request->ajax()) {
+            return view('admin.article.row', compact('data'))->render();
+        }
 
         return view('admin.article.index' ,compact('data', 'category', 'count', 'web', 'status', 'filtercat', 'filterweb'));
     }
@@ -310,7 +318,11 @@ class ArticleController extends Controller
                 return $query;
             })
             ->latest()
-            ->paginate(10);
+            ->simplePaginate(20);
+
+        if ($request->ajax()) {
+            return view('admin.article.row', compact('data'))->render();
+        }
 
         return view('admin.article.index' ,compact('data', 'category', 'count', 'web', 'status', 'filtercat', 'filterweb'));
     }

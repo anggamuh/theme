@@ -37,10 +37,10 @@
                         <th class=" px-1 sm:px-2 py-1 w-[90px] sm:w-[100px] rounded-tr-md">Opsi</th>
                     </tr>
                 </thead>
-                @foreach ($data as $item)
-                    <tbody>
+                <tbody id="guardian-container">
+                    @foreach ($data as $item)
                         <tr class="{{ $loop->even ? 'bg-neutral-100' : 'bg-neutral-200' }} h-10 text-neutral-600 divide-x-2 divide-white">
-                            <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration + (($data->currentPage() - 1) * 10) }}</td>
+                            <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration }}</td>
                             <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap max-w-20 sm:max-w-full">
                                 <a href="{{$item->url}}" class=" hover:text-byolink-1 duration-300 line-clamp-1" target="__blank">{{$item->url}}</a>
                             </td>
@@ -89,10 +89,54 @@
                                 </div>
                             </td>
                         </tr>
-                    </tbody>
-                @endforeach
+                    @endforeach
+                </tbody>
+                <tr>
+                    <td id="loader" colspan="5" class=" text-center text-neutral-600 h-10">
+                        Loading...
+                    </td>
+                </tr>
             </table>
-            {{ $data->links('vendor.pagination.admin') }}
+            <script>
+                let page = 2;
+                let loading = false;
+            
+                window.addEventListener('scroll', () => {
+                    if (loading) return;
+            
+                    const loader = document.getElementById('loader');
+
+                    const search = "{!! request('search') ? '&search=' . urlencode(request('search')) : '' !!}";
+            
+                    // Scroll benar-benar mentok
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                        loading = true;
+                        loader.textContent = 'Loading...';
+            
+                        fetch(`?page=${page}${search}`, {
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            // Tambahkan delay 1 detik sebelum tampilkan data
+                            setTimeout(() => {
+                                if (html.trim() !== '') {
+                                    document.getElementById('guardian-container').insertAdjacentHTML('beforeend', html);
+                                    page++;
+                                    loading = false;
+                                    loader.textContent = 'Loading...';
+                                } else {
+                                    loader.textContent = 'Semua data telah dimuat';
+                                }
+                            }, 500); // delay 1 detik
+                        })
+                        .catch(() => {
+                            loader.textContent = 'Gagal memuat data';
+                            loading = false;
+                        });
+                    }
+                });
+            </script>
         </div>
     </div>
     @include('components.admin.component.validationerror')
