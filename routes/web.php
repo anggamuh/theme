@@ -66,12 +66,10 @@ Route::get('/sitemap', [SitemapController::class, 'index'])->name('sitemap');
 Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
-    Route::middleware('check.role')->group(function () {
-        Route::resource('/admin/user', UserController::class);
+    Route::resource('/admin/user', UserController::class);
 
-        Route::resource('/admin/template', TemplateController::class);
-        Route::put('/admin/template/edit-image/{id}', [TemplateController::class, 'editimage'])->name('template.editimage');
-    });
+    Route::resource('/admin/template', TemplateController::class);
+    Route::put('/admin/template/edit-image/{id}', [TemplateController::class, 'editimage'])->name('template.editimage');
 
     Route::resource('/admin/phone-number', PhoneNumberController::class);
 
