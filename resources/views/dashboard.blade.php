@@ -50,49 +50,5 @@
                 </div>
             </div>
         </div>
-        <div class=" w-full p-4 sm:p-8 bg-white rounded-md shadow-md shadow-black/20">
-            <div class=" space-y-4 sm:space-y-6">
-                <p class=" text-base sm:text-lg font-semibold">List Domain</p>
-                <table class="w-full text-sm sm:text-base rounded-md overflow-hidden">
-                    <thead>
-                        <tr class="h-10 bg-byolink-1 text-white divide-x-2 divide-white">
-                            <th class=" px-2 py-1 rounded-tl-md w-10">No</th>
-                            <th class=" px-1 sm:px-2 py-1">Domain</th>
-                            <th class=" px-1 sm:px-2 py-1 min-w-10">Spintax</th>
-                            <th class=" px-1 sm:px-2 py-1 min-w-10">Unique</th>
-                            <th class=" px-1 sm:px-2 py-1 w-[90px] sm:w-[100px] rounded-tr-md">Opsi</th>
-                        </tr>
-                    </thead>
-                    @foreach ($data as $item)
-                        <tbody x-data="{ list : false }">
-                            <tr class="{{ $loop->even ? 'bg-neutral-100' : 'bg-neutral-200' }} h-10 text-neutral-600 divide-x-2 divide-white">
-                                <td class="px-3 py-1 text-center font-semibold">{{ $loop->iteration }}</td>
-                                <td class="px-2 sm:px-4 py-1 min-h-10 font-semibold text-nowrap max-w-28 sm:max-w-full line-clamp-1">{{$item->url}}</td>
-                                <td class="px-2 sm:px-4 py-1 min-h-10 text-nowrap text-center">{{$item->spintaxcount}} ({{$item->spincount}})</td>
-                                <td class="px-2 sm:px-4 py-1 min-h-10 text-nowrap text-center">{{$item->uniquecount}}</td>
-                                <td class="px-1 sm:px-2">
-                                    <div class="flex gap-1 sm:gap-2 justify-center">
-                                        <button @click="list = !list" class=" w-5 h-5 hover:text-blue-500 duration-300 relative">
-                                            <svg  id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1" viewBox="0 0 512 512" class=" w-full h-full"  xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path fill="currentColor" d="M98.9,184.7l1.8,2.1l136,156.5c4.6,5.3,11.5,8.6,19.2,8.6c7.7,0,14.6-3.4,19.2-8.6L411,187.1l2.3-2.6  c1.7-2.5,2.7-5.5,2.7-8.7c0-8.7-7.4-15.8-16.6-15.8v0H112.6v0c-9.2,0-16.6,7.1-16.6,15.8C96,179.1,97.1,182.2,98.9,184.7z"/></svg>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr x-show="list" class="{{ $loop->even ? 'bg-neutral-100' : 'bg-neutral-200' }} min-h-10 text-neutral-600 divide-x-2 divide-white border-t-2 border-b-2 border-white">
-                                <td class="px-3 py-2 text-xs" colspan="5">
-                                    <div class=" w-full flex flex-wrap gap-1">
-                                        @foreach ($item->categories as $cat)
-                                            <div class=" py-1 px-2 bg-white rounded-md">
-                                                {{$cat->category}}
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    @endforeach
-                </table>
-            </div>
-        </div>
     </div>
 </x-app-layout>

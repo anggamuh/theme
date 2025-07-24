@@ -7,7 +7,6 @@ use App\Http\Controllers\ArticleGalleryController;
 use App\Http\Controllers\ArticleGeneratedController;
 use App\Http\Controllers\ArticleShowController;
 use App\Http\Controllers\ArticleShowGalleryController;
-use App\Http\Controllers\GuardianWebController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PhoneNumberController;
 use App\Http\Controllers\ProfileController;
@@ -72,8 +71,6 @@ Route::middleware('auth')->group(function () {
 
         Route::resource('/admin/template', TemplateController::class);
         Route::put('/admin/template/edit-image/{id}', [TemplateController::class, 'editimage'])->name('template.editimage');
-
-        Route::resource('/admin/guardian', GuardianWebController::class);
     });
 
     Route::resource('/admin/phone-number', PhoneNumberController::class);
@@ -81,13 +78,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('/admin/article', ArticleController::class);
     Route::get('/admin/article-spin/{id}', [ArticleController::class, 'spin'])->name('article.spin');
     Route::get('/admin/article/shuffle-image/{id}', [ArticleController::class, 'shuffle'])->name('shuffle.image');
-    Route::get('/admin/article/status/{status}/category/{filtercat}/web/{filterweb}', [ArticleController::class, 'index'])->name('article.filter');
+    Route::get('/admin/article/status/{status}/category/{filtercat}', [ArticleController::class, 'index'])->name('article.filter');
 
     Route::get('/admin/article-spintax', [ArticleController::class, 'indexspintax'])->name('article.spintax');
-    Route::get('/admin/article-spintax/status/{status}/category/{filtercat}/web/{filterweb}', [ArticleController::class, 'indexspintax'])->name('article.spintax.filter');
+    Route::get('/admin/article-spintax/status/{status}/category/{filtercat}', [ArticleController::class, 'indexspintax'])->name('article.spintax.filter');
 
     Route::get('/admin/article-unique', [ArticleController::class, 'indexunique'])->name('article.unique');
-    Route::get('/admin/article-unique/status/{status}/category/{filtercat}/web/{filterweb}', [ArticleController::class, 'indexunique'])->name('article.unique.filter');
+    Route::get('/admin/article-unique/status/{status}/category/{filtercat}', [ArticleController::class, 'indexunique'])->name('article.unique.filter');
 
     Route::resource('/admin/article-banner', ArticleBannerController::class);
     Route::resource('/admin/article-gallery', ArticleGalleryController::class);

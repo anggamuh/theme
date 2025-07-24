@@ -72,7 +72,7 @@
                     </div>
                 </div>
                 <div x-data="{ status: '{{$status ?? 'all'}}', web: '{{$filterweb ?? 'all'}}', category: '{{$filtercat ?? 'all'}}'}" class=" flex flex-row justify-between lg:justify-start gap-4">
-                    <div class=" w-full grid grid-cols-3 gap-2">
+                    <div class=" w-full grid grid-cols-2 gap-2">
                         <div class="flex items-center gap-2">
                             <p class=" flex text-nowrap flex-nowrap">S<span class=" hidden sm:block">tatus</span> : </p>
                             <select class=" text-neutral-600 border-neutral-600 w-full text-sm border pl-2 px-8 py-0.5 rounded-full" x-model="status" name="status" id="">
@@ -88,16 +88,6 @@
                                 <option value="all">All</option>
                                 @foreach ($category as $item)
                                     <option value="{{$item->id}}">{{$item->category}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <p class=" flex text-nowrap flex-nowrap">G<span class=" hidden sm:block">uardian</span> : </p>
-                            <select class=" text-neutral-600 border-neutral-600 w-full text-sm border pl-2 px-8 py-0.5 rounded-full" x-model="web" name="web" id="">
-                                <option value="all">All</option>
-                                <option value="main">Main</option>
-                                @foreach ($web as $item)
-                                    <option value="{{$item->id}}">{{$item->url}}</option>
                                 @endforeach
                             </select>
                         </div>

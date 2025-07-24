@@ -19,11 +19,7 @@ class SitemapController extends Controller
             ->add(Url::create('/artikel')->setLastModificationDate(now()));
 
         $perPage = 12;
-        $totalArticles = ArticleShow::where('status', 'publish')
-            ->whereHas('articles', function ($query) {
-                $query->whereNull('guardian_web_id');
-            })
-            ->count();
+        $totalArticles = ArticleShow::where('status', 'publish')->count();
         $totalPages = ceil($totalArticles / $perPage);
 
         for ($page = 1; $page <= $totalPages; $page++) {
@@ -42,9 +38,6 @@ class SitemapController extends Controller
             $articleIds = $model->articles()->pluck('id');
             $articleCount = ArticleShow::where('status', 'publish')
                 ->whereIn('article_id', $articleIds)
-                ->whereHas('articles', function ($query) {
-                    $query->whereNull('guardian_web_id');
-                })
                 ->count();
             $pages = ceil($articleCount / $perPage);
         
@@ -63,9 +56,6 @@ class SitemapController extends Controller
             $articleIds = $model->articles()->pluck('articles.id');
             $articleCount = ArticleShow::where('status', 'publish')
                 ->whereIn('article_id', $articleIds)
-                ->whereHas('articles', function ($query) {
-                    $query->whereNull('guardian_web_id');
-                })
                 ->count();
             $pages = ceil($articleCount / $perPage);
         
@@ -84,9 +74,6 @@ class SitemapController extends Controller
             $articleIds = $model->articles()->pluck('articles.id'); // penting: ambil id dari tabel articles
             $articleCount = ArticleShow::where('status', 'publish')
                 ->whereIn('article_id', $articleIds)
-                ->whereHas('articles', function ($query) {
-                    $query->whereNull('guardian_web_id');
-                })
                 ->count();
             $pages = ceil($articleCount / $perPage);
         
@@ -95,11 +82,7 @@ class SitemapController extends Controller
             }
         }
 
-        foreach (
-            ArticleShow::where('status', 'publish')
-                ->whereHas('articles', function ($query) {
-                    $query->whereNull('guardian_web_id');
-                })->get() as $model ) {
+        foreach (ArticleShow::where('status', 'publish')->get() as $model ) {
             $slug = $model->slug;
             $sitemap->add(Url::create("/{$slug}")->setLastModificationDate($model->updated_at));
         }
