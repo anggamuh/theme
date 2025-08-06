@@ -47,7 +47,12 @@ class ArticleShowController extends Controller
         $category = ArticleCategory::all();
         $template = Template::all();
         $first = PhoneNumber::orderBy('id')->first();
-        $phonenumber = PhoneNumber::where('id', '!=', $first->id)->get();
+        if ($first) {
+               $phonenumber = PhoneNumber::where('id', '!=', $first->id)->get();
+        } else {
+            $phonenumber = PhoneNumber::all();
+        }
+     
         return view('admin.article.create-unique', compact('template', 'tag', 'phonenumber', 'category'));
     }
 
@@ -301,7 +306,11 @@ class ArticleShowController extends Controller
         $category = ArticleCategory::whereNotIn('id', $categoryid)->get();
         $template = Template::all();
         $first = PhoneNumber::orderBy('id')->first();
-        $phonenumber = PhoneNumber::where('id', '!=', $first->id)->where('id', '!=', $articleShow->phone_number_id)->get();
+          if ($first) {
+               $phonenumber = PhoneNumber::where('id', '!=', $first->id)->get();
+        } else {
+            $phonenumber = PhoneNumber::all();
+        }
         return view('admin.article.edit-unique', compact('articleShow', 'tag', 'template', 'phonenumber', 'category'));
     }
 

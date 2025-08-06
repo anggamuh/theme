@@ -58,7 +58,11 @@ class ArticleGeneratedController extends Controller
         $article = Article::find($articleShow->article_id);
         $template = Template::all();
         $first = PhoneNumber::orderBy('id')->first();
-        $phonenumber = PhoneNumber::where('id', '!=', $first->id)->where('id', '!=', $articleShow->phone_number_id)->get();
+         if ($first) {
+               $phonenumber = PhoneNumber::where('id', '!=', $first->id)->get();
+        } else {
+            $phonenumber = PhoneNumber::all();
+        }
         return view('admin.article.edit-generated', compact('article', 'articleShow', 'tag', 'template', 'phonenumber'));
     }
 
